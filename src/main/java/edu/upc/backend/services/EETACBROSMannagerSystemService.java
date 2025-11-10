@@ -1,4 +1,4 @@
-package edu.upc.dsa.services;
+package edu.upc.backend.services;
 
 import edu.upc.backend.EETACBROSMannagerSystemImpl;
 import edu.upc.backend.classes.*;
@@ -55,7 +55,7 @@ public class EETACBROSMannagerSystemService {
 
     // REGISTRE
     @POST
-    @Path("user/{username}/{nom}/{cognom1}/{cognom2}/{email}/{password}/{datanaixement}")
+    @Path("user/register/{username}/{nom}/{cognom1}/{cognom2}/{email}/{password}/{datanaixement}")
     @ApiOperation(value = "Registrar un nou usuari", notes = "Registrar un nou usuari")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Usuari nou registrat", response = User.class),
