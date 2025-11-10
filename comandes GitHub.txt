@@ -1,0 +1,95 @@
+## Download a Project ##
+
+git clone https://github.com/manelcolominas/Questions-Answers.git
+git pull origin main	# Actualitzar amb l'última versió del projecte
+
+
+## Treballar amb versions i etiquetes ##
+
+git tag                  # Mostra totes les versions (tags) disponibles
+git checkout tags/<nom_tag>   # Canviar a una versió concreta
+
+
+
+
+
+########################################################################
+########################################################################
+########################################################################
+########################################################################
+
+
+## Abans de treballar en els arxius ##
+
+git pull origin main	# per a descarregar-te la ultima versió del projecte
+
+
+
+## Actualizar arxius GitHub ##
+
+git add .	# Afegir tots els fitxers al commit
+git commit -m "Descripción breve de los cambios"	# Pujar els fitxer actualitzats
+git push origin main
+
+git tag v1.0	# Afegir una versió al commit
+git push origin v1.0	# Pujar la versió a GitHub
+
+
+
+
+########################################################################
+########################################################################
+########################################################################
+########################################################################
+
+## Crear repositori nou ##
+
+mkdir <project name>
+cd <project name>/
+git init  # Inicia un nou repositori local (a l'ordinador)
+rm -rf .git   # ⚠️ Elimina el repositori Git localment, a l'ordinador (no els fitxers!)
+
+
+
+
+
+## First Commit, fer el primer commit d'un nou repositori creat des de la pagina web de GitHub
+## …or push an existing repository from the command line
+
+
+git init # Inicia un nou repositori local (a l'ordinador)
+git remote add origin https://github.com/manelcolominas/PRIMER_MINIM_EXEMPLE_1_SERVEI_BANCARI.git
+git branch -M main
+git add .	# Afegir tots els fitxers al commit
+git commit -m "First Commit"
+git push -u origin main
+
+
+
+
+
+## Conceptes Bàsics ##
+git hash -> es per saber si el contingut d'un objecte ha canviat o no. per això guardarem els hash al git per saber si un projecte ha canviat o no o si esteu treballant en un mateix projecte igual.
+
+git commit	# així es com es diuen les versions a git
+git status	# Mostra l’estat dels arxius (nous, modificats, preparats per commit).
+git add <filename>	# per afegir un cert arxiu
+git commit -m "initial commit"	# primer commit
+git log	# Mostra l’historial de commits.
+git push origin main	# per a carregar els commits al reposiori de github
+git pull origin main	# per a descarregar els arxius del repositori de github
+
+Insights -> network graph
+
+merge -> juntar els canvis fets pel teu company i tu, unificar branques
+
+git tindra problemes   quan treballem en el mateix arxiu
+
+© Manel Colominas - Tots els drets reservats
+
+
+
+
+
+
+
