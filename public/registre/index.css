@@ -1,0 +1,10 @@
+
+        #app {
+            min-width: 400px;
+        }
+
+        .fbox {
+            display: flexbox;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
