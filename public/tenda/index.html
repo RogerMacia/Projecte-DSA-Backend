@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EETAC BROS - Tienda</title>
+
+    <!-- NES.css for retro gaming style -->
+    <link href="https://unpkg.com/nes.css@2.3.0/css/nes.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+            font-family: 'Press Start 2P', cursive;
+            background: #5c94fc;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 60%;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #7bc850;
+            z-index: -2;
+        }
+
+        .pixel-bg::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,.03) 2px, rgba(255,255,255,.03) 4px),
+                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255,255,255,.03) 2px, rgba(255,255,255,.03) 4px);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Pixel clouds */
+        .cloud-1 {
+            content: '';
+            position: fixed;
+            top: 80px;
+            left: 10%;
+            width: 120px;
+            height: 60px;
+            background:
+                radial-gradient(circle, #fff 30%, transparent 30%) 0 0,
+                radial-gradient(circle, #fff 30%, transparent 30%) 20px 0,
+                radial-gradient(circle, #fff 30%, transparent 30%) 40px 0,
+                radial-gradient(circle, #fff 30%, transparent 30%) 60px 0,
+                radial-gradient(circle, #fff 30%, transparent 30%) 10px 20px,
+                radial-gradient(circle, #fff 30%, transparent 30%) 30px 20px,
+                radial-gradient(circle, #fff 30%, transparent 30%) 50px 20px;
+            background-size: 20px 20px;
+            background-repeat: no-repeat;
+            filter: drop-shadow(2px 2px 0 #000);
+            animation: floatCloud1 20s infinite ease-in-out;
+            z-index: 1;
+        }
+
+        .cloud-2 {
+            content: '';
+            position: fixed;
+            top: 150px;
+            right: 15%;
+            width: 100px;
+            height: 50px;
+            background:
+                radial-gradient(circle, #fff 30%, transparent 30%) 0 0,
+                radial-gradient(circle, #fff 30%, transparent 30%) 20px 0,
+                radial-gradient(circle, #fff 30%, transparent 30%) 40px 0,
+                radial-gradient(circle, #fff 30%, transparent 30%) 10px 20px,
+                radial-gradient(circle, #fff 30%, transparent 30%) 30px 20px;
+            background-size: 20px 20px;
+            background-repeat: no-repeat;
+            filter: drop-shadow(2px 2px 0 #000);
+            animation: floatCloud2 25s infinite ease-in-out;
+            z-index: 1;
+        }
+
+        /* Pixel bricks at bottom */
+        .pixel-bricks {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background:
+                repeating-linear-gradient(90deg,
+                    #d97426 0px, #d97426 40px,
+                    #000 40px, #000 42px,
+                    #d97426 42px, #d97426 82px,
+                    #000 82px, #000 84px
+                ),
+                repeating-linear-gradient(0deg,
+                    #d97426 0px, #d97426 20px,
+                    #000 20px, #000 22px,
+                    #d97426 22px, #d97426 42px,
+                    #000 42px, #000 44px
+                );
+            box-shadow: inset 0 4px 0 #f4a460, inset 0 -2px 0 #8b4513;
+            z-index: 1;
+        }
+
+        /* Question blocks */
+        .question-block {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            background: #f4a460;
+            border: 3px solid #000;
+            box-shadow: inset -3px -3px 0 #d97426, inset 3px 3px 0 #ffd4a3;
+            z-index: 1;
+            animation: bobBlock 2s infinite ease-in-out;
+        }
+
+        .question-block::after {
+            content: '?';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            color: #fff;
+            text-shadow: 2px 2px 0 #000;
+        }
+
+        .block-1 {
+            top: 30%;
+            right: 20%;
+            animation-delay: 0s;
+        }
+
+        .block-2 {
+            top: 45%;
+            left: 15%;
+            animation-delay: 0.5s;
+        }
+
+        @keyframes floatCloud1 {
+            0%, 100% { transform: translateX(0) translateY(0); }
+            50% { transform: translateX(30px) translateY(-10px); }
+        }
+
+        @keyframes floatCloud2 {
+            0%, 100% { transform: translateX(0) translateY(0); }
+            50% { transform: translateX(-40px) translateY(10px); }
+        }
+
+        @keyframes bobBlock {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInDown 0.8s ease;
+            position: relative;
+            z-index: 10;
+        }
+
+        .header h1 {
+            color: #fff;
+            text-shadow: 4px 4px 0px #000;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #ffd700;
+            font-size: 0.8em;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: start;
+        }
+
+        .shop-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .shop-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fff;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+        }
+
+        .coins-display {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.2em;
+        }
+
+        .coin-icon {
+            font-size: 1.5em;
+        }
+
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #e76e55;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7em;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .product-card {
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-image {
+            height: 180px;
+            background-color: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            border-bottom: 3px solid #000;
+        }
+
+        .product-info {
+            padding: 15px;
+        }
+
+        .product-name {
+            font-size: 0.9em;
+            margin-bottom: 8px;
+        }
+
+        .product-description {
+            font-size: 0.6em;
+            color: #666;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .product-price {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+        }
+
+        .price {
+            font-size: 0.8em;
+            color: #e76e55;
+        }
+
+        .add-to-cart {
+            font-size: 0.7em;
+            padding: 5px 10px;
+        }
+
+        .cart-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .cart-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .cart-content {
+            background: #fff;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #000;
+        }
+
+        .cart-items {
+            margin-bottom: 20px;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .item-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .item-icon {
+            font-size: 1.5em;
+        }
+
+        .item-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .item-name {
+            font-size: 0.8em;
+        }
+
+        .item-price {
+            font-size: 0.7em;
+            color: #666;
+        }
+
+        .item-quantity {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quantity-btn {
+            width: 25px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7em;
+            padding: 0;
+        }
+
+        .quantity {
+            font-size: 0.8em;
+        }
+
+        .remove-item {
+            background: #e76e55;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            font-size: 0.6em;
+            cursor: pointer;
+        }
+
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-top: 2px solid #000;
+            font-size: 0.9em;
+        }
+
+        .cart-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .button-icon {
+            display: inline-block;
+            margin-right: 8px;
+            animation: wiggle 0.5s ease;
+        }
+
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-10deg); }
+            75% { transform: rotate(10deg); }
+        }
+
+        .button-group button:hover .button-icon {
+            animation: wiggle 0.5s ease infinite;
+        }
+
+        .nes-btn.is-warning {
+            background: #f7d51d;
+            color: #000;
+            border-color: #000;
+            box-shadow: 0 4px 0 #d4af37;
+        }
+
+        .nes-btn.is-warning:hover {
+            background: #ffed4e;
+            box-shadow: 0 6px 0 #d4af37;
+        }
+
+        .nes-btn.is-warning:active {
+            box-shadow: 0 2px 0 #d4af37;
+            transform: translateY(2px) scale(0.95);
+        }
+
+        .nes-btn.is-success {
+            background: #92cc41;
+            color: #fff;
+            border-color: #000;
+            box-shadow: 0 4px 0 #5fa319;
+            text-shadow: 1px 1px 0 #000;
+        }
+
+        .nes-btn.is-success:hover {
+            background: #a8e055;
+            box-shadow: 0 6px 0 #5fa319;
+        }
+
+        .nes-btn.is-success:active {
+            box-shadow: 0 2px 0 #5fa319;
+            transform: translateY(2px) scale(0.95);
+        }
+
+        .nes-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .nav-links {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.7em;
+        }
+
+        .nav-links a {
+            color: #209cee;
+            text-decoration: none;
+        }
+
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.5em;
+            }
+
+            .shop-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body class="pixel-bg">
+<!-- Decorative elements -->
+<div class="cloud-1"></div>
+<div class="cloud-2"></div>
+<div class="pixel-bricks"></div>
+<div class="question-block block-1"></div>
+<div class="question-block block-2"></div>
+
+<div class="header">
+    <h1>🛒 EETAC BROS SHOP 🛒</h1>
+    <p>¡Compra objetos para tu aventura!</p>
+</div>
+
+<div class="container">
+    <div class="shop-container">
+        <div class="shop-header">
+            <div class="coins-display">
+                <span class="coin-icon">🪙</span>
+                <span id="coins">1000</span> monedas
+            </div>
+            <div class="cart-icon" id="cartIcon">
+                🛒
+                <span class="cart-count" id="cartCount">0</span>
+            </div>
+        </div>
+
+        <div class="products-grid" id="productsGrid">
+            <!-- Los productos se cargarán aquí con JavaScript -->
+        </div>
+    </div>
+</div>
+
+<!-- Modal del carrito -->
+<div class="cart-modal" id="cartModal">
+    <div class="cart-content">
+        <div class="cart-header">
+            <h2>🛒 Tu Carrito</h2>
+            <button class="nes-btn is-error" id="closeCart">X</button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <!-- Los items del carrito se cargarán aquí -->
+        </div>
+        <div class="cart-total">
+            <span>Total:</span>
+            <span id="cartTotal">0</span> monedas
+        </div>
+        <div class="cart-actions">
+            <button class="nes-btn is-warning" id="clearCart">
+                <span class="button-icon">🗑️</span>
+                Vaciar Carrito
+            </button>
+            <button class="nes-btn is-success" id="checkoutBtn">
+                <span class="button-icon">💳</span>
+                Comprar
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Datos de productos
+    const products = [
+        {
+            id: 1,
+            name: "Super Champiñón",
+            description: "Aumenta tu tamaño y te hace invencible por un tiempo limitado",
+            price: 100,
+            icon: "🍄"
+        },
+        {
+            id: 2,
+            name: "Flor de Fuego",
+            description: "Permite lanzar bolas de fuego a tus enemigos",
+            price: 150,
+            icon: "🔥"
+        },
+        {
+            id: 3,
+            name: "Estrella Fugaz",
+            description: "Te hace invencible y te permite correr más rápido",
+            price: 200,
+            icon: "⭐"
+        },
+        {
+            id: 4,
+            name: "Pluma de Yoshi",
+            description: "Te permite planear y realizar saltos más largos",
+            price: 120,
+            icon: "🪶"
+        },
+        {
+            id: 5,
+            name: "Caparazón Verde",
+            description: "Puedes lanzarlo para eliminar enemigos en tu camino",
+            price: 80,
+            icon: "🐢"
+        },
+        {
+            id: 6,
+            name: "Caparazón Rojo",
+            description: "Sigue a tus enemigos hasta alcanzarlos",
+            price: 100,
+            icon: "🔴"
+        },
+        {
+            id: 7,
+            name: "Boomerang",
+            description: "Arma que regresa a ti después de lanzarla",
+            price: 130,
+            icon: "🌀"
+        },
+        {
+            id: 8,
+            name: "Botas de Salto",
+            description: "Aumentan la altura de tus saltos",
+            price: 90,
+            icon: "👢"
+        }
+    ];
+
+    // Estado de la aplicación
+    let cart = [];
+    let coins = 1000;
+
+    // Elementos del DOM
+    const productsGrid = document.getElementById('productsGrid');
+    const cartIcon = document.getElementById('cartIcon');
+    const cartCount = document.getElementById('cartCount');
+    const cartModal = document.getElementById('cartModal');
+    const closeCart = document.getElementById('closeCart');
+    const cartItems = document.getElementById('cartItems');
+    const cartTotal = document.getElementById('cartTotal');
+    const clearCartBtn = document.getElementById('clearCart');
+    const checkoutBtn = document.getElementById('checkoutBtn');
+    const coinsDisplay = document.getElementById('coins');
+
+    // Inicializar la tienda
+    function initShop() {
+        renderProducts();
+        updateCartUI();
+
+        // Event listeners
+        cartIcon.addEventListener('click', openCart);
+        closeCart.addEventListener('click', closeCartModal);
+        clearCartBtn.addEventListener('click', clearCart);
+        checkoutBtn.addEventListener('click', checkout);
+
+        // Cerrar modal al hacer clic fuera
+        cartModal.addEventListener('click', (e) => {
+            if (e.target === cartModal) {
+                closeCartModal();
+            }
+        });
+    }
+
+    // Renderizar productos
+    function renderProducts() {
+        productsGrid.innerHTML = '';
+
+        products.forEach(product => {
+            const productCard = document.createElement('div');
+            productCard.className = 'product-card';
+
+            productCard.innerHTML = `
+                <div class="product-image">
+                    ${product.icon}
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name">${product.name}</h3>
+                    <p class="product-description">${product.description}</p>
+                    <div class="product-price">
+                        <span class="price">${product.price} 🪙</span>
+                        <button class="nes-btn is-primary add-to-cart" data-id="${product.id}">
+                            Añadir al Carrito
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            productsGrid.appendChild(productCard);
+        });
+
+        // Añadir event listeners a los botones
+        document.querySelectorAll('.add-to-cart').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const productId = parseInt(e.target.getAttribute('data-id'));
+                addToCart(productId);
+            });
+        });
+    }
+
+    // Añadir producto al carrito
+    function addToCart(productId) {
+        const product = products.find(p => p.id === productId);
+
+        if (!product) return;
+
+        // Verificar si el producto ya está en el carrito
+        const existingItem = cart.find(item => item.id === productId);
+
+        if (existingItem) {
+            existingItem.quantity += 1;
+        } else {
+            cart.push({
+                ...product,
+                quantity: 1
+            });
+        }
+
+        updateCartUI();
+        showMessage(`¡${product.name} añadido al carrito!`, 'success');
+    }
+
+    // Eliminar producto del carrito
+    function removeFromCart(productId) {
+        cart = cart.filter(item => item.id !== productId);
+        updateCartUI();
+    }
+
+    // Actualizar cantidad de un producto en el carrito
+    function updateQuantity(productId, newQuantity) {
+        if (newQuantity <= 0) {
+            removeFromCart(productId);
+            return;
+        }
+
+        const item = cart.find(item => item.id === productId);
+        if (item) {
+            item.quantity = newQuantity;
+        }
+
+        updateCartUI();
+    }
+
+    // Actualizar la interfaz del carrito
+    function updateCartUI() {
+        // Actualizar contador del carrito
+        const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+        cartCount.textContent = totalItems;
+
+        // Actualizar monedas
+        coinsDisplay.textContent = coins;
+
+        // Actualizar items del carrito
+        renderCartItems();
+
+        // Actualizar total
+        const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        cartTotal.textContent = total;
+
+        // Habilitar/deshabilitar botón de compra
+        checkoutBtn.disabled = total === 0 || total > coins;
+    }
+
+    // Renderizar items del carrito
+    function renderCartItems() {
+        cartItems.innerHTML = '';
+
+        if (cart.length === 0) {
+            cartItems.innerHTML = '<p style="text-align: center; font-size: 0.8em;">Tu carrito está vacío</p>';
+            return;
+        }
+
+        cart.forEach(item => {
+            const cartItem = document.createElement('div');
+            cartItem.className = 'cart-item';
+
+            cartItem.innerHTML = `
+                <div class="item-info">
+                    <span class="item-icon">${item.icon}</span>
+                    <div class="item-details">
+                        <span class="item-name">${item.name}</span>
+                        <span class="item-price">${item.price} 🪙 c/u</span>
+                    </div>
+                </div>
+                <div class="item-quantity">
+                    <button class="nes-btn is-error quantity-btn minus" data-id="${item.id}">-</button>
+                    <span class="quantity">${item.quantity}</span>
+                    <button class="nes-btn is-primary quantity-btn plus" data-id="${item.id}">+</button>
+                    <button class="remove-item" data-id="${item.id}">Eliminar</button>
+                </div>
+            `;
+
+            cartItems.appendChild(cartItem);
+        });
+
+        // Añadir event listeners a los botones de cantidad
+        document.querySelectorAll('.quantity-btn.minus').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const productId = parseInt(e.target.getAttribute('data-id'));
+                const item = cart.find(item => item.id === productId);
+                if (item) {
+                    updateQuantity(productId, item.quantity - 1);
+                }
+            });
+        });
+
+        document.querySelectorAll('.quantity-btn.plus').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const productId = parseInt(e.target.getAttribute('data-id'));
+                const item = cart.find(item => item.id === productId);
+                if (item) {
+                    updateQuantity(productId, item.quantity + 1);
+                }
+            });
+        });
+
+        document.querySelectorAll('.remove-item').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const productId = parseInt(e.target.getAttribute('data-id'));
+                removeFromCart(productId);
+            });
+        });
+    }
+
+    // Abrir modal del carrito
+    function openCart() {
+        cartModal.classList.add('active');
+    }
+
+    // Cerrar modal del carrito
+    function closeCartModal() {
+        cartModal.classList.remove('active');
+    }
+
+    // Vaciar carrito
+    function clearCart() {
+        cart = [];
+        updateCartUI();
+        showMessage('Carrito vaciado', 'normal');
+    }
+
+    // Realizar compra
+    function checkout() {
+        const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+        if (total > coins) {
+            showMessage('No tienes suficientes monedas para realizar esta compra', 'error');
+            return;
+        }
+
+        // Simular proceso de compra
+        checkoutBtn.disabled = true;
+        checkoutBtn.innerHTML = '<span class="button-icon">⏳</span> Procesando...';
+
+        setTimeout(() => {
+            // Restar monedas
+            coins -= total;
+
+            // Mostrar mensaje de éxito
+            showMessage(`¡Compra realizada por ${total} monedas! ¡Disfruta tus objetos!`, 'success');
+
+            // Vaciar carrito
+            cart = [];
+            updateCartUI();
+
+            // Restaurar botón
+            checkoutBtn.disabled = false;
+            checkoutBtn.innerHTML = '<span class="button-icon">💳</span> Comprar';
+
+            // Cerrar modal
+            closeCartModal();
+        }, 1500);
+    }
+
+    // Mostrar mensajes (similar a la función del formulario de registro)
+    function showMessage(message, type) {
+        // Crear elemento de mensaje temporal
+        const messageElement = document.createElement('div');
+        messageElement.className = 'speech-bubble';
+        messageElement.textContent = message;
+
+        if (type === 'success') {
+            messageElement.classList.add('success');
+        } else if (type === 'error') {
+            messageElement.classList.add('error');
+        }
+
+        // Posicionar y mostrar
+        messageElement.style.position = 'fixed';
+        messageElement.style.top = '20px';
+        messageElement.style.right = '20px';
+        messageElement.style.zIndex = '1000';
+        messageElement.style.maxWidth = '300px';
+
+        document.body.appendChild(messageElement);
+
+        // Eliminar después de un tiempo
+        setTimeout(() => {
+            messageElement.remove();
+        }, 3000);
+    }
+
+    // Inicializar la tienda cuando se carga la página
+    document.addEventListener('DOMContentLoaded', initShop);
+</script>
+</body>
+</html>
