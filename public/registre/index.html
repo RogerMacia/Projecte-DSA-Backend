@@ -1,110 +1,536 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-    <title>
-        Registro WebApp
-    </title>
-    <script src="./registre/jquery-3.7.1.min.js"></script>
-    <script src="./registre/index.js"></script>
-    <link rel="stylesheet" type="text/css" href="./registre/index.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EETAC BROS - Registro</title>
+
+    <!-- NES.css for retro gaming style -->
+    <link href="https://unpkg.com/nes.css@2.3.0/css/nes.min.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
-    <link href="https://unpkg.com/nes.css/css/nes.css" rel="stylesheet" />
 
     <style>
-        html,
-        body,
-        pre,
-        code,
-        kbd,
-        samp {
-            font-family: "./kongtext.ttf";
-            background-color: #f2f3f4;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        .item {
-            background-color: #f2f3f4;
+        body {
+            font-family: 'Press Start 2P', cursive;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .pixel-bg {
+            background-image:
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,.03) 2px, rgba(255,255,255,.03) 4px),
+                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255,255,255,.03) 2px, rgba(255,255,255,.03) 4px);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .header h1 {
+            color: #fff;
+            text-shadow: 4px 4px 0px #000;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #ffd700;
+            font-size: 0.8em;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: start;
+        }
+
+        .signup-box {
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            animation: fadeInUp 0.8s ease;
+            flex: 1;
+            min-width: 320px;
+            max-width: 500px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.8em;
+        }
+
+        .nes-input {
+            width: 100%;
+            font-size: 0.9em;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .button-group button {
+            flex: 1;
+            font-size: 0.8em;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.1s ease;
+        }
+
+        .button-group button:hover {
+            transform: scale(1.05);
+        }
+
+        .button-group button:active {
+            transform: scale(0.95);
+        }
+
+        .button-group button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .button-group button:active::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .nes-btn.is-warning {
+            background: #f7d51d;
+            color: #000;
+            border-color: #000;
+            box-shadow: 0 4px 0 #d4af37;
+        }
+
+        .nes-btn.is-warning:hover {
+            background: #ffed4e;
+            box-shadow: 0 6px 0 #d4af37;
+        }
+
+        .nes-btn.is-warning:active {
+            box-shadow: 0 2px 0 #d4af37;
+            transform: translateY(2px) scale(0.95);
+        }
+
+        .nes-btn.is-success {
+            background: #92cc41;
+            color: #fff;
+            border-color: #000;
+            box-shadow: 0 4px 0 #5fa319;
+            text-shadow: 1px 1px 0 #000;
+        }
+
+        .nes-btn.is-success:hover {
+            background: #a8e055;
+            box-shadow: 0 6px 0 #5fa319;
+        }
+
+        .nes-btn.is-success:active {
+            box-shadow: 0 2px 0 #5fa319;
+            transform: translateY(2px) scale(0.95);
+        }
+
+        .nes-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .button-icon {
+            display: inline-block;
+            margin-right: 8px;
+            animation: wiggle 0.5s ease;
+        }
+
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-10deg); }
+            75% { transform: rotate(10deg); }
+        }
+
+        .button-group button:hover .button-icon {
+            animation: wiggle 0.5s ease infinite;
+        }
+
+        .mascot-box {
+            flex: 1;
+            min-width: 280px;
+            max-width: 400px;
+            animation: fadeInRight 0.8s ease;
+        }
+
+        .speech-bubble {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            position: relative;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+            font-size: 0.7em;
+            line-height: 1.6;
+        }
+
+        .speech-bubble.success {
+            background: #92cc41;
+            color: #fff;
+        }
+
+        .speech-bubble.error {
+            background: #e76e55;
+            color: #fff;
+        }
+
+        .mario-sprite {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 3em;
+            animation: bounce 2s infinite;
+        }
+
+        .password-strength {
+            margin-top: 8px;
+            font-size: 0.6em;
+        }
+
+        .strength-bar {
+            height: 8px;
+            background: #ddd;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .strength-fill {
+            height: 100%;
+            transition: width 0.3s ease, background 0.3s ease;
+            width: 0%;
+            background: #e76e55;
+        }
+
+        .nav-links {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.7em;
+        }
+
+        .nav-links a {
+            color: #209cee;
+            text-decoration: none;
+        }
+
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.5em;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
         }
     </style>
-    <!-- Latest compiled and minified CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Import CSS elements via link-->
-    <!-- minify -->
-    <link href="https://unpkg.com/nes.css@2.3.0/css/nes.min.css" rel="stylesheet" />
-    <!-- latest -->
-    <link href="https://unpkg.com/nes.css@latest/css/nes.min.css" rel="stylesheet" />
-    <!-- core style only -->
-    <link href="https://unpkg.com/nes.css/css/nes-core.min.css" rel="stylesheet" />
-
-	<script>
-        $(document).ready(onReadyDocument);
-    </script>
 </head>
+<body class="pixel-bg">
+<div class="header">
+    <h1>🎮 EETAC BROS 🎮</h1>
+    <p>¡Únete a la aventura!</p>
+</div>
 
-<body>
-    <div id="nescss" class="item">
-        <header class>
-            <div class="container navbar-header item">
-                <div class="nav-brand item">
-                    <h1>EETAC BROS</h1>
+<div class="container">
+    <div class="signup-box">
+        <div class="nes-container with-title is-centered">
+            <p class="title">Sign Up</p>
+
+            <form id="signupForm">
+                <div class="form-group">
+                    <label for="username">
+                        <i class="nes-icon user is-small"></i> Username:
+                    </label>
+                    <input
+                            type="text"
+                            id="username"
+                            class="nes-input"
+                            placeholder="Enter username"
+                            required
+                            minlength="3"
+                    >
+                    <span id="usernameError" class="nes-text is-error" style="font-size: 0.6em; display: none;"></span>
                 </div>
-                <ul class="nav navbar-nav">
-                    <li class="active"><a href="#">Sign up</a></li>
-                    <li><a href="#">Login</a></li>
-                </ul>
-            </div>
 
-        </header>
-
-
-
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-3">
-
-                </div>
-                <div class="col-sm-3">
-                    <section class="showcase">
-
-                        <div class="nes-container with-title" id="app" style="display: none">
-                            <!-- El registro en si-->
-                            <h3 class="title">Sign up</h3>
-                            <div class="nes-field">
-                                <label for="name_field">Username:</label>
-                                <input type="text" class="nes-input" id="usernameTbx">
-                            </div>
-                            <div class="nes-field">
-                                <label for="name_field">Password:</label>
-                                <input type="password" class="nes-input" id="passwordTbx">
-                            </div>
-                            <hr />
-                            <div class="container-fluid">
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <button class="nes-btn is-warning" id="clearBtn">
-                                            Clear
-                                        </button>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <button class="nes-btn" id="signupBtn">
-                                            Sign up
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
+                <div class="form-group">
+                    <label for="password">
+                        <i class="nes-icon trophy is-small"></i> Password:
+                    </label>
+                    <input
+                            type="password"
+                            id="password"
+                            class="nes-input"
+                            placeholder="Enter password"
+                            required
+                            minlength="6"
+                    >
+                    <div class="password-strength">
+                        <div class="strength-bar">
+                            <div class="strength-fill" id="strengthFill"></div>
                         </div>
-                    </section>
-                </div>
-                <div class="col-sm-3 fbox">
-                    <div id="cursor" class="item" >
-                        <p class="nes-balloon from-left nes-pointer" style="display: none" id="res">
-                            Loading...
-                        </p>
+                        <span id="strengthText"></span>
                     </div>
                 </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">
+                        <i class="nes-icon star is-small"></i> Confirm Password:
+                    </label>
+                    <input
+                            type="password"
+                            id="confirmPassword"
+                            class="nes-input"
+                            placeholder="Confirm password"
+                            required
+                    >
+                    <span id="confirmError" class="nes-text is-error" style="font-size: 0.6em; display: none;"></span>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="nes-btn is-warning" id="clearBtn">
+                        <span class="button-icon">🗑️</span>
+                        Clear
+                    </button>
+                    <button type="submit" class="nes-btn is-success" id="signupBtn">
+                        <span class="button-icon">🚀</span>
+                        Sign Up
+                    </button>
+                </div>
+            </form>
+
+            <div class="nav-links">
+                ¿Ya tienes cuenta? <a href="#">Login aquí</a>
             </div>
         </div>
     </div>
-</body>
 
+    <div class="mascot-box">
+        <div class="speech-bubble" id="messageBubble">
+            ¡Bienvenido a EETAC BROS! 🎮
+            <br><br>
+            Completa el formulario para crear tu cuenta y comenzar tu aventura.
+        </div>
+        <div class="mario-sprite">🍄</div>
+    </div>
+</div>
+
+<script>
+    const form = document.getElementById('signupForm');
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
+    const clearBtn = document.getElementById('clearBtn');
+    const messageBubble = document.getElementById('messageBubble');
+    const strengthFill = document.getElementById('strengthFill');
+    const strengthText = document.getElementById('strengthText');
+    const usernameError = document.getElementById('usernameError');
+    const confirmError = document.getElementById('confirmError');
+
+    // Password strength checker
+    passwordInput.addEventListener('input', (e) => {
+        const password = e.target.value;
+        let strength = 0;
+
+        if (password.length >= 6) strength += 25;
+        if (password.length >= 10) strength += 25;
+        if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength += 25;
+        if (/[0-9]/.test(password)) strength += 15;
+        if (/[^a-zA-Z0-9]/.test(password)) strength += 10;
+
+        strengthFill.style.width = strength + '%';
+
+        if (strength < 40) {
+            strengthFill.style.background = '#e76e55';
+            strengthText.textContent = 'Débil';
+            strengthText.style.color = '#e76e55';
+        } else if (strength < 70) {
+            strengthFill.style.background = '#f7d51d';
+            strengthText.textContent = 'Media';
+            strengthText.style.color = '#f7d51d';
+        } else {
+            strengthFill.style.background = '#92cc41';
+            strengthText.textContent = '¡Fuerte!';
+            strengthText.style.color = '#92cc41';
+        }
+    });
+
+    // Username validation
+    usernameInput.addEventListener('blur', () => {
+        if (usernameInput.value.length < 3 && usernameInput.value.length > 0) {
+            usernameError.textContent = 'El username debe tener al menos 3 caracteres';
+            usernameError.style.display = 'block';
+        } else {
+            usernameError.style.display = 'none';
+        }
+    });
+
+    // Confirm password validation
+    confirmPasswordInput.addEventListener('input', () => {
+        if (confirmPasswordInput.value !== passwordInput.value) {
+            confirmError.textContent = 'Las contraseñas no coinciden';
+            confirmError.style.display = 'block';
+        } else {
+            confirmError.style.display = 'none';
+        }
+    });
+
+    // Clear button
+    clearBtn.addEventListener('click', () => {
+        // Add shake animation to form
+        const signupBox = document.querySelector('.signup-box');
+        signupBox.style.animation = 'none';
+        setTimeout(() => {
+            signupBox.style.animation = '';
+        }, 10);
+
+        form.reset();
+        strengthFill.style.width = '0%';
+        strengthText.textContent = '';
+        usernameError.style.display = 'none';
+        confirmError.style.display = 'none';
+        showMessage('🧹 ¡Formulario limpiado! Comienza de nuevo tu aventura.', 'normal');
+
+        // Flash effect on clear button
+        clearBtn.style.background = '#fff';
+        setTimeout(() => {
+            clearBtn.style.background = '';
+        }, 200);
+    });
+
+    // Form submission
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value;
+        const confirmPassword = confirmPasswordInput.value;
+        const signupBtn = document.getElementById('signupBtn');
+
+        // Validation
+        if (username.length < 3) {
+            showMessage('❌ El username debe tener al menos 3 caracteres', 'error');
+            return;
+        }
+
+        if (password.length < 6) {
+            showMessage('❌ La contraseña debe tener al menos 6 caracteres', 'error');
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            showMessage('❌ Las contraseñas no coinciden', 'error');
+            return;
+        }
+
+        // Disable button and show loading state
+        signupBtn.disabled = true;
+        const originalContent = signupBtn.innerHTML;
+        signupBtn.innerHTML = '<span class="button-icon">⏳</span> Loading...';
+
+        // Simulate API call
+        setTimeout(() => {
+            // Success
+            signupBtn.innerHTML = '<span class="button-icon">✅</span> ¡Success!';
+            showMessage(`🎉 ¡Registro exitoso! Bienvenido ${username} a EETAC BROS 🎮`, 'success');
+
+            setTimeout(() => {
+                form.reset();
+                strengthFill.style.width = '0%';
+                strengthText.textContent = '';
+                signupBtn.disabled = false;
+                signupBtn.innerHTML = originalContent;
+                showMessage('¿Listo para otra aventura? Crea una nueva cuenta o haz login.', 'normal');
+            }, 3000);
+        }, 1500);
+    });
+
+    function showMessage(message, type) {
+        messageBubble.textContent = message;
+        messageBubble.className = 'speech-bubble';
+
+        if (type === 'success') {
+            messageBubble.classList.add('success');
+        } else if (type === 'error') {
+            messageBubble.classList.add('error');
+        }
+    }
+</script>
+</body>
 </html>
