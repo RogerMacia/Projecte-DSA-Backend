@@ -15,9 +15,8 @@ import java.net.URI;
  */
 public class Main {
     // Base URI the Grizzly HTTP server will listen on
-    public static final String BASE_URI = "http://localhost:8080/dsaApp/";
-
-    // http://localhost:8080/swagger/
+    public static final String SWAGGER_URL = "http://localhost:8080/swagger/";
+    public static final String BASE_URI = "http://localhost:8080/example/";
 
     /**
      * Starts Grizzly HTTP server exposing JAX-RS resources defined in this application.
@@ -25,20 +24,20 @@ public class Main {
      */
     public static HttpServer startServer() {
         // create a resource config that scans for JAX-RS resources and providers
-        // in edu.upc.dsa package
-        final ResourceConfig rc = new ResourceConfig().packages("edu.upc.dsa.services");
+        // in edu.upc.backend package
+        final ResourceConfig rc = new ResourceConfig().packages("edu.upc.backend.services");
 
         rc.register(io.swagger.jaxrs.listing.ApiListingResource.class);
         rc.register(io.swagger.jaxrs.listing.SwaggerSerializers.class);
 
         BeanConfig beanConfig = new BeanConfig();
-        rc.register(edu.upc.backend.MyExceptionMapper.class);
+
         beanConfig.setHost("localhost:8080");
-        beanConfig.setBasePath("/dsaApp");
+        beanConfig.setBasePath("/example");
         beanConfig.setContact("support@example.com");
-        beanConfig.setDescription("REST API for Tracks Manager");
+        beanConfig.setDescription("REST API example");
         beanConfig.setLicenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html");
-        beanConfig.setResourcePackage("edu.upc.dsa.services");
+        beanConfig.setResourcePackage("edu.upc.backend.services");
         beanConfig.setTermsOfServiceUrl("http://www.example.com/resources/eula");
         beanConfig.setTitle("REST API");
         beanConfig.setVersion("1.0.0");
@@ -64,6 +63,7 @@ public class Main {
 
         System.out.println(String.format("Jersey app started with WADL available at "
                 + "%sapplication.wadl\nHit enter to stop it...", BASE_URI));
+        System.out.printf("Swagger website: %s", SWAGGER_URL);
 
         System.in.read();
         server.stop();
