@@ -16,23 +16,175 @@
             box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Press Start 2P', cursive;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
         }
 
-        .pixel-bg {
+        body {
+            font-family: 'Press Start 2P', cursive;
+            background: #5c94fc;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 60%;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #7bc850;
+            z-index: -2;
+        }
+
+        .pixel-bg::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             background-image:
                 repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,.03) 2px, rgba(255,255,255,.03) 4px),
                 repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255,255,255,.03) 2px, rgba(255,255,255,.03) 4px);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Pixel clouds */
+        .cloud-1 {
+            content: '';
+            position: fixed;
+            top: 80px;
+            left: 10%;
+            width: 120px;
+            height: 60px;
+            background:
+                radial-gradient(circle, #fff 30%, transparent 30%) 0 0,
+                radial-gradient(circle, #fff 30%, transparent 30%) 20px 0,
+                radial-gradient(circle, #fff 30%, transparent 30%) 40px 0,
+                radial-gradient(circle, #fff 30%, transparent 30%) 60px 0,
+                radial-gradient(circle, #fff 30%, transparent 30%) 10px 20px,
+                radial-gradient(circle, #fff 30%, transparent 30%) 30px 20px,
+                radial-gradient(circle, #fff 30%, transparent 30%) 50px 20px;
+            background-size: 20px 20px;
+            background-repeat: no-repeat;
+            filter: drop-shadow(2px 2px 0 #000);
+            animation: floatCloud1 20s infinite ease-in-out;
+            z-index: 1;
+        }
+
+        .cloud-2 {
+            content: '';
+            position: fixed;
+            top: 150px;
+            right: 15%;
+            width: 100px;
+            height: 50px;
+            background:
+                radial-gradient(circle, #fff 30%, transparent 30%) 0 0,
+                radial-gradient(circle, #fff 30%, transparent 30%) 20px 0,
+                radial-gradient(circle, #fff 30%, transparent 30%) 40px 0,
+                radial-gradient(circle, #fff 30%, transparent 30%) 10px 20px,
+                radial-gradient(circle, #fff 30%, transparent 30%) 30px 20px;
+            background-size: 20px 20px;
+            background-repeat: no-repeat;
+            filter: drop-shadow(2px 2px 0 #000);
+            animation: floatCloud2 25s infinite ease-in-out;
+            z-index: 1;
+        }
+
+        /* Pixel bricks at bottom */
+        .pixel-bricks {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background:
+                repeating-linear-gradient(90deg,
+                    #d97426 0px, #d97426 40px,
+                    #000 40px, #000 42px,
+                    #d97426 42px, #d97426 82px,
+                    #000 82px, #000 84px
+                ),
+                repeating-linear-gradient(0deg,
+                    #d97426 0px, #d97426 20px,
+                    #000 20px, #000 22px,
+                    #d97426 22px, #d97426 42px,
+                    #000 42px, #000 44px
+                );
+            box-shadow: inset 0 4px 0 #f4a460, inset 0 -2px 0 #8b4513;
+            z-index: 1;
+        }
+
+        /* Question blocks */
+        .question-block {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            background: #f4a460;
+            border: 3px solid #000;
+            box-shadow: inset -3px -3px 0 #d97426, inset 3px 3px 0 #ffd4a3;
+            z-index: 1;
+            animation: bobBlock 2s infinite ease-in-out;
+        }
+
+        .question-block::after {
+            content: '?';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            color: #fff;
+            text-shadow: 2px 2px 0 #000;
+        }
+
+        .block-1 {
+            top: 30%;
+            right: 20%;
+            animation-delay: 0s;
+        }
+
+        .block-2 {
+            top: 45%;
+            left: 15%;
+            animation-delay: 0.5s;
+        }
+
+        @keyframes floatCloud1 {
+            0%, 100% { transform: translateX(0) translateY(0); }
+            50% { transform: translateX(30px) translateY(-10px); }
+        }
+
+        @keyframes floatCloud2 {
+            0%, 100% { transform: translateX(0) translateY(0); }
+            50% { transform: translateX(-40px) translateY(10px); }
+        }
+
+        @keyframes bobBlock {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
         }
 
         .header {
             text-align: center;
             margin-bottom: 40px;
             animation: fadeInDown 0.8s ease;
+            position: relative;
+            z-index: 10;
         }
 
         .header h1 {
@@ -303,6 +455,13 @@
     </style>
 </head>
 <body class="pixel-bg">
+<!-- Decorative elements -->
+<div class="cloud-1"></div>
+<div class="cloud-2"></div>
+<div class="pixel-bricks"></div>
+<div class="question-block block-1"></div>
+<div class="question-block block-2"></div>
+
 <div class="header">
     <h1>🎮 EETAC BROS 🎮</h1>
     <p>¡Únete a la aventura!</p>
