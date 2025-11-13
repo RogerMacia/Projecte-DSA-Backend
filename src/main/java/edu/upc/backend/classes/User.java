@@ -10,11 +10,8 @@ public class User {
     private int id;
     private String username;
     private String nom;
-    private String cognom1;
-    private String cognom2;
     private String email;
     private String password;
-    private String datanaixement;
 
     // 🔧 Constructor buit (necessari per frameworks o JSON)
     public User() {
@@ -22,33 +19,15 @@ public class User {
     }
 
     // 🔧 Constructor complet
-    public User(String username,String nom,String cognom1,String cognom2,String email,String password,String datanaixement) {
+    public User(String username,String nom,String email,String password) {
         this.id = nextId++;
         this.username = username;
         this.nom = nom;
-        this.cognom1 = cognom1;
-        this.cognom2 = cognom2;
         this.email = email;
         this.password = password;
-        this.datanaixement = datanaixement;
 
     }
 
-    public String getCognom2() {
-        return cognom2;
-    }
-
-    public void setCognom2(String cognom2) {
-        this.cognom2 = cognom2;
-    }
-
-    public String getCognom1() {
-        return cognom1;
-    }
-
-    public void setCognom1(String cognom1) {
-        this.cognom1 = cognom1;
-    }
 
     public String getNom() {
         return nom;
@@ -56,14 +35,6 @@ public class User {
 
     public void setNom(String nom) {
         this.nom = nom;
-    }
-
-    public String getDatanaixement() {
-        return datanaixement;
-    }
-
-    public void setDatanaixement(String datanaixement) {
-        this.datanaixement = datanaixement;
     }
 
     public String getPassword() {
@@ -95,9 +66,7 @@ public class User {
         return "Client{" +
                 "id=" + id +
                 ", nom='" + nom + '\'' +
-                ", cognom1='" + cognom1 + '\'' +
-                ", cognom2='" + cognom2 + '\'' +
-                ", datanaixement='" + datanaixement + '\'' +
+                ", password='" + password +'\'' +
                 '}';
     }
 }

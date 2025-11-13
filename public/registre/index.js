@@ -14,12 +14,16 @@ function onSignUpbtnClick() {
     if (!checkPassword()) return;
     let username = $("#usernameTbx").val();
     let password = $("#passwordTbx").val();
-    user = { username:username, password:password};
-    $.post(BASE_URL, user ,(data, status) => {
+    let name = $("#nameTbx").val();
+    let email = $("#emailTbx").val();
+    user = { username:username, nom:name, email:email, password:password};
+    buffer = JSON.stringify(user);
+    console.log(buffer);
+    $.postJSON(BASE_URL, user ,(data, status) => {
         console.log(`Satus: ${status} \n${data}`);
         //$("#res").slideDown("slow");
         $("#res").fadeIn("slow");
-        $("#res").text(data);
+        $("#res").text(status);
     });
 }
 
@@ -71,3 +75,18 @@ function checkPassword() {
 
     return true;
 }
+
+
+$.postJSON = function(url, data, callback) {
+    return jQuery.ajax({
+    headers: { 
+        'Accept': 'application/json',
+        'Content-Type': 'application/json' 
+    },
+    'type': 'POST',
+    'url': url,
+    'data': JSON.stringify(data),
+    'dataType': 'json',
+    'success': callback
+    });
+};

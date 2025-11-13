@@ -58,7 +58,17 @@ class Item{
 - durability : int
 }
 
-Game --> Player : 1..n
+class Usuari{
+- nom : string
+- username : string
+- id : string
+- password : string
+- email : string
+}
+
+
+Player --> Usuari
+Game --> Player : 1..1
 Level --* Enemy
 Game --* Item : 1..n
 Game --> Level

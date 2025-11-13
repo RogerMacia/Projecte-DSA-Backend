@@ -6,6 +6,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.apache.log4j.Logger;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.GenericEntity;
@@ -18,6 +19,7 @@ import java.util.List;
 @Path("/eetacbros")
 public class EETACBROSMannagerSystemService {
 
+    private static final Logger log = Logger.getLogger(EETACBROSMannagerSystemService.class);
     private EETACBROSMannagerSystemImpl sistema;
 
     public EETACBROSMannagerSystemService() {
@@ -28,7 +30,7 @@ public class EETACBROSMannagerSystemService {
 
         if (userslist.size() == 0) {
 
-            User user1 = new User("agemte007","Manel","Colominas", "Ruiz", "11/02/2003","Barcelona","Castelldefels");
+            User user1 = new User("agemte007","Manel Colominas Ruiz","Barcelona","Castelldefels");
             userslist.addUser(user1);
 
         }
@@ -66,6 +68,7 @@ public class EETACBROSMannagerSystemService {
     public Response addUser(User user) {
         UsersList usersList = this.sistema.getUsersList();
         User userExists = usersList.getUserByUsername(user.getUsername());
+        log.info(user.getUsername());
 
         if (userExists != null) {
             return Response.status(Response.Status.CONFLICT)
