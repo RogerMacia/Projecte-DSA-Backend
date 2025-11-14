@@ -67,7 +67,7 @@ class Usuari{
 }
 
 
-Player --> Usuari
+Player --> Usuari : n..1
 Game --> Player : 1..1
 Level --* Enemy
 Game --* Item : 1..n
