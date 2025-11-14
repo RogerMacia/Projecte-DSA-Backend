@@ -15,7 +15,7 @@ public class EETACBROSMannagerSystemImpl implements EETACBROSMannagerSystem {
 
     private EETACBROSMannagerSystemImpl() {
         this.usersList = new UsersList();
-        logger.info("Constructor SistemaGestioBibliotecaImpl inicialitzat");
+        logger.info("Constructor EETACbROSManagerSystemImpl inicialitzat");
     }
 
     public static EETACBROSMannagerSystemImpl getInstance() {
