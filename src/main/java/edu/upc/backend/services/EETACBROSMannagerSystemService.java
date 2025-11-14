@@ -87,7 +87,7 @@ public class EETACBROSMannagerSystemService {
     }
     // LOGIN
     @POST
-    @Path("user/login")
+    @Path("user/loginCredentials")
     @ApiOperation(value = "Login d'usuari", notes = "Comprova username i password")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Login correcte", response = User.class),
@@ -127,7 +127,7 @@ public class EETACBROSMannagerSystemService {
     }
     // LOG IN
     @POST
-    @Path("user/login")
+    @Path("user/loginUser")
     @ApiOperation(value = "User log in", notes = "User log in")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Successful", response = User.class),
