@@ -5,6 +5,8 @@ const BASE_URL = "http://localhost:8080/example/eetacbros/user/register"
 function onClearBtnClick() {
     console.log("ClearBtn clicked!");
     $("#usernameTbx").val('');
+    $("#nameTbx").val('');
+    $("#emailTbx").val('');
     $("#passwordTbx").val('');
     $("#repeatTbx").val('');
 }
