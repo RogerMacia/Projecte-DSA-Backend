@@ -1,0 +1,15 @@
+#app {
+min-width: 400px;
+}
+
+.fbox {
+display: flex;
+flex-wrap: wrap;
+align-items: flex-end;
+#loginClearBtn {
+    margin-right: 10px;  /* separació cap al botó Login */
+#loginBtn {
+    transform: scale(0.85);   /* 85% de la mida original */
+    margin-top: 5px;
+
+}
