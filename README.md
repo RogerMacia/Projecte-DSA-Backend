@@ -2,11 +2,11 @@
 
 ## To-Do
 
-[x] Web Registre. (3.5 hores per Wenjie)
+[x] Web Registre.
 
 [] Web Login.
 
-[] Android App Registre.
+[x] Android App Registre.
 
 [] Android App Login.
 
