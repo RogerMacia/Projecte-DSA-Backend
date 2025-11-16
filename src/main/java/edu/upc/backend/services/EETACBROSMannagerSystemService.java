@@ -43,10 +43,27 @@ public class EETACBROSMannagerSystemService {
             Player player1 = new Player(playerId, 100, 100, 100, 100, 100);
             playerlist.addPlayer(player1);
 
-            Item item1 = new Item(1,"Calculator",200,200,"📱","Help you with your maths");
-            Item item2 = new Item(2,"Labtop",200,200,"💻","Help you with your projects");
+            Item item1 = new Item(1, "Calculator", 200, 200, "📱", "Solve tricky math problems with ease.");
+            Item item2 = new Item(2, "Laptop", 200, 200, "💻", "Complete reports and projects efficiently.");
+            Item item3 = new Item(3, "Notebook", 150, 150, "📓", "Keep track of class notes and ideas.");
+            Item item4 = new Item(4, "Pen", 100, 100, "🖊️", "Write down important formulas and reminders.");
+            Item item5 = new Item(5, "Old Mobile", 180, 180, "☎️", "Check messages and stay connected the old-school way.");
+            Item item6 = new Item(6, "Energy Drink", 120, 120, "🥤", "Boost your focus and stay awake during long study sessions.");
+            Item item7 = new Item(7, "Headphones", 160, 160, "🎧", "Concentrate on work and block out distractions.");
+            Item item8 = new Item(8, "Backpack", 200, 200, "🎒", "Carry all your items and tools wherever you go.");
+            Item item9 = new Item(9, "USB Drive", 100, 100, "💾", "Store and transport your important files easily.");
+            Item item10 = new Item(10, "Coffee", 100, 100, "☕", "Recharge your energy and stay productive.");
+
             itemlist.add(item1);
             itemlist.add(item2);
+            itemlist.add(item3);
+            itemlist.add(item4);
+            itemlist.add(item5);
+            itemlist.add(item6);
+            itemlist.add(item7);
+            itemlist.add(item8);
+            itemlist.add(item9);
+            itemlist.add(item10);
         }
 
     }

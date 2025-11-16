@@ -100,7 +100,7 @@ function renderCart() {
     cartItemsContainer.empty();
 
     if (cart.length === 0) {
-        cartItemsContainer.html('<div class="empty-cart-message">Tu carrito está vacío</div>');
+        cartItemsContainer.html('<div class="empty-cart-message">Your cart is empty.</div>');
         cartCount.text('0');
         cartTotal.text('0');
         return;

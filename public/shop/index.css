@@ -46,47 +46,51 @@ body::before {
 }
 
 /* Pixel clouds */
-.cloud-1 {
-    content: '';
-    position: fixed;
-    top: 80px;
-    left: 10%;
-    width: 120px;
-    height: 60px;
-    background:
-        radial-gradient(circle, #fff 30%, transparent 30%) 0 0,
-        radial-gradient(circle, #fff 30%, transparent 30%) 20px 0,
-        radial-gradient(circle, #fff 30%, transparent 30%) 40px 0,
-        radial-gradient(circle, #fff 30%, transparent 30%) 60px 0,
-        radial-gradient(circle, #fff 30%, transparent 30%) 10px 20px,
-        radial-gradient(circle, #fff 30%, transparent 30%) 30px 20px,
-        radial-gradient(circle, #fff 30%, transparent 30%) 50px 20px;
-    background-size: 20px 20px;
-    background-repeat: no-repeat;
-    filter: drop-shadow(2px 2px 0 #000);
-    animation: floatCloud1 20s infinite ease-in-out;
-    z-index: 1;
-}
 
-.cloud-2 {
-    content: '';
-    position: fixed;
-    top: 150px;
-    right: 15%;
-    width: 100px;
-    height: 50px;
-    background:
-        radial-gradient(circle, #fff 30%, transparent 30%) 0 0,
-        radial-gradient(circle, #fff 30%, transparent 30%) 20px 0,
-        radial-gradient(circle, #fff 30%, transparent 30%) 40px 0,
-        radial-gradient(circle, #fff 30%, transparent 30%) 10px 20px,
-        radial-gradient(circle, #fff 30%, transparent 30%) 30px 20px;
-    background-size: 20px 20px;
-    background-repeat: no-repeat;
-    filter: drop-shadow(2px 2px 0 #000);
-    animation: floatCloud2 25s infinite ease-in-out;
-    z-index: 1;
-}
+.cloud-1, .cloud-2 {
+            position: fixed;
+            width: 100px;
+            height: 40px;
+            background: white;
+            border-radius: 100px;
+            opacity: 0.8;
+            z-index: 1;
+            animation: bobBlock 2s infinite ease-in-out;
+        }
+
+        .cloud-1 {
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .cloud-2 {
+            top: 25%;
+            right: 10%;
+            animation-delay: 0.5s;
+        }
+
+        .cloud-1::before, .cloud-2::before,
+        .cloud-1::after, .cloud-2::after {
+            content: '';
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .cloud-1::before, .cloud-2::before {
+            width: 50px;
+            height: 50px;
+            top: -25px;
+            left: 15px;
+        }
+
+        .cloud-1::after, .cloud-2::after {
+            width: 40px;
+            height: 40px;
+            top: -20px;
+            right: 15px;
+        }
 
 /* Pixel bricks at bottom */
 .pixel-bricks {
