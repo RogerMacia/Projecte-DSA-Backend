@@ -10,8 +10,6 @@ const BASE_URL = "http://localhost:8080/example/eetacbros/user/login";
 
      let username = $("#loginUsernameTbx").val();
      let password = $("#loginPasswordTbx").val();
-     let name = null;
-     let email = null;
 
      if (!username || !password) {
          showBubble("Cal omplir usuari i contrasenya!");
@@ -23,15 +21,21 @@ const BASE_URL = "http://localhost:8080/example/eetacbros/user/login";
      $.postJSON(BASE_URL, credentials, (data, status) => {
          console.log(`Status: ${status}`);
 
-         // 👉 Aquí surt EXACTAMENT igual que al registre “success”
-         showBubble(status);
+         if (status === "success") {
+
+             localStorage.setItem("userId", data.id);
+
+             localStorage.setItem("username", data.username);
+
+             window.location.href = "./shop";
+         }
 
      }).fail((jqXHR) => {
 
          if (jqXHR.status === 400) {
              showBubble("Contrasenya incorrecta!");
          } else if (jqXHR.status === 404) {
-            showBubble("No s'ha trobat l'usuari!");
+             showBubble("No s'ha trobat l'usuari!");
          } else {
              showBubble("Error del servidor o de connexió!");
          }

@@ -4,7 +4,7 @@ const BASE_URL = "http://localhost:8080/example/eetacbros/shop/items";
 // ================= State Variables =================
 let cart = [];
 let coins = 1000;
-currentPlayerId = 0;
+currentPlayerId = localStorage.getItem("userId");
 
 // ================= API Functions =================
 function getJsonItems(url) {
