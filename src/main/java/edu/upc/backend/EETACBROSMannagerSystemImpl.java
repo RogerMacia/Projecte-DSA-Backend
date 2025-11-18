@@ -45,6 +45,16 @@ public class EETACBROSMannagerSystemImpl implements EETACBROSMannagerSystem {
         }
     }
 
+    public void addPlayer(Player player) {
+        logger.info("Inici addPlayer(" + player + ")");
+        if (player != null) {
+            this.playerList.add(player);
+            logger.info("Fi addLector() -> Lector afegit: " + player);
+        } else {
+            logger.warn("Intent d’afegir lector nul");
+        }
+    }
+
     public UsersList getUsersList() {
         logger.info("Inici getLlistaLectors()");
         logger.info("Fi getLlistaLectors() -> Retorna: " + usersList);

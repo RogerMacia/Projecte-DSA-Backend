@@ -34,5 +34,9 @@ public class PlayerList {
     public int size() {
         return this.playerList.size();
     }
+
+    public void add(Player player) {
+        this.playerList.add(player);
+    }
 }
 

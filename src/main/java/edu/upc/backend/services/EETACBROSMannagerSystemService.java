@@ -153,6 +153,10 @@ public class EETACBROSMannagerSystemService {
         try {
             sistema.logIn(username, password);
             user = sistema.getUserByUsername(username);
+            this.sistema.addUser(user);
+            int playerId = user.getId();
+            Player player = new Player(playerId,0, 100, 100, 100, 100);
+            sistema.addPlayer(player);
         }
         catch (UserNotFoundException e) {
             return Response.status(404)
