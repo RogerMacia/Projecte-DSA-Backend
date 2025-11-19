@@ -1,79 +1,92 @@
 const BASE_URL = "http://localhost:8080/example/eetacbros/user/login";
 
- function onClearBtnClick() {
-     $("#loginUsernameTbx").val('');
-     $("#loginPasswordTbx").val('');
- }
+function onClearBtnClick() {
+    $("#loginUsernameTbx").val('');
+    $("#loginPasswordTbx").val('');
+}
 
- function onLoginBtnClick() {
-     console.log("loginBtn clicked!");
+function onLoginBtnClick() {
+    console.log("loginBtn clicked!");
 
-     let username = $("#loginUsernameTbx").val();
-     let password = $("#loginPasswordTbx").val();
+    let username = $("#loginUsernameTbx").val();
+    let password = $("#loginPasswordTbx").val();
 
-     if (!username || !password) {
-         showBubble("Cal omplir usuari i contrasenya!");
+    if (!username || !password) {
+        showNotification("⚠️ Please fill in username and password!");
+        return;
+    }
+
+    let credentials = { username: username, password: password };
+
+    $.postJSON(BASE_URL, credentials, (data, status) => {
+        console.log(`Status: ${status}`);
+
+        if (status === "success") {
+            showNotification("✅ Login successful! Redirecting...");
+
+             //Store user data (Note: In production, consider security implications)
+             localStorage.setItem("userId", data.id);
+             localStorage.setItem("username", data.username);
+
+            setTimeout(() => {
+                window.location.href = "./shop";
+            }, 1000);
+        }
+    }).fail((jqXHR) => {
+        if (jqXHR.status === 400) {
+            showNotification("❌ Incorrect password!");
+        } else if (jqXHR.status === 404) {
+            showNotification("❌ User not found!");
+        } else {
+            showNotification("❌ Server or connection error!");
+        }
+    });
+}
+
+function onReadyDocument() {
+    console.log("Initializing LOGIN...");
+
+    // Uncomment if you want to check for existing session
+     const userId = localStorage.getItem("userId");
+     if (userId) {
+         console.log(`User already logged in with ID: ${userId}. Redirecting to shop...`);
+         window.location.href = "./shop";
          return;
      }
 
-     let credentials = { username: username, password: password };
+    $("#loginClearBtn").click(onClearBtnClick);
+    $("#loginBtn").click(onLoginBtnClick);
 
-     $.postJSON(BASE_URL, credentials, (data, status) => {
-         console.log(`Status: ${status}`);
+    // Allow Enter key to submit
+    $("#loginPasswordTbx").keypress(function(e) {
+        if (e.which === 13) {
+            onLoginBtnClick();
+        }
+    });
+}
 
-         if (status === "success") {
+function showNotification(text) {
+    const notification = $("#notification");
+    $("#notificationText").text(text);
+    notification.removeClass("hidden");
 
-             localStorage.setItem("userId", data.id);
+    setTimeout(() => {
+        notification.addClass("hidden");
+    }, 3000);
+}
 
-             localStorage.setItem("username", data.username);
+$.postJSON = function (url, data, callback) {
+    return jQuery.ajax({
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        type: 'POST',
+        url: url,
+        data: JSON.stringify(data),
+        dataType: 'json',
+        success: callback
+    });
+};
 
-             window.location.href = "./shop";
-         }
-
-     }).fail((jqXHR) => {
-
-         if (jqXHR.status === 400) {
-             showBubble("Contrasenya incorrecta!");
-         } else if (jqXHR.status === 404) {
-             showBubble("No s'ha trobat l'usuari!");
-         } else {
-             showBubble("Error del servidor o de connexió!");
-         }
-     });
- }
-
- function onReadyDocument() {
-     console.log("Initializing LOGIN...");
-
-     const userId = localStorage.getItem("userId");
-     if (userId) {
-         console.log(`Usuari ja logejat amb ID: ${userId}. Redirigint a shop...`);
-         window.location.href = "./shop";
-         return; // Evita inicialitzar els events si ja hi ha sessió
-     }
-
-     $("#loginClearBtn").click(onClearBtnClick);
-     $("#loginBtn").click(onLoginBtnClick);
- }
-
- function showBubble(text) {
-     $("#res").fadeIn("slow");
-     $("#res").text(text);
-     $("#res").delay(3000).fadeOut("slow");
- }
-
- $.postJSON = function (url, data, callback) {
-     return jQuery.ajax({
-         headers: {
-             'Accept': 'application/json',
-             'Content-Type': 'application/json'
-         },
-         type: 'POST',
-         url: url,
-         data: JSON.stringify(data),
-         dataType: 'json',
-         success: callback
-     });
- };
-
- $(document).ready(onReadyDocument);;
+$(document).ready(onReadyDocument);

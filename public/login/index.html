@@ -2,102 +2,67 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Login WebApp</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EETAC BROS - Login</title>
 
+    <!-- NES.css for retro gaming style -->
+    <link href="https://unpkg.com/nes.css@2.3.0/css/nes.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
 
+    <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-
-    <link rel="stylesheet" type="text/css" href="index.css">
-
-    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
-    <link href="https://unpkg.com/nes.css/css/nes.css" rel="stylesheet" />
-
-    <style>
-        html,
-        body,
-        pre,
-        code,
-        kbd,
-        samp {
-            font-family: "./kongtext.ttf";
-            background-color: #f2f3f4;
-        }
-
-        .item {
-            background-color: #f2f3f4;
-        }
-    </style>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://unpkg.com/nes.css@2.3.0/css/nes.min.css" rel="stylesheet" />
-    <link href="https://unpkg.com/nes.css@latest/css/nes.min.css" rel="stylesheet" />
-    <link href="https://unpkg.com/nes.css/css/nes-core.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="login/index.css">
 </head>
+<body class="pixel-bg">
+<!-- Decorative elements -->
+<div class="cloud-1"></div>
+<div class="cloud-2"></div>
+<div class="pixel-bricks"></div>
+<div class="question-block block-1"></div>
+<div class="question-block block-2"></div>
 
-<body>
-<div id="nescss" class="item">
-    <header class>
-        <div class="container navbar-header item">
-            <div class="nav-brand item">
-                <h1>EETAC BROS</h1>
-            </div>
-            <ul class="nav navbar-nav">
-                <li><a href="/register">Sign up</a></li> <!-- Add a phrase like you don't have an account yet Sign up -->
-                <li class="active"><a href="/login">Login</a></li>
-            </ul>
+<!-- Header -->
+<div class="header">
+    <h1>🎮 EETAC BROS 🎮</h1>
+    <p>¡Start your adventure!</p>
+</div>
+
+<!-- Login Form -->
+<div class="login-container">
+    <div class="nes-container with-title is-rounded">
+        <p class="title">Login</p>
+
+        <div class="nes-field">
+            <label for="loginUsernameTbx">Username:</label>
+            <input type="text" class="nes-input" id="loginUsernameTbx" placeholder="Enter your username">
         </div>
-    </header>
 
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-3"></div>
+        <div class="nes-field">
+            <label for="loginPasswordTbx">Password:</label>
+            <input type="password" class="nes-input" id="loginPasswordTbx" placeholder="Enter your password">
+        </div>
 
-            <div class="col-sm-3">
-                <section class="showcase">
-                    <div class="nes-container with-title" id="app">
-                        <h3 class="title">Login</h3>
-
-                        <div class="nes-field">
-                            <label for="loginUsernameTbx">Username:</label>
-                            <input type="text" class="nes-input" id="loginUsernameTbx">
-                        </div>
-
-                        <div class="nes-field">
-                            <label for="loginPasswordTbx">Password:</label>
-                            <input type="password" class="nes-input" id="loginPasswordTbx">
-                        </div>
-
-                        <hr />
-                        <div class="container-fluid">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <button class="nes-btn is-warning" id="loginClearBtn">
-                                        Clear
-                                    </button>
-                                </div>
-                                <div class="col-sm-6">
-                                    <button class="nes-btn is-success" id="loginBtn">
-                                        Login
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            </div>
-
-            <div class="col-sm-3 fbox">
-                <div id="cursor" class="item">
-                    <p class="nes-balloon from-left nes-pointer" style="display: none" id="res">
-                        Loading...
-                    </p>
-                </div>
-            </div>
+        <div class="button-group">
+            <button class="nes-btn is-warning" id="loginClearBtn">
+                🗑️ Clear
+            </button>
+            <button class="nes-btn is-success" id="loginBtn">
+                🚀 Login
+            </button>
         </div>
     </div>
 
+    <div class="nav-links">
+        <p>Don't have an account? <a href="/register">Sign up here!</a></p>
+    </div>
 </div>
+
+<!-- Notification (hidden by default) -->
+<div class="notification hidden" id="notification">
+    <p id="notificationText"></p>
+</div>
+
 <script src="login/index.js"></script>
 </body>
 </html>
