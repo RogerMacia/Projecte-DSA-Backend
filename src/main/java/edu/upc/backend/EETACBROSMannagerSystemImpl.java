@@ -35,6 +35,7 @@ public class EETACBROSMannagerSystemImpl implements EETACBROSMannagerSystem {
         return instance;
     }
 
+    @Override
     public void addUser(User user) {
         logger.info("Inici addLector(" + user + ")");
         if (user != null) {
@@ -45,6 +46,7 @@ public class EETACBROSMannagerSystemImpl implements EETACBROSMannagerSystem {
         }
     }
 
+    @Override
     public void addPlayer(Player player) {
         logger.info("Inici addPlayer(" + player + ")");
         if (player != null) {
@@ -55,20 +57,24 @@ public class EETACBROSMannagerSystemImpl implements EETACBROSMannagerSystem {
         }
     }
 
+    @Override
     public UsersList getUsersList() {
         logger.info("Inici getLlistaLectors()");
         logger.info("Fi getLlistaLectors() -> Retorna: " + usersList);
         return this.usersList;
     }
 
+    @Override
     public List<Item> getItemList() {
         return this.itemList;
     }
 
+    @Override
     public PlayerList getPlayerList() {
         return this.playerList;
     }
 
+    @Override
     public User getUserByUsername(String username) {
         logger.info("Inici getLector(username=" + username + ")");
         User user = usersList.getUserByUsername(username);
@@ -76,6 +82,7 @@ public class EETACBROSMannagerSystemImpl implements EETACBROSMannagerSystem {
         return user;
     }
 
+    @Override
     public Player getPlayerById(int id) {
         logger.info("Inici getPlayerById(" + id + ")");
         Player player = playerList.getPlayerByPlayerId(id);
@@ -83,6 +90,7 @@ public class EETACBROSMannagerSystemImpl implements EETACBROSMannagerSystem {
         return player;
     }
 
+    @Override
     public User getUserById(int userId) {
         logger.info("Inici getUserById(" + userId + ")");
         User user = usersList.getUserById(userId);
@@ -90,6 +98,7 @@ public class EETACBROSMannagerSystemImpl implements EETACBROSMannagerSystem {
         return user;
     }
 
+    @Override
     public Item getItemById(Integer id) {
         for (Item p : itemList) {
             if (p.getId() == id) {
@@ -99,6 +108,7 @@ public class EETACBROSMannagerSystemImpl implements EETACBROSMannagerSystem {
         return null;
     }
 
+    @Override
     public void logIn (String username, String password) {
         User u = getUserByUsername(username);
         if (u == null) {
@@ -117,6 +127,7 @@ public class EETACBROSMannagerSystemImpl implements EETACBROSMannagerSystem {
         }
     }
 
+    @Override
     public void clear() {
         logger.info("Inici clear()");
         this.usersList = new UsersList();
