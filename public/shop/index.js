@@ -1,5 +1,7 @@
 // ================= Constants =================
-const BASE_URL = "http://localhost:8080/example/eetacbros/shop/items";
+const SHOP_GET_ITEMS_URL = `${BASE_URL}/shop/items`;
+// https://dsa3.upc.edu/example/eetacbros/shop/items
+console.log("Calling:", SHOP_GET_ITEMS_URL);
 
 // ================= State Variables =================
 let cart = [];
@@ -15,7 +17,7 @@ function getJsonItems(url) {
     });
 }
 
-const BUY_ITEM_BASE_URL = "http://localhost:8080/example/eetacbros/shop/buy";
+const SHOP_BUY_ITEM_URL = `${BASE_URL}/shop/buy`;
 function postJsonBuyItems(url,purchaseData) {
     return $.ajax({
         url: url,
@@ -242,7 +244,7 @@ function buyCartItems() {
         }))
     };
 
-    postJsonBuyItems(BUY_ITEM_BASE_URL, purchaseData)
+    postJsonBuyItems(SHOP_BUY_ITEM_URL, purchaseData)
         .done(function(data) {
             console.log("Purchase successful:", data);
             showNotification('Items purchased successfully!', 'success'); // Mirar totes les crides a aquesta funció
@@ -296,7 +298,7 @@ function closeCartModal() {
 // ================= Initialization =================
 function initializeShop() {
     // Load products
-    getJsonItems(BASE_URL)
+    getJsonItems(SHOP_GET_ITEMS_URL)
         .done(function(data) {
             renderProducts(data);
         })

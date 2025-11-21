@@ -1,4 +1,20 @@
-const BASE_URL = "http://localhost:8080/example/eetacbros/user/login";
+const LOGIN_URL = `${BASE_URL}/user/login`;
+// "http://localhost:8080/example/eetacbros/user/login"
+console.log("Calling:", LOGIN_URL);
+
+$.postJSON = function (url, data, callback) {
+    return jQuery.ajax({
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        type: 'POST',
+        url: url,
+        data: JSON.stringify(data),
+        dataType: 'json',
+        success: callback
+    });
+};
 
 function onClearBtnClick() {
     $("#loginUsernameTbx").val('');
@@ -18,7 +34,7 @@ function onLoginBtnClick() {
 
     let credentials = { username: username, password: password };
 
-    $.postJSON(BASE_URL, credentials, (data, status) => {
+    $.postJSON(LOGIN_URL, credentials, (data, status) => {
         console.log(`Status: ${status}`);
 
         if (status === "success") {
@@ -32,7 +48,8 @@ function onLoginBtnClick() {
                 window.location.href = "./shop";
             }, 1000);
         }
-    }).fail((jqXHR) => {
+    })
+    .fail((jqXHR) => {
         if (jqXHR.status === 400) {
             showNotification("❌ Incorrect password!");
         } else if (jqXHR.status === 404) {
@@ -40,7 +57,8 @@ function onLoginBtnClick() {
         } else {
             showNotification("❌ Server or connection error!");
         }
-    });
+    }
+    );
 }
 
 function onReadyDocument() {
@@ -74,19 +92,5 @@ function showNotification(text) {
         notification.addClass("hidden");
     }, 3000);
 }
-
-$.postJSON = function (url, data, callback) {
-    return jQuery.ajax({
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        type: 'POST',
-        url: url,
-        data: JSON.stringify(data),
-        dataType: 'json',
-        success: callback
-    });
-};
 
 $(document).ready(onReadyDocument);

@@ -1,6 +1,20 @@
-
 //const BASE_URL = "https://en.wikipedia.org/api/rest_v1/page/"
-const BASE_URL = "http://localhost:8080/example/eetacbros/user/register"
+const REGISTER_URL = `${BASE_URL}/user/register`;
+console.log("Calling:", REGISTER_URL);
+
+$.postJSON = function(url, data, callback) { // https://stackoverflow.com/questions/40804301/jquery-ajax-post-call-unsupported-media-type
+    return jQuery.ajax({
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+    },
+    'type': 'POST',
+    'url': url,
+    'data': JSON.stringify(data),
+    'dataType': 'json',
+    'success': callback
+    });
+};
 
 function onClearBtnClick() {
     console.log("ClearBtn clicked!");
@@ -24,7 +38,7 @@ function onSignUpbtnClick() {
     user = { username:username, nom:name, email:email, password:password};
     buffer = JSON.stringify(user);
     console.log(buffer);
-    $.postJSON(BASE_URL, user ,(data, status) => {
+    $.postJSON(REGISTER_URL, user ,(data, status) => {
         console.log(`Satus: ${status} \n${data}`);
         //$("#res").slideDown("slow");
         $("#res").fadeIn("slow");
@@ -140,18 +154,3 @@ function checkPassword() {
 
     return true;
 }
-
-
-$.postJSON = function(url, data, callback) { // https://stackoverflow.com/questions/40804301/jquery-ajax-post-call-unsupported-media-type
-    return jQuery.ajax({
-    headers: { 
-        'Accept': 'application/json',
-        'Content-Type': 'application/json' 
-    },
-    'type': 'POST',
-    'url': url,
-    'data': JSON.stringify(data),
-    'dataType': 'json',
-    'success': callback
-    });
-};
