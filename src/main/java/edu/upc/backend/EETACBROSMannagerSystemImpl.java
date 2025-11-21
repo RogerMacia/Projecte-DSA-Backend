@@ -15,6 +15,7 @@ public class EETACBROSMannagerSystemImpl implements EETACBROSMannagerSystem {
     private UsersList usersList;
     private PlayerList playerList;
     private List<Item> itemList;
+    private GameList _games;
 
     final static Logger logger = Logger.getLogger(EETACBROSMannagerSystemImpl.class);
 
@@ -22,6 +23,7 @@ public class EETACBROSMannagerSystemImpl implements EETACBROSMannagerSystem {
         this.usersList = new UsersList();
         this.itemList = new ArrayList();
         this.playerList = new PlayerList();
+        this._games = new GameList();
         logger.info("Constructor EETACbROSManagerSystemImpl inicialitzat");
     }
 
@@ -40,6 +42,16 @@ public class EETACBROSMannagerSystemImpl implements EETACBROSMannagerSystem {
         logger.info("Inici addLector(" + user + ")");
         if (user != null) {
             this.usersList.addUser(user);
+            //region nou player
+            User l_user = usersList.getUserByUsername(user.getUsername());
+            int playerId = l_user.getId();
+            Player player = new Player(playerId,0, 100, 100, 100, 0);
+            addPlayer(player);
+            //endregion nou player
+
+            //region nova partida
+            createGame(playerId);
+            //endregion nova partida
             logger.info("Fi addLector() -> Lector afegit: " + user);
         } else {
             logger.warn("Intent d’afegir lector nul");
@@ -126,6 +138,37 @@ public class EETACBROSMannagerSystemImpl implements EETACBROSMannagerSystem {
             }
         }
     }
+
+    //region games
+    public void createGame(int playerId)
+    {
+        _games.create(playerId);
+        logger.info(String.format("A new game for player with %d has been created", playerId));
+    }
+
+    public Game findGame(int playerId)
+    {
+        Game res = _games.find(playerId);
+        if(res == null) logger.warn(String.format("Player with id %d has already a game.",playerId));
+        return res;
+    }
+
+    public void removeGame(int playerId)
+    {
+        _games.remove(playerId);
+    }
+
+    public void updateGame(Game game)
+    {
+        Game l_game = _games.find(game.getPlayerId());
+        if(l_game == null)
+        {
+            logger.warn("Game not found.");
+            return;
+        }
+        l_game.setScore(game.getScore());
+    }
+    //endregion games
 
     @Override
     public void clear() {

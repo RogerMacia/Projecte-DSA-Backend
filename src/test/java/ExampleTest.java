@@ -27,4 +27,5 @@ public class ExampleTest {
 
         //log.info(String.format("c equals %d", c));
     }
+
 }

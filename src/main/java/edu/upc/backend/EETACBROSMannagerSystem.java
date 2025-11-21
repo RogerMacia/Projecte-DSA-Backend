@@ -17,5 +17,11 @@ public interface EETACBROSMannagerSystem {
     public Item getItemById(Integer id);
     public void logIn (String username, String password);
 
+    public void createGame(int playerId);
+
+    public Game findGame(int playerId);
+    public void updateGame(Game game);
+    public void removeGame(int playerId);
+
     void clear();
 }

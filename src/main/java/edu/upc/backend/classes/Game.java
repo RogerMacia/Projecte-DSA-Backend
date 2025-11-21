@@ -1,21 +1,21 @@
 package edu.upc.backend.classes;
 
 public class Game {
-    public String getPlayerId() {
+    public int getPlayerId() {
         return playerId;
     }
 
-    public void setPlayerId(String playerId) {
+    public void setPlayerId(int playerId) {
         this.playerId = playerId;
     }
 
-    String playerId;
+    int playerId;
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -23,38 +23,20 @@ public class Game {
         return score;
     }
 
-    public void setScore(int score) {
+    public void setScore(Integer score) {
         this.score = score;
     }
 
-    public Item getCurrentItem() {
-        return currentItem;
-    }
 
-    public void setCurrentItem(Item currentItem) {
-        this.currentItem = currentItem;
-    }
 
-    public Level getCurrentLevel() {
-        return currentLevel;
-    }
-
-    public void setCurrentLevel(Level currentLevel) {
-        this.currentLevel = currentLevel;
-    }
-
-    String id;
+    int id;
     int score;
-    Item currentItem;
-    Level currentLevel;
 
     public Game(){}
-    public Game(String id, String playerId, int score, Item currentItem, Level currentLevel)
+    public Game(int id, int playerId, int score)
     {
         setId(id);
         setScore(score);
-        setCurrentItem(currentItem);
-        setCurrentLevel(currentLevel);
         setPlayerId(playerId);
     }
 }

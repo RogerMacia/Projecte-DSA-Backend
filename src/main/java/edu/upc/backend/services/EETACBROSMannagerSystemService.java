@@ -117,6 +117,8 @@ public class EETACBROSMannagerSystemService {
         User userExists = usersList.getUserByUsername(user.getUsername());
         logger.info(user.getUsername());
 
+
+
         if (userExists != null) {
             return Response.status(Response.Status.CONFLICT)
                     .entity("Username not available")
@@ -124,6 +126,7 @@ public class EETACBROSMannagerSystemService {
         } else {
 
             this.sistema.addUser(user);
+
             return Response.status(Response.Status.CREATED)
                     .entity(user)
                     .build();
@@ -152,12 +155,8 @@ public class EETACBROSMannagerSystemService {
 
         try {
             sistema.logIn(username, password);
-            user = sistema.getUserByUsername(username);
-            this.sistema.addUser(user);
 
-            int playerId = user.getId();
-            Player player = new Player(playerId,0, 100, 100, 100, 100);
-            sistema.addPlayer(player);
+
         }
         catch (UserNotFoundException e) {
             return Response.status(404)
@@ -170,8 +169,10 @@ public class EETACBROSMannagerSystemService {
                     .build();
         }
 
+        User l_user = sistema.getUserByUsername(user.getUsername());
+
         return Response.status(201)
-                .entity(user)
+                .entity(l_user)
                 .build();
     }
 

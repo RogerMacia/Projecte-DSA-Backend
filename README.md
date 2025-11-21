@@ -24,8 +24,9 @@ class Entity{
 }
 
 class Player{
-+ id : string
++ id : int
 - speed : double
+- items : Item[]
 }
 
 class Enemy{
@@ -37,20 +38,13 @@ Enemy ..|> Entity
 
 
 class Game{
-- playerId : String
+- playerId : int
 - id : String
 - score : int
 - settings : Settings
-- currentItem : Item
-- currentLevel : Level
-}
-
-class Level{
 - enemies : Enemy[]
-- id : int
-- timer : Timer
-
 }
+
 
 class Item{
 <<abstract>>
@@ -67,9 +61,8 @@ class Usuari{
 }
 
 
-Player --> Usuari : n..1
+Player --> Usuari : 1..1
 Game --> Player : 1..1
-Level --* Enemy
-Game --* Item : 1..n
-Game --> Level
+Game --* Enemy
+Player --* Item : 1..n
 ```
