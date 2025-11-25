@@ -1,4 +1,3 @@
-//const BASE_URL = "https://en.wikipedia.org/api/rest_v1/page/"
 const REGISTER_URL = `${BASE_URL}/user/register`;
 console.log("Calling:", REGISTER_URL);
 
@@ -154,3 +153,5 @@ function checkPassword() {
 
     return true;
 }
+
+$(document).ready(onReadyDocument);

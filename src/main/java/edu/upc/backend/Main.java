@@ -17,6 +17,8 @@ public class Main {
     // Base URI the Grizzly HTTP server will listen on
     public static final String SWAGGER_URL = "http://localhost:8080/swagger/";
     public static final String BASE_URI = "http://localhost:8080/example/";
+    // BASE_URL = "https://dsa3.upc.edu/example/";
+    // BASE_URL = "https://10.4.120.114/example/";
 
     /**
      * Starts Grizzly HTTP server exposing JAX-RS resources defined in this application.

@@ -1,0 +1,45 @@
+C:\MariaDB\mariadb-12.1.2-winx64\bin
+
+
+
+cd C:\MariaDB\mariadb-12.1.2-winx64\bin
+
+
+Database
+
+cd C:\MariaDB\mariadb-12.1.2-winx64\bin
+mariadb -u root -p
+password: mariadb
+
+SELECT User, Host FROM mysql.user;
+
+CREATE DATABASE dsadb;
+
+show databases;
+use dsadb;
+show tables;
+
+
+CREATE USER 'manel'@'localhost' IDENTIFIED BY 'pass123';
+
+CREATE DATABASE dsadb;
+USE dsadb;
+
+CREATE TABLE `User` (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    lastName VARCHAR(100) NOT NULL,
+    firstName VARCHAR(100) NOT NULL,
+    address VARCHAR(255),
+    city VARCHAR(100),
+    password VARCHAR(255) NOT NULL
+);
+
+
+
+
+SELECT * FROM `User`;
+SELECT firstName, lastName, city FROM `User`;
+
+Per eliminar la base de dades:
+DROP DATABASE qaa_db;
+

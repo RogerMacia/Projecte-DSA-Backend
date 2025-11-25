@@ -10,6 +10,7 @@ public class BuyRequest {
     public BuyRequest(){
         this.items = new ArrayList<>();
     }
+
     public BuyRequest(int playerId) {
         this.playerId = playerId;
     }
@@ -17,14 +18,18 @@ public class BuyRequest {
     public int getPlayerId() {
         return playerId;
     }
+
     public void setPlayerId(int playerId) {
         this.playerId = playerId;
     }
+
     public List<Item> getItems() {
         return items;
     }
+
     public void setItems(List<Item> items) {
         this.items = items;
     }
+
 }
 
