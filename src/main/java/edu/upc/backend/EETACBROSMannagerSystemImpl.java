@@ -39,7 +39,7 @@ public class EETACBROSMannagerSystemImpl implements EETACBROSMannagerSystem {
 
     @Override
     public void addUser(User user) {
-        logger.info("Inici addLector(" + user + ")");
+        logger.info("Inici addUser(" + user + ")");
         if (user != null) {
             this.usersList.addUser(user);
             //region nou player
@@ -52,9 +52,9 @@ public class EETACBROSMannagerSystemImpl implements EETACBROSMannagerSystem {
             //region nova partida
             createGame(playerId);
             //endregion nova partida
-            logger.info("Fi addLector() -> Lector afegit: " + user);
+            logger.info("Fi addUser() -> User afegit: " + user);
         } else {
-            logger.warn("Intent d’afegir lector nul");
+            logger.warn("Intent d’afegir user nul");
         }
     }
 
@@ -63,16 +63,16 @@ public class EETACBROSMannagerSystemImpl implements EETACBROSMannagerSystem {
         logger.info("Inici addPlayer(" + player + ")");
         if (player != null) {
             this.playerList.add(player);
-            logger.info("Fi addLector() -> Lector afegit: " + player);
+            logger.info("Fi addPlayer() -> Lector afegit: " + player);
         } else {
-            logger.warn("Intent d’afegir lector nul");
+            logger.warn("Intent d’afegir player nul");
         }
     }
 
     @Override
     public UsersList getUsersList() {
-        logger.info("Inici getLlistaLectors()");
-        logger.info("Fi getLlistaLectors() -> Retorna: " + usersList);
+        logger.info("Inici getUsersList()");
+        logger.info("Fi getUsersList() -> Retorna: " + usersList);
         return this.usersList;
     }
 
@@ -88,9 +88,9 @@ public class EETACBROSMannagerSystemImpl implements EETACBROSMannagerSystem {
 
     @Override
     public User getUserByUsername(String username) {
-        logger.info("Inici getLector(username=" + username + ")");
+        logger.info("Inici getUserByUsername(username=" + username + ")");
         User user = usersList.getUserByUsername(username);
-        logger.info("Fi getLector() -> Retorna: " + user);
+        logger.info("Fi getUserByUsername() -> Retorna: " + user);
         return user;
     }
 
@@ -174,6 +174,6 @@ public class EETACBROSMannagerSystemImpl implements EETACBROSMannagerSystem {
     public void clear() {
         logger.info("Inici clear()");
         this.usersList = new UsersList();
-        logger.info("Fi clear() -> Llista de lectors buidada");
+        logger.info("Fi clear() -> Llista de usuaris buidada");
     }
 }

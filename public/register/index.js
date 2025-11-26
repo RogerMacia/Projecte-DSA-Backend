@@ -155,3 +155,4 @@ function checkPassword() {
 }
 
 $(document).ready(onReadyDocument);
+
