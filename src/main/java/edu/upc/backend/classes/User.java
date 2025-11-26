@@ -9,10 +9,12 @@ public class User {
     private String name;
     private String email;
     private String password;
+    private int score;
 
     // 🔧 Constructor buit (necessari per frameworks o JSON)
     public User() {
         this.id = nextId++;
+        this.score = 0;
     }
 
     // 🔧 Constructor complet
@@ -22,7 +24,7 @@ public class User {
         this.name = name;
         this.email = email;
         this.password = password;
-
+        this.score = 0;
     }
 
 
@@ -64,6 +66,14 @@ public class User {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
     }
 
     // 🧾 Representació del client
