@@ -1,5 +1,4 @@
 const REGISTER_URL = `${BASE_URL}/user/register`;
-console.log("Calling:", REGISTER_URL);
 
 $.postJSON = function(url, data, callback) { // https://stackoverflow.com/questions/40804301/jquery-ajax-post-call-unsupported-media-type
     return jQuery.ajax({
