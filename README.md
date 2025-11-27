@@ -5,13 +5,13 @@
 ```mermaid
 classDiagram
 
-%% ============================================================
-%%                    FUNCIONAMENT DEL SISTEMA
-%% ============================================================
-%% Quan es registra un User:
-%%    → Es fa un INSERT a la base de dades.
-%%
-%% Quan un User fa login:
+## %% ============================================================
+## %%                    FUNCIONAMENT DEL SISTEMA
+## %% ============================================================
+## %% Quan es registra un User:
+## %%    → Es fa un INSERT a la base de dades.
+## %%
+## %% Quan un User fa login:
 %%    → Es fa un SELECT a la base de dades.
 %%    → Es crea un objecte User a memòria.
 %%    → S’afegeix a UsersList (llista d’usuaris loguejats).
