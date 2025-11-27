@@ -1,15 +1,5 @@
 # Backend per el projecte de DSA
 
-## To-Do
-
-[x] Web Registre.
-
-[] Web Login.
-
-[x] Android App Registre.
-
-[] Android App Login.
-
 ## Esquema
 
 ```mermaid
