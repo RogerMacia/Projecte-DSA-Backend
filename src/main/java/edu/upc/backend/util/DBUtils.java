@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class DBUtils {
 
-    public static final String DB_NAME = "projecte-dsa-db";
+    public static final String DB_NAME = "projecte_dsa_db";
     public static final String DB_HOST = "localhost";
     public static final String DB_USER = "root";
     public static final String DB_PASS = "mariadb";
@@ -45,5 +45,16 @@ public class DBUtils {
 
         return connection;
     }
+
+    //region ID management
+
+    private static int userID = 0;
+
+    public static int retrieveUserID()
+    {
+        return userID++;
+    }
+
+    //endregion ID management
 
 }

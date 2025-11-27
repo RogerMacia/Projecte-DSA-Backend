@@ -1,6 +1,7 @@
 package edu.upc.backend.services;
 
-import edu.upc.backend.EETACBROSMannagerSystemImpl;
+import edu.upc.backend.EBDBManagerSystem;
+import edu.upc.backend.EETACBROSMannagerSystem;
 import edu.upc.backend.classes.*;
 import edu.upc.backend.exceptions.IncorrectPasswordException;
 import edu.upc.backend.exceptions.UserNotFoundException;
@@ -15,20 +16,19 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Api(value = "/eetacbros", description = "Endpoint de biblioteca Service")
 @Path("/eetacbros")
 public class EETACBROSMannagerSystemService {
 
     private static final Logger logger = Logger.getLogger(EETACBROSMannagerSystemService.class);
-    private EETACBROSMannagerSystemImpl sistema;
+    private EETACBROSMannagerSystem sistema;
 
     public EETACBROSMannagerSystemService() {
         // Use the singleton instance
-        this.sistema = EETACBROSMannagerSystemImpl.getInstance();
+        this.sistema = //EETACBROSMannagerSystemImpl.getInstance();
+                EBDBManagerSystem.getInstance();
 
         UsersList userslist = this.sistema.getUsersList();
         List<Item> itemlist = this.sistema.getItemList();
@@ -113,6 +113,7 @@ public class EETACBROSMannagerSystemService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response addUser(User user) {
+
         UsersList usersList = this.sistema.getUsersList();
         User userExists = usersList.getUserByUsername(user.getUsername());
         logger.info(user.getUsername());

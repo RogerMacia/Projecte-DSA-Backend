@@ -1,0 +1,66 @@
+import edu.upc.backend.classes.User;
+import edu.upc.backend.database.Session;
+import edu.upc.backend.database.UserDao;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.List;
+import org.apache.log4j.Logger;
+
+public class DAOTest {
+
+    Logger log = Logger.getLogger(DAOTest.class);
+    UserDao _users;
+
+    @Before
+    public void Init()
+    {
+        _users = UserDao.getInstance();
+    }
+    @After
+    public void Finalize()
+    {
+        _users = null;
+    }
+
+    @Test
+    public void addUserTest() throws Exception {
+        int id = _users.addUser("Daniel","123456Ab","Dani","daniel@gmail.com");
+    }
+
+    @Test
+    public void getUsersTest() throws Exception {
+        List<User> userList = _users.getUsers();
+
+        for(User user : userList)
+        {
+            log.info(user.toString());
+        }
+    }
+
+    @Test
+    public void getUserTest() throws Exception {
+        User user = _users.getUser(3);
+
+        log.info(user.toString());
+
+    }
+    @Test
+    public void updateUserTest() throws Exception {
+        int id = 3;
+        _users.updateUser(3,"Carlos","udsuhaiha","Carlosxd","carlos@gmail.com");
+
+        User user = _users.getUser(3);
+        log.info(user.toString());
+
+    }
+
+    @Test
+    public void deleteUserTest() throws Exception {
+        int id = 4;
+        _users.deleteUser(4);
+
+
+    }
+}

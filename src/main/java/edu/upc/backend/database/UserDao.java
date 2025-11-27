@@ -1,0 +1,130 @@
+package edu.upc.backend.database;
+
+import edu.upc.backend.classes.User;
+import org.apache.log4j.Logger;
+
+import java.sql.SQLException;
+import java.util.List;
+
+public class UserDao implements IUserDAO{
+
+    private static UserDao _instance;
+    public static UserDao getInstance()
+    {
+        if(_instance == null) _instance = new UserDao();
+        return _instance;
+    }
+
+    private UserDao()
+    {}
+
+    private static final Logger log = Logger.getLogger(UserDao.class);
+
+    @Override
+    public int addUser(String name, String password, String username, String email) throws Exception {
+        return addUser(new User(username,name,email,password));
+    }
+    public int addUser(User input) throws SQLException {
+        int id = -1;
+        Session session = null;
+        //User input = new User(username,name,email,password);
+
+        try{
+
+            session = new SessionBuilder().build();
+            session.save(input);
+            id = input.getId();
+        }
+        catch (Exception e)
+        {
+            log.error(e.getMessage());
+            e.printStackTrace();
+        }
+        finally {
+            session.close();
+        }
+
+        return id;
+    }
+
+    @Override
+    public User getUser(int userID) throws Exception {
+        User res = null;
+        Session session = null;
+
+        try{
+            session = new SessionBuilder().build();
+            res = (User) session.get(User.class,userID);
+        }
+        catch (Exception e)
+        {
+            log.error(e.getMessage());
+            e.printStackTrace();
+        }
+        finally {
+            session.close();
+        }
+        return  res;
+    }
+
+    @Override
+    public void updateUser(int userID, String name, String password, String username, String email) throws Exception {
+
+        Session session = null;
+        User input = new User(username, name, email,password);
+        input.setId(userID);
+
+        try{
+            session = new SessionBuilder().build();
+             session.update(input);
+        }
+        catch (Exception e)
+        {
+            log.error(e.getMessage());
+            e.printStackTrace();
+        }
+        finally {
+            session.close();
+        }
+    }
+
+    @Override
+    public void deleteUser(int userID) throws Exception {
+
+        Session session = null;
+
+        try{
+            session = new SessionBuilder().build();
+            User buffer = (User) session.get(User.class, userID);
+            session.delete(buffer);
+        }
+        catch (Exception e)
+        {
+            log.error(e.getMessage());
+            e.printStackTrace();
+        }
+        finally {
+            session.close();
+        }
+    }
+
+    @Override
+    public List<User> getUsers() throws Exception {
+        List<User> res = null;
+        Session session = null;
+        try{
+
+            session = new SessionBuilder().build();
+            res = session.findAll(User.class);
+        }
+        catch (Exception e)
+        {
+            log.error(e.getMessage());
+            e.printStackTrace();
+        }
+        finally {
+            session.close();
+        }
+        return res;
+    }
+}

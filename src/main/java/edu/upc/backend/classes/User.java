@@ -1,30 +1,28 @@
 package edu.upc.backend.classes;
 
+import edu.upc.backend.util.*;
+
 public class User {
 
     // 🧱 Atributs
-    private static int nextId = 0;
     private int id;
     private String username;
     private String name;
     private String email;
     private String password;
-    private int score;
 
     // 🔧 Constructor buit (necessari per frameworks o JSON)
     public User() {
-        this.id = nextId++;
-        this.score = 0;
+        this.id = DBUtils.retrieveUserID();
     }
 
     // 🔧 Constructor complet
     public User(String username, String name, String email, String password) {
-        this.id = nextId++;
+        this.id = DBUtils.retrieveUserID();
         this.username = username;
         this.name = name;
         this.email = email;
         this.password = password;
-        this.score = 0;
     }
 
 
@@ -64,17 +62,10 @@ public class User {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public int getScore() {
-        return score;
-    }
-
-    public void setScore(int score) {
-        this.score = score;
-    }
 
     // 🧾 Representació del client
     @Override

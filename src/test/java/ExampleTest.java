@@ -1,5 +1,6 @@
 import edu.upc.backend.EETACBROSMannagerSystemImpl;
 import edu.upc.backend.classes.User;
+import edu.upc.backend.util.DBUtils;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Assert;
@@ -26,6 +27,18 @@ public class ExampleTest {
         Assert.assertEquals(manager.getUsersList().size(), 2);
 
         //log.info(String.format("c equals %d", c));
+    }
+
+    @Test
+    public void testIDs()
+    {
+        int zero = DBUtils.retrieveUserID();
+        int one = DBUtils.retrieveUserID();
+
+        log.info(zero);
+        log.info(one);
+        Assert.assertEquals(0,zero);
+        Assert.assertEquals(1,one);
     }
 
 }
