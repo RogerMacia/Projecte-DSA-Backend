@@ -1,35 +1,16 @@
-# Backend per el projecte de DSA
-
-## Esquema
-
-```mermaid
 classDiagram
 
-## ============================================================
-##                    FUNCIONAMENT DEL SISTEMA
-## ============================================================
-## Quan es registra un User:
-##    → Es fa un INSERT a la base de dades.
-##
-## Quan un User fa login:
-%%  → Es fa un SELECT a la base de dades.
-%%  → Es crea un objecte User a memòria.
-%%  → S’afegeix a UsersList (llista d’usuaris loguejats).
-%%
-%% Quan un User compra items a la tenda:
-%%    → Els nous items s’assignen al seu objecte User.
-%%    → També es fa UPDATE a la base de dades.
-%%
-%% Quan l’usuari crea/entra en una partida:
-%%    → Es crea un objecte Game.
-%%    → Es crea un objecte Player basat en el User.
-%%    → Els items del Player = els items del User.
-%%
-%% Quan acaba una partida:
-%%    → Els punts de Player s’afegeixen al score del User.
-%%    → UPDATE a la base de dades.
 %% ============================================================
-
+%%                  NOTA GENERAL DEL SISTEMA
+%% ============================================================
+note "FUNCIONAMENT DEL SISTEMA:
+1. Quan es registra un User → INSERT a la BD.
+2. Quan fa login → SELECT, es crea un objecte User i s’afegeix a UsersList.
+3. Quan compra items → s’afegeixen al seu User + UPDATE BD.
+4. Quan entra a una partida → es crea Game i Player, els items del Player = User.
+5. Quan acaba la partida → score del Player s’acumula al User + UPDATE BD."
+as SystemNote
+SystemNote .. Entity
 
 
 %% ========================
@@ -49,11 +30,16 @@ class Entity{
 class Player{
     + id : int
     - speed : double
-    - items : Item[]   % Els items provenen del User
-    - score : int      % Score temporal de la partida
+    - items : Item[]
+    - score : int
 }
 
-Player ..|> Entity : 0..* 
+note right of Player
+Els items del Player venen del User.
+El score només és temporal (partida).
+end note
+
+Player ..|> Entity
 
 
 
@@ -62,8 +48,11 @@ Player ..|> Entity : 0..*
 %% ========================
 class Enemy{
     <<abstract>>
-    %% Enemics dins la partida
 }
+
+note right of Enemy
+Classe base per tots els enemics del joc.
+end note
 
 Enemy ..|> Entity
 
@@ -79,12 +68,14 @@ class Game{
     - player : Player
 }
 
-%% Un Game sempre té un Player
-Game --> Player : 1..1 Crea 1 Player quan comença partida
+note right of Game
+Quan l’usuari crea o entra a una partida:
+→ Es crea un objecte Game.
+→ Es crea un Player basat en el User.
+end note
 
-%% Els enemics pertanyen al Game
-Game --* Enemy : 0..*
-
+Game --> Player : "1 Player"
+Game --* Enemy : "0..*"
 
 
 %% ========================
@@ -96,8 +87,12 @@ class Item{
     - durability : int
 }
 
-%% Els items del Player venen del User
-Player --* Item : 0..*
+note right of Item
+Els items s’assignen al User
+i després passen al Player.
+end note
+
+Player --* Item : "0..*"
 
 
 
@@ -110,39 +105,57 @@ class User{
     - id : int
     - password : string
     - email : string
-    - items : Item[]   % Items del User guardats a la BD
-    - score : int      % Score acumulat de totes les partides
+    - items : Item[]
+    - score : int
 }
 
-%% Un User genera un Player quan comença una partida
-User --> Player : 1..1   Crea 1 Player quan comença partida
+note right of User
+Quan fa login:
+→ SELECT a la BD
+→ Es crea User a memòria
+→ S’afegeix a UsersList
+
+Quan acaba partida:
+→ Suma score del Player al User.
+end note
+
+User --> Player : "Crea 1 Player en iniciar partida"
+
+
 
 %% ============================================================
 %%                    USERSLIST
 %% ============================================================
 class UsersList{
-    -List<User> userslist : User[]
-    + User getUserByUsername(String username)
-    + User getUserById(int userId)
-    + List<User> getUserslist()
-    + size()
+    - userslist : List<User>
+    + getUserByUsername(username : String) User
+    + getUserById(userId : int) User
+    + getUserslist() List<User>
+    + size() int
 }
 
-%% UsersList gestiona els usuaris actius
-UsersList o-- User : conté 0..*
+note right of UsersList
+Llista d'usuaris actius a memòria,
+és a dir, loguejats actualment.
+end note
+
+UsersList o-- User : "0..*"
+
+
 
 %% ============================================================
 %%                    GAMELIST
 %% ============================================================
 class GameList{
-    -List<User> userslist : User[]
-    + create(int playerId)
-    + Game find(int playerId)
-    + remove(int playerId)
-    + size()
+    - gamelist : List<Game>
+    + create(playerId : int) Game
+    + find(playerId : int) Game
+    + remove(playerId : int) void
+    + size() int
 }
 
-%% UsersList gestiona els usuaris actius
-GameList o-- Game : conté 0..* 
+note right of GameList
+Gestiona totes les partides actives.
+end note
 
-```
+GameList o-- Game : "0..*"
