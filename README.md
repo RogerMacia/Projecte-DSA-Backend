@@ -5,16 +5,16 @@
 ```mermaid
 classDiagram
 
-## %% ============================================================
-## %%                    FUNCIONAMENT DEL SISTEMA
-## %% ============================================================
-## %% Quan es registra un User:
-## %%    → Es fa un INSERT a la base de dades.
-## %%
-## %% Quan un User fa login:
-%%    → Es fa un SELECT a la base de dades.
-%%    → Es crea un objecte User a memòria.
-%%    → S’afegeix a UsersList (llista d’usuaris loguejats).
+## ============================================================
+##                    FUNCIONAMENT DEL SISTEMA
+## ============================================================
+## Quan es registra un User:
+##    → Es fa un INSERT a la base de dades.
+##
+## Quan un User fa login:
+%%  → Es fa un SELECT a la base de dades.
+%%  → Es crea un objecte User a memòria.
+%%  → S’afegeix a UsersList (llista d’usuaris loguejats).
 %%
 %% Quan un User compra items a la tenda:
 %%    → Els nous items s’assignen al seu objecte User.
