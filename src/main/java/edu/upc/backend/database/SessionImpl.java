@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Stream;
 
+// ORM cortesia de https://github.com/wenjie-c/DAO
 
 public class SessionImpl implements Session {
     private final Connection conn;

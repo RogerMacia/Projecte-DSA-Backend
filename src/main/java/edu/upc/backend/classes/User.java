@@ -18,7 +18,7 @@ public class User {
 
     // 🔧 Constructor complet
     public User(String username, String name, String email, String password) {
-        this.id = DBUtils.retrieveUserID();
+        this.id = 0;
         this.username = username;
         this.name = name;
         this.email = email;
