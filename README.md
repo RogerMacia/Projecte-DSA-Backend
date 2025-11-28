@@ -72,7 +72,7 @@ class Game{
     - player : Player
 }
 
-Game --> Player : "1..1\nCrea 1 Player quan comença partida"
+Game --> Player : 1..1 "Crea 1 Player quan comença partida"
 Game --* Enemy : "0..*"
 
 
@@ -101,7 +101,7 @@ class User{
     - score : int
 }
 
-User --> Player : "1..1\nCrea 1 Player quan comença partida"
+User --> Player : 1..1 "Crea 1 Player quan comença partida"
 
 
 %% ============================================================
@@ -130,4 +130,26 @@ class GameList{
 }
 
 GameList o-- Game : "0..*"
+
+%% ============================================================
+%%                    START_A_GAME
+%% ============================================================
+class START_A_GAME{
+	Quan l’usuari comença en una partida:
+	  → Es crea un objecte Game.
+      → Es crea un objecte Player basat en el User.
+      → Els items del Player = els items del User.
+}
+START_A_GAME --> Game
+
+%% ============================================================
+%%                    LOGIN
+%% ============================================================
+class LOGIN {
+Quan un User fa login:
+    → Es fa un SELECT a la base de dades.
+    → Es crea un objecte User a memòria.
+    → S’afegeix a UsersList (llista d’usuaris loguejats).
+}
+LOGIN --> User
 ```
