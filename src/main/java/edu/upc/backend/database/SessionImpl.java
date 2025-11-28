@@ -283,7 +283,7 @@ public class SessionImpl implements Session {
                 Object buffer = theClass.getConstructor().newInstance();
                 for(int x = 0; x < fields.length; x++)
                 {
-                    ObjectHelper.setter(buffer,fields[x],rs.getObject(x+2)); // el primero
+                    ObjectHelper.setter(buffer,fields[x],rs.getObject(x+1)); // el primero
                 }
                 res.add(buffer);
             }

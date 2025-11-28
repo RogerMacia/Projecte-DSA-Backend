@@ -5,6 +5,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.sql.SQLException;
 import java.util.List;
 import org.apache.log4j.Logger;
 
@@ -63,4 +64,13 @@ public class DAOTest {
 
 
     }
+
+    @Test
+    public void getUserByUsernameTest() throws SQLException {
+        String username = "Carlosxd";
+        User res = _users.getUserByUsername(username);
+        log.info(res.toString());
+    }
+
+
 }

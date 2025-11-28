@@ -2,6 +2,8 @@ package edu.upc.backend;
 
 import edu.upc.backend.classes.*;
 import edu.upc.backend.database.UserDao;
+import edu.upc.backend.exceptions.IncorrectPasswordException;
+import edu.upc.backend.exceptions.UserNotFoundException;
 import org.apache.log4j.Logger;
 
 import java.util.List;
@@ -40,7 +42,17 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
 
     @Override
     public UsersList getUsersList() {
-        return null;
+        UserDao _users = UserDao.getInstance();
+        UsersList res = null;
+        try {
+            List<User> list = _users.getUsers();
+            res = new UsersList(list);
+        }
+        catch (Exception e)
+        {
+            log.error("Error: " + e.getMessage() );
+        }
+        return  res;
     }
 
     @Override
@@ -55,7 +67,16 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
 
     @Override
     public User getUserByUsername(String username) {
-        return null;
+        UserDao _users = UserDao.getInstance();
+        User res = null;
+        try{
+            res = _users.getUserByUsername(username);
+        }
+        catch (Exception e)
+        {
+            log.error("Error: " + e.getMessage() );
+        }
+        return  res;
     }
 
     @Override
@@ -65,7 +86,16 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
 
     @Override
     public User getUserById(int userId) {
-        return null;
+        UserDao _users = UserDao.getInstance();
+        User res = null;
+        try{
+            res = _users.getUser(userId);
+        }
+        catch (Exception e)
+        {
+            log.error("Error: " + e.getMessage() );
+        }
+        return  res;
     }
 
     @Override
@@ -75,7 +105,21 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
 
     @Override
     public void logIn(String username, String password) {
-
+        User u = getUserByUsername(username);
+        if (u == null) {
+            log.error("User " + username + " not found");
+            throw new UserNotFoundException();
+        }
+        else {
+            log.info("User found");
+            if (password.equals(u.getPassword())) {
+                log.info("User with correct credentials");
+            }
+            else {
+                log.error("Incorrect password");
+                throw new IncorrectPasswordException();
+            }
+        }
 
     }
 

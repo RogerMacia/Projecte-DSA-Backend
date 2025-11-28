@@ -54,7 +54,7 @@ public class SessionBuilder {
 
 
         Session res = new SessionImpl(conn);
-        return res;
+        return new SessionLogged(res);
     }
 
 }

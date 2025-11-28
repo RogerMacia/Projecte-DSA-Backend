@@ -4,7 +4,9 @@ import edu.upc.backend.classes.User;
 import org.apache.log4j.Logger;
 
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.LinkedList;
 
 public class UserDao implements IUserDAO{
 
@@ -116,6 +118,26 @@ public class UserDao implements IUserDAO{
 
             session = new SessionBuilder().build();
             res = session.findAll(User.class);
+        }
+        catch (Exception e)
+        {
+            log.error(e.getMessage());
+            e.printStackTrace();
+        }
+        finally {
+            session.close();
+        }
+        return res;
+    }
+
+    public User getUserByUsername(String username) throws SQLException {
+        Session session = null;
+        User res = null;
+        HashMap<String,Object> params = new HashMap<>();
+        params.put("username",username);
+        try{
+            session = new SessionBuilder().build();
+            res = (User) session.query("SELECT * FROM user WHERE username = ?",User.class,params).get(0);
         }
         catch (Exception e)
         {

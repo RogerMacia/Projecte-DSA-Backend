@@ -12,6 +12,8 @@ public class UsersList {
         this.userslist = new ArrayList<>();
     }
 
+    public UsersList(List<User> list) {userslist = list;}
+
     // ➕ Afegir un nou client
     public void addUser(User user) {
         this.userslist.add(user);
