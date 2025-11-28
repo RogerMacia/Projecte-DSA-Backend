@@ -153,5 +153,3 @@ function checkPassword() {
     return true;
 }
 
-$(document).ready(onReadyDocument);
-
