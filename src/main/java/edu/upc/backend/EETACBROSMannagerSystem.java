@@ -1,27 +1,36 @@
 package edu.upc.backend;
 
-import edu.upc.backend.classes.*;
+import edu.upc.backend.classes.BuyRequest;
+import edu.upc.backend.classes.Game;
+import edu.upc.backend.classes.User;
+import edu.upc.backend.classes.UserList;
 
+import java.util.HashMap;
 import java.util.List;
 
 public interface EETACBROSMannagerSystem {
 
-    public void addUser(User user);
-    public void addPlayer(Player player);
-    public UsersList getUsersList();
-    public List<Item> getItemList();
-    public PlayerList getPlayerList();
-    public User getUserByUsername(String username);
-    public Player getPlayerById(int id);
-    public User getUserById(int userId);
-    public Item getItemById(Integer id);
-    public void logIn (String username, String password);
+    public User logIn (String username, String password);
+    public void logOut(int userId);
+    public UserList getConnectedUsers();
 
-    public void createGame(int playerId);
+    // public void createGame(int playerId);
 
-    public Game findGame(int playerId);
-    public void updateGame(Game game);
-    public void removeGame(int playerId);
+    // public Game findGame(int playerId);
+    // public void updateGame(Game game);
+    // public void removeGame(int playerId);
 
     void clear();
+
+    // DAO Methods
+    void save(Object entity);
+    void close();
+    Object get(Class<?> theClass, Object ID);
+    void update(Object object);
+    void delete(Object object);
+    <T> List<T> findAll(Class<T> theClass, HashMap<String, Object> params);
+
+    User registerUser(User user);
+
+    void managePurchase(BuyRequest request);
 }

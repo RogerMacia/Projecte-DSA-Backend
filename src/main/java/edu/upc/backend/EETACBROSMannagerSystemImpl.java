@@ -1,29 +1,30 @@
 package edu.upc.backend;
 
 import edu.upc.backend.classes.*;
+import edu.upc.backend.database.*;
 import edu.upc.backend.exceptions.*;
 import org.apache.log4j.Logger;
 
+import javax.naming.NameNotFoundException;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
-// Per a que en faci les traces li he passat al chat i m'ho ha fet autotamaticament ell
 
 public class EETACBROSMannagerSystemImpl implements EETACBROSMannagerSystem {
-    private static EETACBROSMannagerSystemImpl instance;
-
-    private UsersList usersList;
-    private PlayerList playerList;
-    private List<Item> itemList;
-    private GameList _games;
-
     final static Logger logger = Logger.getLogger(EETACBROSMannagerSystemImpl.class);
 
+    private static EETACBROSMannagerSystemImpl instance;
+    private static GameList _games;
+    private final Session<Object> session;
+    private UserList connectedUsers;
+
     private EETACBROSMannagerSystemImpl() {
-        this.usersList = new UsersList();
-        this.itemList = new ArrayList();
-        this.playerList = new PlayerList();
-        this._games = new GameList();
+        _games = new GameList();
+        this.session = new SessionBuilder().build();
+        this.connectedUsers = new UserList();
         logger.info("Constructor EETACbROSManagerSystemImpl inicialitzat");
     }
 
@@ -37,109 +38,219 @@ public class EETACBROSMannagerSystemImpl implements EETACBROSMannagerSystem {
         return instance;
     }
 
-    @Override
-    public void addUser(User user) {
-        logger.info("Inici addUser(" + user + ")");
-        if (user != null) {
-            this.usersList.addUser(user);
-            //region nou player
-            User l_user = usersList.getUserByUsername(user.getUsername());
-            int playerId = l_user.getId();
-            Player player = new Player(playerId,0, 100, 100, 100, 0);
-            addPlayer(player);
-            //endregion nou player
-
-            //region nova partida
-            createGame(playerId);
-            //endregion nova partida
-            logger.info("Fi addUser() -> User afegit: " + user);
-        } else {
-            logger.warn("Intent d’afegir user nul");
-        }
+    public <T> List<T> findAll(Class<T> Class, HashMap<String, Object> params) {
+        List<Object> list = session.findAll(Class, params);
+        return list.stream().map(Class::cast).collect(Collectors.toList());
     }
+    
+    public User logIn(String username, String password) {
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("username", username);
+        List<User> users = this.findAll(User.class, params);
 
-    @Override
-    public void addPlayer(Player player) {
-        logger.info("Inici addPlayer(" + player + ")");
-        if (player != null) {
-            this.playerList.add(player);
-            logger.info("Fi addPlayer() -> Lector afegit: " + player);
-        } else {
-            logger.warn("Intent d’afegir player nul");
-        }
-    }
-
-    @Override
-    public UsersList getUsersList() {
-        logger.info("Inici getUsersList()");
-        logger.info("Fi getUsersList() -> Retorna: " + usersList);
-        return this.usersList;
-    }
-
-    @Override
-    public List<Item> getItemList() {
-        return this.itemList;
-    }
-
-    @Override
-    public PlayerList getPlayerList() {
-        return this.playerList;
-    }
-
-    @Override
-    public User getUserByUsername(String username) {
-        logger.info("Inici getUserByUsername(username=" + username + ")");
-        User user = usersList.getUserByUsername(username);
-        logger.info("Fi getUserByUsername() -> Retorna: " + user);
-        return user;
-    }
-
-    @Override
-    public Player getPlayerById(int id) {
-        logger.info("Inici getPlayerById(" + id + ")");
-        Player player = playerList.getPlayerByPlayerId(id);
-        logger.info("Fi getPlayerById() -> Retorna: " + player);
-        return player;
-    }
-
-    @Override
-    public User getUserById(int userId) {
-        logger.info("Inici getUserById(" + userId + ")");
-        User user = usersList.getUserById(userId);
-        logger.info("Fi getUserById() -> Retorna: " + user);
-        return user;
-    }
-
-    @Override
-    public Item getItemById(Integer id) {
-        for (Item p : itemList) {
-            if (p.getId() == id) {
-                return p;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public void logIn (String username, String password) {
-        User u = getUserByUsername(username);
-        if (u == null) {
+        if (users.isEmpty()) {
             logger.error("User " + username + " not found");
             throw new UserNotFoundException();
         }
+
+        User user = users.get(0);
+        if (password.equals(user.getPassword())) {
+            logger.info("User with correct credentials");
+            this.connectedUsers.addUser(user);
+        }
         else {
-            logger.info("User found");
-            if (password.equals(u.getPassword())) {
-                logger.info("User with correct credentials");
-            }
-            else {
-                logger.error("Incorrect password");
-                throw new IncorrectPasswordException();
-            }
+            logger.error("Incorrect password");
+            throw new IncorrectPasswordException();
+        }
+        return user;
+    }
+
+    public User registerUser(User user) {
+        String username = user.getUsername();
+        String name = user.getName();
+        String password = user.getPassword();
+        String email = user.getEmail();
+
+        logger.info("Registering user: " + username);
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("username", username);
+        List<User> existingUsers = this.findAll(User.class, params);
+
+        if (!existingUsers.isEmpty()) {
+            logger.error("User with username " + username + " already exists.");
+            throw new UserAlreadyExistsException();
+        }
+
+        User newUser = new User(username, name, password, email);
+        session.save(newUser);
+        logger.info("User " + username + " registered successfully.");
+        return newUser;
+    }
+
+    public void logOut(int userId) {
+        User user = this.connectedUsers.getUserById(userId);
+        if (user != null) {
+            this.connectedUsers.getUserslist().remove(user);
+            logger.info("User with id " + userId + " logged out.");
+        }
+        else {
+            logger.warn("User with id " + userId + " not found in connected users list.");
         }
     }
 
+    public UserList getConnectedUsers() {
+        return this.connectedUsers;
+    }
+
+    @Override
+    public void clear() {
+        logger.info("Inici clear()");
+        this.connectedUsers = new UserList();
+        logger.info("Fi clear() -> Llista de usuaris buidada");
+    }
+
+    @Override
+    public void save(Object entity) {
+        session.save(entity);
+    }
+
+    @Override
+    public void close() {
+        try {
+            session.close();
+        }
+        catch (SQLException e) {
+            logger.error("Error closing session: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public Object get(Class<?> theClass, Object ID) {
+        try {
+            return session.get(theClass, (Integer) ID);
+        }
+        catch (NameNotFoundException e) {
+            logger.error("Error getting object: " + e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public void update(Object object) {
+        try {
+            session.update(object);
+        }
+        catch (NameNotFoundException e) {
+            logger.error("Error updating object: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void delete(Object object) {
+        try {
+            session.delete(object);
+        }
+        catch (NameNotFoundException e) {
+            logger.error("Error deleting object: " + e.getMessage());
+        }
+    }
+
+    public void managePurchase(BuyRequest request) {
+        int userId = request.getUserId();
+        try {
+            User user = (User) session.get(User.class, userId);
+
+            if (user == null) {
+                logger.error("User with ID " + userId + " not found for purchase.");
+                // throw new UserNotFoundException("User with ID " + userId + " not found.");
+            }
+
+            int totalCost = 0;
+            // Map to store canonical items to avoid re-fetching for each instance
+            HashMap<Integer, Item> canonicalItemsInPurchase = new HashMap<>();
+
+            for (Item itemInRequest : request.getItems()) { // 'itemInRequest' is an Item from the BuyRequest
+                Item canonicalItem = (Item) session.get(Item.class, itemInRequest.getId()); // Fetch the actual Item from DB
+                if (canonicalItem == null) {
+                    logger.error("Item with ID " + itemInRequest.getId() + " not found for purchase.");
+                    // throw new ProductNotFoundException("Item with ID " + itemInRequest.getId() + " not found."); // Reusing ProductNotFoundException for item
+                }
+                // Store the canonical item if not already stored
+                if (!canonicalItemsInPurchase.containsKey(itemInRequest.getId())) {
+                    canonicalItemsInPurchase.put(itemInRequest.getId(), canonicalItem);
+                }
+                totalCost += canonicalItem.getPrice(); // Each item in request.getItems() represents one unit
+            }
+
+            if (user.getCoins() >= totalCost) { // Use getCoins()
+                user.setCoins(user.getCoins() - totalCost); // Use setCoins()
+
+                // Ensure user's item list is initialized
+                if (user.getItems() == null) {
+                    user.setItems(new ArrayList<>());
+                }
+                // The update method in this class already handles NameNotFoundException,
+                // so no need for a try-catch block here.
+                session.update(user);
+                logger.info("Purchase successful for user " + user.getUsername() + ". Total cost: " + totalCost);
+            } else {
+                logger.warn("Purchase failed for user " + user.getUsername() + ": not enough money. Required: " + totalCost + ", Available: " + user.getCoins());
+                // throw new NotEnoughMoneyException();
+            }
+        }
+        catch (Exception ex) {
+            logger.error("Purchase failed: " + ex.getMessage());
+        }
+    }
+
+    public void deleteItemFromUser(int userId, List<Item> itemsToDelete) {
+        try {
+            User user = (User) session.get(User.class, userId);
+            if (user == null) {
+                logger.error("User with ID " + userId + " not found for deleting items.");
+                //throw new UserNotFoundException("User with ID " + userId + " not found.");
+            }
+
+            if (user.getItems() == null || user.getItems().isEmpty()) {
+                logger.warn("User " + user.getUsername() + " does not have any items to delete.");
+                return;
+            }
+
+            List<Item> userItems = user.getItems();
+            int itemsRemovedCount = 0;
+
+            for (Item itemToDeleteRequest : itemsToDelete) {
+                boolean removed = false;
+                // Iterate through the user's actual items to find and remove one instance
+                for (int i = 0; i < userItems.size(); i++) {
+                    if (userItems.get(i).getId() == itemToDeleteRequest.getId()) {
+                        userItems.remove(i);
+                        itemsRemovedCount++;
+                        removed = true;
+                        logger.info("Removed one instance of item with ID " + itemToDeleteRequest.getId() + " from user " + user.getUsername() + "'s inventory.");
+                        break; // Remove only one instance per request item
+                    }
+                }
+                if (!removed) {
+                    logger.warn("User " + user.getUsername() + " does not possess item with ID " + itemToDeleteRequest.getId() + " (or not enough instances).");
+                }
+            }
+
+            if (itemsRemovedCount > 0) {
+                session.update(user);
+                logger.info(itemsRemovedCount + " items successfully deleted from user " + user.getUsername() + "'s inventory.");
+            } else {
+                logger.info("No items were deleted from user " + user.getUsername() + "'s inventory.");
+            }
+        }
+    catch (Exception ex) {
+           logger.info(" Failed to remove items");
+        }
+    }
+
+    /*
     //region games
+    @Override
     public void createGame(int playerId)
     {
         _games.create(playerId);
@@ -168,12 +279,7 @@ public class EETACBROSMannagerSystemImpl implements EETACBROSMannagerSystem {
         }
         l_game.setScore(game.getScore());
     }
-    //endregion games
 
-    @Override
-    public void clear() {
-        logger.info("Inici clear()");
-        this.usersList = new UsersList();
-        logger.info("Fi clear() -> Llista de usuaris buidada");
-    }
+     */
+
 }

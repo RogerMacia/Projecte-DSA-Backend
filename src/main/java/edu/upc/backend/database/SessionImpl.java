@@ -2,7 +2,7 @@ package edu.upc.backend.database;
 
 import edu.upc.backend.database.util.*;
 import org.apache.log4j.Logger;
-
+import edu.upc.backend.classes.User; // Import the User class
 
 import javax.naming.NameNotFoundException;
 import java.lang.reflect.InvocationTargetException;
@@ -13,7 +13,6 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Stream;
 
-// ORM cortesia de https://github.com/wenjie-c/DAO
 
 public class SessionImpl implements Session {
     private final Connection conn;
@@ -36,10 +35,17 @@ public class SessionImpl implements Session {
 
         try {
             pstm = conn.prepareStatement(insertQuery);
-            //pstm.setObject(1, 0);
-            int i = 1;
+            int i = 1; // Parameter index for PreparedStatement
 
             for (String field: ObjectHelper.getFields(entity)) {
+                // Special handling for User class and "items" attribute
+                // If the entity is a User and the field is "items", we skip setting the parameter
+                // because QueryHelper.createQueryINSERT already inserted "NULL" directly into the SQL.
+                if (entity instanceof User && field.equals("items")) {
+                    // Do increment 'i' and set parameter for "items" field VARCHAR NULL
+                    pstm.setObject(i++, "NULL");
+                    continue;
+                }
                 pstm.setObject(i++, ObjectHelper.getter(entity, field));
             }
 

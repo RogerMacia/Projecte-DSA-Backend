@@ -15,11 +15,11 @@ public class BuyRequest {
         this.playerId = playerId;
     }
 
-    public int getPlayerId() {
+    public int getUserId() {
         return playerId;
     }
 
-    public void setPlayerId(int playerId) {
+    public void setUserId(int playerId) {
         this.playerId = playerId;
     }
 

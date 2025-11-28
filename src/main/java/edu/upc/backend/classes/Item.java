@@ -9,6 +9,7 @@ public class Item {
     int price;
     String emoji;
     String description;
+    int quantity;
 
     public Item() {}
     /*public Item(int id, String name, int durability, int price)
@@ -27,7 +28,7 @@ public class Item {
         this.price = price;
         this.emoji = emoji;
         this.description = description;
-
+        this.quantity = 1;
     }
 
     public int getId() {
@@ -76,5 +77,12 @@ public class Item {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+    public  int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 }

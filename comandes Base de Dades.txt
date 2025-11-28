@@ -25,15 +25,49 @@ CREATE USER 'manel'@'localhost' IDENTIFIED BY 'pass123';
 CREATE DATABASE dsadb;
 USE dsadb;
 
-CREATE TABLE `User` (
-    ID INT AUTO_INCREMENT PRIMARY KEY,
-    lastName VARCHAR(100) NOT NULL,
-    firstName VARCHAR(100) NOT NULL,
-    address VARCHAR(255),
-    city VARCHAR(100),
-    password VARCHAR(255) NOT NULL
+CREATE TABLE `User`(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    items VARCHAR(255) DEFAULT NULL,
+    coins INT DEFAULT 0
 );
 
+CREATE TABLE Item (
+    id INT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    durability INT NOT NULL,
+    price INT NOT NULL,
+    emoji VARCHAR(10),
+    description VARCHAR(255),
+    quantity INT NOT NULL DEFAULT 1
+);
+
+CREATE TABLE UserItems (
+    user_id INT NOT NULL,
+    item_id INT NOT NULL,
+    quantity INT NOT NULL DEFAULT 1,
+
+    PRIMARY KEY (user_id, item_id),
+
+    FOREIGN KEY (user_id) REFERENCES User(id) ON DELETE CASCADE,
+    FOREIGN KEY (item_id) REFERENCES Item(id) ON DELETE CASCADE
+);
+
+
+INSERT INTO Item (id, name, price, durability, emoji, description) VALUES
+(1, 'Calculator', 200, 200, '📱', 'Solve tricky math problems with ease.'),
+(2, 'Laptop', 200, 200, '💻', 'Complete reports and projects efficiently.'),
+(3, 'Notebook', 150, 150, '📓', 'Keep track of class notes and ideas.'),
+(4, 'Pen', 100, 100, '🖊️', 'Write down important formulas and reminders.'),
+(5, 'Old Mobile', 180, 180, '☎️', 'Check messages and stay connected the old-school way.'),
+(6, 'Energy Drink', 120, 120, '🥤', 'Boost your focus and stay awake during long study sessions.'),
+(7, 'Headphones', 160, 160, '🎧', 'Concentrate on work and block out distractions.'),
+(8, 'Backpack', 200, 200, '🎒', 'Carry all your items and tools wherever you go.'),
+(9, 'USB Drive', 100, 100, '💾', 'Store and transport your important files easily.'),
+(10, 'Coffee', 100, 100, '☕', 'Recharge your energy and stay productive.');
 
 
 
