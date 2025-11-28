@@ -32,11 +32,11 @@ public class Player extends Entity {
 
 
     public int getPlayerId() {
-        return playerId;
+        return id;
     }
 
-    public void setPlayerId(int playerId) {
-        this.playerId = playerId;
+    public void setPlayerId(int id) {
+        this.id = id;
     }
 
     public List<Item>  getItems() {
@@ -47,7 +47,7 @@ public class Player extends Entity {
         this.items = items;
     }
 
-    int playerId;
+    int id;
     int hp;
     double speed;
 }

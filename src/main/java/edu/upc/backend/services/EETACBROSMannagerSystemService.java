@@ -34,7 +34,8 @@ public class EETACBROSMannagerSystemService {
         List<Item> itemlist = this.sistema.getItemList();
         PlayerList playerlist = this.sistema.getPlayerList();
 
-        if (userslist.size() == 0) {
+        if (userslist.size() == 0 && sistema.getClass() != EBDBManagerSystem.class) {
+
 
             User user1 = new User("agente007","Manel Colominas Ruiz","Barcelona","Castelldefels");
             userslist.addUser(user1);
@@ -42,7 +43,6 @@ public class EETACBROSMannagerSystemService {
             int playerId = user1.getId();
             Player player1 = new Player(playerId, 100, 100, 100, 100, 100);
             playerlist.addPlayer(player1);
-
             Item item1 = new Item(1, "Calculator", 200, 200, "📱", "Solve tricky math problems with ease.");
             Item item2 = new Item(2, "Laptop", 200, 200, "💻", "Complete reports and projects efficiently.");
             Item item3 = new Item(3, "Notebook", 150, 150, "📓", "Keep track of class notes and ideas.");
@@ -53,7 +53,6 @@ public class EETACBROSMannagerSystemService {
             Item item8 = new Item(8, "Backpack", 200, 200, "🎒", "Carry all your items and tools wherever you go.");
             Item item9 = new Item(9, "USB Drive", 100, 100, "💾", "Store and transport your important files easily.");
             Item item10 = new Item(10, "Coffee", 100, 100, "☕", "Recharge your energy and stay productive.");
-
             itemlist.add(item1);
             itemlist.add(item2);
             itemlist.add(item3);
@@ -64,6 +63,7 @@ public class EETACBROSMannagerSystemService {
             itemlist.add(item8);
             itemlist.add(item9);
             itemlist.add(item10);
+
 
         }
 
@@ -117,6 +117,7 @@ public class EETACBROSMannagerSystemService {
         UsersList usersList = this.sistema.getUsersList();
         User userExists = usersList.getUserByUsername(user.getUsername());
         logger.info(user.getUsername());
+        logger.info(user.toString());
 
 
 

@@ -33,7 +33,7 @@ function onSignUpbtnClick() {
     let password = $("#passwordTbx").val();
     let name = $("#nameTbx").val();
     let email = $("#emailTbx").val();
-    user = { username:username, nom:name, email:email, password:password};
+    user = { username:username, name:name, email:email, password:password};
     buffer = JSON.stringify(user);
     console.log(buffer);
     $.postJSON(REGISTER_URL, user ,(data, status) => {
