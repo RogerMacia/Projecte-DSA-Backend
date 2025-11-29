@@ -1,7 +1,6 @@
 package edu.upc.backend.classes;
 
 public class Item {
-    static int maxDurability = 20;
 
     int id;
     String name;
@@ -19,9 +18,9 @@ public class Item {
 
      */
 
-    public Item(int id, String name, int durability, int price, String emoji, String description)
+    public Item(String name, int durability, int price, String emoji, String description)
     {
-        this.id = id;
+        this.id = 0;
         this.name = name;
         this.durability = durability;
         this.price = price;
@@ -38,6 +37,14 @@ public class Item {
         this.id = id;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public int getDurability() {
         return durability;
     }
@@ -52,14 +59,6 @@ public class Item {
 
     public void setPrice(int price) {
         this.price = price;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getEmoji() {

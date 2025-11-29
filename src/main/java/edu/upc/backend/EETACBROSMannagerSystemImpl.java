@@ -38,7 +38,7 @@ public class EETACBROSMannagerSystemImpl implements EETACBROSMannagerSystem {
     }
 
     @Override
-    public void addUser(User user) {
+    public void registerUser(User user) {
         logger.info("Inici addUser(" + user + ")");
         if (user != null) {
             this.usersList.addUser(user);
@@ -120,7 +120,7 @@ public class EETACBROSMannagerSystemImpl implements EETACBROSMannagerSystem {
         return null;
     }
 
-    @Override
+    /*@Override
     public void logIn (String username, String password) {
         User u = getUserByUsername(username);
         if (u == null) {
@@ -137,6 +137,10 @@ public class EETACBROSMannagerSystemImpl implements EETACBROSMannagerSystem {
                 throw new IncorrectPasswordException();
             }
         }
+    }*/
+
+    public void logIn (User user) {
+
     }
 
     //region games

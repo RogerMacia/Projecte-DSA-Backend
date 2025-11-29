@@ -1,11 +1,13 @@
 package edu.upc.backend;
 
 import edu.upc.backend.classes.*;
-import edu.upc.backend.database.UserDao;
+import edu.upc.backend.database.ItemDAO;
+import edu.upc.backend.database.UserDAO;
 import edu.upc.backend.exceptions.IncorrectPasswordException;
 import edu.upc.backend.exceptions.UserNotFoundException;
 import org.apache.log4j.Logger;
 
+import java.sql.SQLException;
 import java.util.List;
 
 // Eetac bros Database manager
@@ -22,15 +24,50 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
         return _instance;
     }
 
+    /*@Override
+    public void addUser(User user){
+        return null;
+    }*/
+
     @Override
-    public void addUser(User user) {
-        UserDao _users = UserDao.getInstance();
-        try{
-            _users.addUser(user);
+    public void registerUser(User user) throws SQLException {
+        UserDAO _users = UserDAO.getInstance();
+
+        User userExists = _users.getUserByUsername(user.getUsername());
+
+        if (userExists != null) {
+            log.error("User " + user.getUsername() + " already exists");
+            throw new SQLException("User already exists");
         }
-        catch (Exception e)
-        {
-            log.error("Error: " + e.getMessage() );
+        else {
+            try {
+                _users.registerUser(user);
+            }
+            catch (Exception e) {
+                log.error("Error: " + e.getMessage() );
+            }
+        }
+    }
+
+    public void logIn(User user) throws SQLException {
+
+        UserDAO _users = UserDAO.getInstance();
+        User userExists = _users.getUserByUsername(user.getUsername());
+        String password = user.getPassword();
+
+        if (userExists == null) {
+            log.error("User " + user.getUsername() + " not found");
+            throw new UserNotFoundException();
+        }
+        else {
+            log.info("User found");
+            if (password.equals(userExists.getPassword())) {
+                log.info("User with correct credentials");
+            }
+            else {
+                log.error("Incorrect password");
+                throw new IncorrectPasswordException();
+            }
         }
 
     }
@@ -42,7 +79,7 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
 
     @Override
     public UsersList getUsersList() {
-        UserDao _users = UserDao.getInstance();
+        UserDAO _users = UserDAO.getInstance();
         UsersList res = null;
         try {
             List<User> list = _users.getUsers();
@@ -57,7 +94,16 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
 
     @Override
     public List<Item> getItemList() {
-        return null;
+        ItemDAO _itemsInstance = ItemDAO.getInstance();
+        List<Item> items = null;
+        try {
+            items = _itemsInstance.getItemlist();
+        }
+        catch (Exception e)
+        {
+            log.error("Error: " + e.getMessage() );
+        }
+        return  items;
     }
 
     @Override
@@ -67,7 +113,7 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
 
     @Override
     public User getUserByUsername(String username) {
-        UserDao _users = UserDao.getInstance();
+        UserDAO _users = UserDAO.getInstance();
         User res = null;
         try{
             res = _users.getUserByUsername(username);
@@ -86,7 +132,7 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
 
     @Override
     public User getUserById(int userId) {
-        UserDao _users = UserDao.getInstance();
+        UserDAO _users = UserDAO.getInstance();
         User res = null;
         try{
             res = _users.getUser(userId);
@@ -103,8 +149,9 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
         return null;
     }
 
-    @Override
+    /*@Override
     public void logIn(String username, String password) {
+
         User u = getUserByUsername(username);
         if (u == null) {
             log.error("User " + username + " not found");
@@ -121,7 +168,8 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
             }
         }
 
-    }
+    }*/
+
 
     @Override
     public void createGame(int playerId) {

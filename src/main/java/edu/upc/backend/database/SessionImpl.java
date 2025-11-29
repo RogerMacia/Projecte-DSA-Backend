@@ -1,5 +1,6 @@
 package edu.upc.backend.database;
 
+import edu.upc.backend.classes.Item;
 import edu.upc.backend.database.util.*;
 import org.apache.log4j.Logger;
 
@@ -172,6 +173,31 @@ public class SessionImpl implements Session {
         LinkedList<Object> res = new LinkedList<>();
         String[] fields = ObjectHelper.getFields(theClass);
 
+        try {
+            pstm = conn.prepareStatement(query);
+            ResultSet rs = pstm.executeQuery();
+
+            while (rs.next()) {
+                Object buffer = theClass.getConstructor().newInstance();
+                for (int i = 0; i < fields.length; i++) {
+                    ObjectHelper.setter(buffer, fields[i], rs.getObject(i + 1));
+                }
+                res.add(buffer);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return res;
+    }
+
+    /* WENJIE
+    public List<Object> findAll(Class theClass) {
+        PreparedStatement pstm = null;
+        String query = QueryHelper.createQuerySelectAll(theClass);
+        LinkedList<Object> res = new LinkedList<>();
+        String[] fields = ObjectHelper.getFields(theClass); // fields no s'assigna als paramets que es vol que s'agafin quan fas la consulta a la base de dades, faltaria un set fields a pstm
+
         try{
 
             pstm = conn.prepareStatement(query);
@@ -193,6 +219,31 @@ public class SessionImpl implements Session {
         }
         catch (Exception e)
         {
+            e.printStackTrace();
+        }
+
+        return res;
+    }
+    */
+
+    public List<Item> getItemlist() {
+        PreparedStatement pstm = null;
+        String query = QueryHelper.createQuerySelectAll(Item.class);
+        LinkedList<Item> res = new LinkedList<>();
+        String[] fields = ObjectHelper.getFields(Item.class);
+
+        try {
+            pstm = conn.prepareStatement(query);
+            ResultSet rs = pstm.executeQuery();
+
+            while (rs.next()) {
+                Item buffer = Item.class.getConstructor().newInstance();
+                for (int i = 0; i < fields.length; i++) {
+                    ObjectHelper.setter(buffer, fields[i], rs.getObject(i + 1));
+                }
+                res.add(buffer);
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

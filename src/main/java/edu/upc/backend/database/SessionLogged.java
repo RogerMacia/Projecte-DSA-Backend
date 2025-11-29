@@ -1,5 +1,6 @@
 package edu.upc.backend.database;
 
+import edu.upc.backend.classes.Item;
 import org.apache.log4j.Logger;
 
 import java.util.HashMap;
@@ -116,6 +117,21 @@ public class SessionLogged implements Session{
         catch (Exception e)
         {
             log.warn("Error: " + e.getMessage());
+        }
+        return null;
+    }
+
+    public List<Item> getItemlist(){
+        try
+        {
+            log.info("Selecting all " + Item.class.getName());
+            List<Item> res = _session.getItemlist();
+            log.info(String.format("%d objects were found.", res.size()));
+            return res;
+        }
+        catch (Exception e)
+        {
+            log.error("Error: " + e.getMessage());
         }
         return null;
     }

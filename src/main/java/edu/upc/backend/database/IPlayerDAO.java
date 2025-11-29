@@ -4,7 +4,7 @@ import edu.upc.backend.classes.User;
 
 import java.util.List;
 
-public interface IPlayerDao
+public interface IPlayerDAO
 {
     public int addPlayer(String name, String password, String username, String email) throws Exception;
     public User getPlayer(int userID) throws Exception;

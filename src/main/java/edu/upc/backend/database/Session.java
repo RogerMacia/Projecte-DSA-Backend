@@ -1,5 +1,7 @@
 package edu.upc.backend.database;
 
+import edu.upc.backend.classes.Item;
+
 import javax.naming.NameNotFoundException;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -12,6 +14,7 @@ public interface Session<E> {
     void update(Object object) throws NameNotFoundException;
     void delete(Object object) throws NameNotFoundException;
     List<Object> findAll(Class theClass);
+    List<Item> getItemlist();
     List<Object> findAll(Class theClass, HashMap params);
     List<Object> query(String query, Class theClass, HashMap params);
 }

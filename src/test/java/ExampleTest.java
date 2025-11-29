@@ -22,8 +22,8 @@ public class ExampleTest {
 
     @Test
     public void testUsuari() throws Exception {
-        manager.addUser(new User("Pedro1","Pedro","pedro@gmail.com","123456Ab"));
-        manager.addUser(new User("Pedro2","Pedro","pedro@gmail.com","123456Ab"));
+        manager.registerUser(new User("Pedro1","Pedro","pedro@gmail.com","123456Ab"));
+        manager.registerUser(new User("Pedro2","Pedro","pedro@gmail.com","123456Ab"));
         Assert.assertEquals(manager.getUsersList().size(), 2);
 
         //log.info(String.format("c equals %d", c));
