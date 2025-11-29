@@ -1,9 +1,15 @@
 package edu.upc.backend.database;
 
+import edu.upc.backend.database.util.ObjectHelper;
+import edu.upc.backend.database.util.QueryHelper;
 import org.apache.log4j.Logger;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 // Es un decorador
 public class SessionLogged implements Session{
@@ -134,6 +140,11 @@ public class SessionLogged implements Session{
             log.warn("Error: " + e.getMessage());
         }
         return null;
+    }
+
+    @Override
+    public Object findObject(Class theClass, HashMap params) {
+        return _session.findObject(theClass,params);
     }
 
 }

@@ -6,6 +6,9 @@ import edu.upc.backend.services.EETACBROSMannagerSystemService;
 import org.apache.log4j.Logger;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Stream;
 
 public class QueryHelper {
@@ -133,6 +136,44 @@ public class QueryHelper {
     {
         String res = "SELECT * FROM %s";
         return String.format(res,theClass.getSimpleName());
+    }
+
+    public static String createSelectFindAll(Class theClass, HashMap<String, String> params) {
+
+        Set<Map.Entry<String, String>> set = params.entrySet();
+
+        StringBuffer sb = new StringBuffer("SELECT * FROM "+theClass.getSimpleName()+" WHERE 1=1");
+        for (String key: params.keySet()) {
+            sb.append(" AND "+key+"=?");
+        }
+
+
+        return sb.toString();
+    }
+
+    public static String createQuery(Class theclass, String[] columns, String[] values) {
+        String tableName = "`" + theclass.getSimpleName() + "`";
+        StringBuilder query = new StringBuilder("SELECT * FROM ").append(tableName);
+
+        if (columns != null && columns.length > 0) {
+            query.append(" WHERE ");
+            for (int i = 0; i < columns.length; i++) {
+                query.append(columns[i]).append(" = ");
+                // WARNING: Directly embedding values can lead to SQL injection vulnerabilities.
+                // Consider using prepared statements with '?' placeholders and setting parameters separately.
+                if (values != null && i < values.length) {
+                    query.append("'").append(values[i]).append("'");
+                } else {
+                    // Fallback to placeholder if value is missing for a column
+                    query.append("?");
+                }
+
+                if (i < columns.length - 1) {
+                    query.append(" AND ");
+                }
+            }
+        }
+        return query.toString();
     }
 
     // Todas las operaciones CRUD implementadas

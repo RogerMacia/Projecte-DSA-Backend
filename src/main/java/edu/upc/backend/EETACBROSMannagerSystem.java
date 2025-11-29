@@ -1,9 +1,6 @@
 package edu.upc.backend;
 
-import edu.upc.backend.classes.BuyRequest;
-import edu.upc.backend.classes.Game;
-import edu.upc.backend.classes.User;
-import edu.upc.backend.classes.UserList;
+import edu.upc.backend.classes.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,9 +25,9 @@ public interface EETACBROSMannagerSystem {
     Object get(Class<?> theClass, Object ID);
     void update(Object object);
     void delete(Object object);
-    <T> List<T> findAll(Class<T> theClass, HashMap<String, Object> params);
-
     User registerUser(User user);
 
-    void managePurchase(BuyRequest request);
+    // void managePurchase(BuyRequest request);
+
+    List<Item> findAll(Class<Item> itemClass);
 }

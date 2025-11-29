@@ -13,7 +13,7 @@ password: mariadb
 
 SELECT User, Host FROM mysql.user;
 
-CREATE DATABASE dsadb;
+CREATE DATABASE projecte_dsa_db;
 
 show databases;
 use dsadb;
@@ -23,7 +23,7 @@ show tables;
 CREATE USER 'manel'@'localhost' IDENTIFIED BY 'pass123';
 
 CREATE DATABASE dsadb;
-USE dsadb;
+USE projecte_dsa_db;
 
 CREATE TABLE `User`(
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -31,7 +31,6 @@ CREATE TABLE `User`(
     name VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
-    items VARCHAR(255) DEFAULT NULL,
     coins INT DEFAULT 0
 );
 
@@ -75,5 +74,5 @@ SELECT * FROM `User`;
 SELECT firstName, lastName, city FROM `User`;
 
 Per eliminar la base de dades:
-DROP DATABASE qaa_db;
+DROP DATABASE projecte_dsa_db;
 

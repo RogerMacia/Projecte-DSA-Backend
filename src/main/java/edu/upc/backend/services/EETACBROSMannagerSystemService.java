@@ -15,6 +15,7 @@ import javax.ws.rs.core.Response;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Api(value = "/eetacbros", description = "Endpoint de biblioteca Service")
 @Path("/eetacbros")
@@ -56,7 +57,7 @@ public class EETACBROSMannagerSystemService {
     @Path("shop/items")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getItemList() {
-        List<Item> itemList = this.instance.findAll(Item.class, new HashMap<>());
+        List<Item> itemList = this.instance.findAll(Item.class);
 
         GenericEntity<List<Item>> entity = new GenericEntity<List<Item>>(itemList) {};
         return Response.status(Response.Status.OK).entity(entity).build();
@@ -135,7 +136,7 @@ public class EETACBROSMannagerSystemService {
         User user = (User) instance.get(User.class, userId);
         String username = user.getUsername();
 
-        instance.managePurchase(request);
+        // instance.managePurchase(request);
 
         logger.info("Purchase done for user " + username);
 

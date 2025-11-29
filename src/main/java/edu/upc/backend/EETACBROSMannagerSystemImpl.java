@@ -2,10 +2,12 @@ package edu.upc.backend;
 
 import edu.upc.backend.classes.*;
 import edu.upc.backend.database.*;
+import edu.upc.backend.database.util.QueryHelper;
 import edu.upc.backend.exceptions.*;
 import org.apache.log4j.Logger;
 
 import javax.naming.NameNotFoundException;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,23 +39,19 @@ public class EETACBROSMannagerSystemImpl implements EETACBROSMannagerSystem {
         logger.info("Fi getInstance() -> " + instance);
         return instance;
     }
-
-    public <T> List<T> findAll(Class<T> Class, HashMap<String, Object> params) {
-        List<Object> list = session.findAll(Class, params);
-        return list.stream().map(Class::cast).collect(Collectors.toList());
-    }
     
     public User logIn(String username, String password) {
         HashMap<String, Object> params = new HashMap<>();
         params.put("username", username);
-        List<User> users = this.findAll(User.class, params);
+        //List<User> users = session.findAll(User.class, params).stream().map(obj -> (User) obj).collect(Collectors.toList());
+        // List<User> users = session.findAll(User.class).stream().map(obj -> (User) obj).collect(Collectors.toList());
 
-        if (users.isEmpty()) {
+        User user = (User) session.findObject(User.class, params);
+        if (user == null) {
             logger.error("User " + username + " not found");
             throw new UserNotFoundException();
         }
-
-        User user = users.get(0);
+        
         if (password.equals(user.getPassword())) {
             logger.info("User with correct credentials");
             this.connectedUsers.addUser(user);
@@ -74,7 +72,7 @@ public class EETACBROSMannagerSystemImpl implements EETACBROSMannagerSystem {
         logger.info("Registering user: " + username);
         HashMap<String, Object> params = new HashMap<>();
         params.put("username", username);
-        List<User> existingUsers = this.findAll(User.class, params);
+        List<User> existingUsers = session.findAll(User.class, params).stream().map(obj -> (User) obj).collect(Collectors.toList());
 
         if (!existingUsers.isEmpty()) {
             logger.error("User with username " + username + " already exists.");
@@ -85,6 +83,10 @@ public class EETACBROSMannagerSystemImpl implements EETACBROSMannagerSystem {
         session.save(newUser);
         logger.info("User " + username + " registered successfully.");
         return newUser;
+    }
+
+    public List<Object> findAll(Class theClass){
+        return session.findAll(theClass);
     }
 
     public void logOut(int userId) {
@@ -155,7 +157,7 @@ public class EETACBROSMannagerSystemImpl implements EETACBROSMannagerSystem {
         }
     }
 
-    public void managePurchase(BuyRequest request) {
+    /*public void managePurchase(BuyRequest request) {
         int userId = request.getUserId();
         try {
             User user = (User) session.get(User.class, userId);
@@ -246,7 +248,7 @@ public class EETACBROSMannagerSystemImpl implements EETACBROSMannagerSystem {
     catch (Exception ex) {
            logger.info(" Failed to remove items");
         }
-    }
+    }*/
 
     /*
     //region games

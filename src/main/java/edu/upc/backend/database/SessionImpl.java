@@ -41,11 +41,6 @@ public class SessionImpl implements Session {
                 // Special handling for User class and "items" attribute
                 // If the entity is a User and the field is "items", we skip setting the parameter
                 // because QueryHelper.createQueryINSERT already inserted "NULL" directly into the SQL.
-                if (entity instanceof User && field.equals("items")) {
-                    // Do increment 'i' and set parameter for "items" field VARCHAR NULL
-                    pstm.setObject(i++, "NULL");
-                    continue;
-                }
                 pstm.setObject(i++, ObjectHelper.getter(entity, field));
             }
 
@@ -177,7 +172,7 @@ public class SessionImpl implements Session {
         String query = QueryHelper.createQuerySelectAll(theClass);
         LinkedList<Object> res = new LinkedList<>();
         String[] fields = ObjectHelper.getFields(theClass);
-
+        log.info("Executing query: " + query);
         try{
 
             pstm = conn.prepareStatement(query);
@@ -243,6 +238,56 @@ public class SessionImpl implements Session {
 
         return res;
     }
+    
+    public Object findObject(Class theClass, HashMap params) {
+        PreparedStatement pstm = null;
+        Object res = null;
+
+        try {
+            // Get column names and values from params
+            Set<String> columnSet = params.keySet();
+            String[] columns = columnSet.toArray(new String[0]);
+            String[] values = new String[columns.length];
+            for (int i = 0; i < columns.length; i++) {
+                values[i] = params.get(columns[i]).toString();
+            }
+
+            // Create the query using QueryHelper.createQuery
+            String query = QueryHelper.createQuery(theClass, columns, values);
+            log.info("Executing query: " + query);
+
+            // Execute the query
+            pstm = conn.prepareStatement(query);
+            ResultSet rs = pstm.executeQuery();
+
+            // Populate the object if a result is found
+            if (rs.next()) {
+                res = theClass.getConstructor().newInstance();
+                String[] fields = ObjectHelper.getFields(theClass);
+                for (int i = 0; i < fields.length; i++) {
+                    // Retrieve object by column name instead of index to ensure correct mapping
+                    ObjectHelper.setter(res, fields[i], rs.getObject(fields[i]));
+                }
+            } else {
+                log.info("No object found for the given parameters.");
+            }
+
+        } catch (Exception e) {
+            log.error("Error in findObject: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            if (pstm != null) {
+                try {
+                    pstm.close();
+                } catch (SQLException e) {
+                    log.error("Error closing PreparedStatement: " + e.getMessage());
+                }
+            }
+        }
+        return res;
+    }
+
+
 
     public int findId(Object object)
     {
@@ -285,6 +330,7 @@ public class SessionImpl implements Session {
             }
 
             ResultSet rs = pstm.executeQuery();
+
             while(rs.next())
             {
                 Object buffer = theClass.getConstructor().newInstance();
