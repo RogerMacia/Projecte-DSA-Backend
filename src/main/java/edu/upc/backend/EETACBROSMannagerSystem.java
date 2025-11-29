@@ -2,32 +2,26 @@ package edu.upc.backend;
 
 import edu.upc.backend.classes.*;
 
-import java.util.HashMap;
 import java.util.List;
 
 public interface EETACBROSMannagerSystem {
 
-    public User logIn (String username, String password);
-    public void logOut(int userId);
-    public UserList getConnectedUsers();
+    public void addUser(User user);
+    public void addPlayer(Player player);
+    public UsersList getUsersList();
+    public List<Item> getItemList();
+    public PlayerList getPlayerList();
+    public User getUserByUsername(String username);
+    public Player getPlayerById(int id);
+    public User getUserById(int userId);
+    public Item getItemById(Integer id);
+    public void logIn (String username, String password);
 
-    // public void createGame(int playerId);
+    public void createGame(int playerId);
 
-    // public Game findGame(int playerId);
-    // public void updateGame(Game game);
-    // public void removeGame(int playerId);
+    public Game findGame(int playerId);
+    public void updateGame(Game game);
+    public void removeGame(int playerId);
 
     void clear();
-
-    // DAO Methods
-    void save(Object entity);
-    void close();
-    Object get(Class<?> theClass, Object ID);
-    void update(Object object);
-    void delete(Object object);
-    User registerUser(User user);
-
-    // void managePurchase(BuyRequest request);
-
-    List<Item> findAll(Class<Item> itemClass);
 }

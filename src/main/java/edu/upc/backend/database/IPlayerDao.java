@@ -1,15 +1,15 @@
 package edu.upc.backend.database;
 
-import edu.upc.backend.classes.Player;
+import edu.upc.backend.classes.User;
 
 import java.util.List;
 
-public interface IPlayerDAO
+public interface IPlayerDao
 {
-    public int addPlayer(Player player) throws Exception;
-    public Player getPlayer(int userID) throws Exception;
-    public void updatePlayer(Player player) throws Exception;
+    public int addPlayer(String name, String password, String username, String email) throws Exception;
+    public User getPlayer(int userID) throws Exception;
+    public void updatePlayer(int userID, String name, String password, String username, String email) throws Exception;
     public void deletePlayer(int userID) throws Exception;
-    public List<Player> getPlayers() throws Exception;
+    public List<User> getPlayers() throws Exception;
 
 }

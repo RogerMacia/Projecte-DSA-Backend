@@ -4,15 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class UserList {
+public class UsersList {
     private List<User> userslist;
 
     // 🔧 Constructor
-    public UserList() {
+    public UsersList() {
         this.userslist = new ArrayList<>();
     }
 
-    public UserList(List<User> list) {userslist = list;}
+    public UsersList(List<User> list) {userslist = list;}
 
     // ➕ Afegir un nou client
     public void addUser(User user) {

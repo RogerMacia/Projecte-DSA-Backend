@@ -2,9 +2,6 @@ package edu.upc.backend.classes;
 
 import edu.upc.backend.util.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class User {
 
     // 🧱 Atributs
@@ -13,10 +10,10 @@ public class User {
     private String name;
     private String email;
     private String password;
-    private int coins;
 
     // 🔧 Constructor buit (necessari per frameworks o JSON)
     public User() {
+        this.id = DBUtils.retrieveUserID();
     }
 
     // 🔧 Constructor complet
@@ -26,7 +23,6 @@ public class User {
         this.name = name;
         this.email = email;
         this.password = password;
-        this.coins = 0;
     }
 
 
@@ -70,13 +66,6 @@ public class User {
         this.id = id;
     }
 
-    public int getCoins() {
-        return coins;
-    }
-
-    public  void setCoins(int coins) {
-        this.coins = coins;
-    }
 
     // 🧾 Representació del client
     @Override

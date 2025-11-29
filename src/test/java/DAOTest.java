@@ -1,5 +1,6 @@
 import edu.upc.backend.classes.User;
-import edu.upc.backend.database.UserDAO;
+import edu.upc.backend.database.Session;
+import edu.upc.backend.database.UserDao;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,12 +12,12 @@ import org.apache.log4j.Logger;
 public class DAOTest {
 
     Logger log = Logger.getLogger(DAOTest.class);
-    UserDAO _users;
+    UserDao _users;
 
     @Before
     public void Init()
     {
-        _users = UserDAO.getInstance();
+        _users = UserDao.getInstance();
     }
     @After
     public void Finalize()

@@ -6,35 +6,36 @@ import org.apache.log4j.Logger;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.LinkedList;
 
-public class UserDAO implements IUserDAO{
+public class UserDao implements IUserDAO{
 
-    private static UserDAO _instance;
-    public static UserDAO getInstance()
+    private static UserDao _instance;
+    public static UserDao getInstance()
     {
-        if(_instance == null) _instance = new UserDAO();
+        if(_instance == null) _instance = new UserDao();
         return _instance;
     }
 
-    private UserDAO() {
+    private UserDao()
+    {}
 
-    }
-
-    private static final Logger log = Logger.getLogger(UserDAO.class);
+    private static final Logger log = Logger.getLogger(UserDao.class);
 
     @Override
     public int addUser(String name, String password, String username, String email) throws Exception {
         return addUser(new User(username,name,email,password));
     }
-
-    public int addUser(User user) throws SQLException {
+    public int addUser(User input) throws SQLException {
         int id = -1;
         Session session = null;
         //User input = new User(username,name,email,password);
+
         try{
+
             session = new SessionBuilder().build();
-            session.save(user);
-            id = user.getId();
+            session.save(input);
+            id = input.getId();
         }
         catch (Exception e)
         {
