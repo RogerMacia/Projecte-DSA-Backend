@@ -29,13 +29,13 @@ public class EETACBROSMannagerSystemService {
 
     public EETACBROSMannagerSystemService() {
         // Use the singleton instance
-        this.sistema = // EETACBROSMannagerSystemImpl.getInstance();
-                EBDBManagerSystem.getInstance();
+        this.sistema = EBDBManagerSystem.getInstance();
 
         UsersList userslist = this.sistema.getUsersList();
         List<Item> itemlist = this.sistema.getItemList();
         PlayerList playerlist = this.sistema.getPlayerList();
 
+        /*
         if (userslist.size() == 0 && sistema.getClass() != EBDBManagerSystem.class) {
 
 
@@ -68,6 +68,8 @@ public class EETACBROSMannagerSystemService {
 
 
         }
+
+         */
 
     }
 
