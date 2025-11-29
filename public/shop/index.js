@@ -5,7 +5,7 @@ console.log("Calling:", SHOP_GET_ITEMS_URL);
 
 // ================= State Variables =================
 let cart = [];
-let coins = 1000;
+let coins = localStorage.getItem("coins");
 currentPlayerId = localStorage.getItem("userId");
 
 // ================= API Functions =================
@@ -56,7 +56,7 @@ function renderProducts(products) {
     productsGrid.empty();
 
     if (products.length === 0) {
-        productsGrid.html('<div class="empty-cart-message">No hay productos disponibles</div>');
+        productsGrid.html('<div class="empty-cart-message">No products available</div>');
         return;
     }
 
@@ -80,7 +80,7 @@ function createProductCard(product) {
                 <div class="price">$${product.price}</div>
                 <button class="nes-btn is-primary add-to-cart">Add to cart</button>
             </div>
-            <div class="durability">Durabilidad: ${product.durability}</div>
+            <div class="durability">Durability: ${product.durability}</div>
         </div>
     `;
 
@@ -167,7 +167,7 @@ function updateCheckoutButton(total) {
 
     if (total > coins) {
         checkoutBtn.prop('disabled', true);
-        checkoutBtn.attr('title', 'No tienes suficientes monedas');
+        checkoutBtn.attr('title', 'You don\'t have enough coins');
     } else {
         checkoutBtn.prop('disabled', false);
         checkoutBtn.removeAttr('title');
@@ -304,8 +304,8 @@ function initializeShop() {
         })
         .fail(function(err) {
             console.error("Error fetching data:", err);
-            showNotification('Error al cargar los productos', 'error');
-            $('#productsGrid').html('<div class="empty-cart-message">Error al cargar los productos</div>');
+            showNotification('Error loading products', 'error');
+            $('#productsGrid').html('<div class="empty-cart-message">Error loading products</div>');
         });
 
     // Set up event handlers

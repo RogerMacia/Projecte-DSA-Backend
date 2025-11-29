@@ -142,7 +142,9 @@ public class EETACBROSMannagerSystemService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response logIn(User user) {
         try {
-            this.sistema.logIn(user);
+            user = this.sistema.logIn(user);
+            logger.info(" username: " + user.getUsername() + " password: "+user.getPassword()+" email: "+user.getEmail()+"coins: "+user.getCoins());
+
             return Response.status(Response.Status.CREATED).entity(user).build();
         }
         catch (SQLException e) {

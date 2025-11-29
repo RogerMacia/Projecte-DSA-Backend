@@ -139,8 +139,9 @@ public class EETACBROSMannagerSystemImpl implements EETACBROSMannagerSystem {
         }
     }*/
 
-    public void logIn (User user) {
 
+    public User logIn (User user) {
+        return user;
     }
 
     //region games

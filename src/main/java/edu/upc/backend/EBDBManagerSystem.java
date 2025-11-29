@@ -49,7 +49,7 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
         }
     }
 
-    public void logIn(User user) throws SQLException {
+    public User logIn(User user) throws SQLException {
 
         UserDAO _users = UserDAO.getInstance();
         User userExists = _users.getUserByUsername(user.getUsername());
@@ -58,13 +58,12 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
         if (userExists == null) {
             log.error("User " + user.getUsername() + " not found");
             throw new UserNotFoundException();
-        }
-        else {
+        } else {
             log.info("User found");
             if (password.equals(userExists.getPassword())) {
                 log.info("User with correct credentials");
-            }
-            else {
+                return userExists;
+            } else {
                 log.error("Incorrect password");
                 throw new IncorrectPasswordException();
             }

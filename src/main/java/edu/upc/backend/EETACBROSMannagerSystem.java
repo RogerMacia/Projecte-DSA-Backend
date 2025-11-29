@@ -19,7 +19,7 @@ public interface EETACBROSMannagerSystem {
     public User getUserById(int userId);
     public Item getItemById(Integer id);
     // public void logIn (String username, String password);
-    public void logIn (User user) throws SQLException;
+    public User logIn (User user) throws SQLException;
 
     public void createGame(int playerId);
 

@@ -10,6 +10,7 @@ public class User {
     private String name;
     private String email;
     private String password;
+    private int coins;
 
     // 🔧 Constructor buit (necessari per frameworks o JSON)
     public User() {
@@ -23,6 +24,7 @@ public class User {
         this.name = name;
         this.email = email;
         this.password = password;
+        this.coins = 0;
     }
 
 
@@ -64,6 +66,14 @@ public class User {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public void setCoins(int coins) {
+        this.coins = coins;
+    }
+
+    public int getCoins() {
+        return coins;
     }
 
 

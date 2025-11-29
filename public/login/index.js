@@ -43,6 +43,8 @@ function onLoginBtnClick() {
              //Store user data (Note: In production, consider security implications)
              localStorage.setItem("userId", data.id);
              localStorage.setItem("username", data.username);
+             localStorage.setItem("coins", data.coins);
+
 
             setTimeout(() => {
                 window.location.href = "./shop";
