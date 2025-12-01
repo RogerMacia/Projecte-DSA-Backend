@@ -121,20 +121,6 @@ public class SessionLogged implements Session{
         return null;
     }
 
-    public List<Item> getItemlist(){
-        try
-        {
-            log.info("Selecting all " + Item.class.getName());
-            List<Item> res = _session.getItemlist();
-            log.info(String.format("%d objects were found.", res.size()));
-            return res;
-        }
-        catch (Exception e)
-        {
-            log.error("Error: " + e.getMessage());
-        }
-        return null;
-    }
 
     @Override
     public List<Object> query(String query, Class theClass, HashMap params) {

@@ -226,29 +226,6 @@ public class SessionImpl implements Session {
     }
     */
 
-    public List<Item> getItemlist() {
-        PreparedStatement pstm = null;
-        String query = QueryHelper.createQuerySelectAll(Item.class);
-        LinkedList<Item> res = new LinkedList<>();
-        String[] fields = ObjectHelper.getFields(Item.class);
-
-        try {
-            pstm = conn.prepareStatement(query);
-            ResultSet rs = pstm.executeQuery();
-
-            while (rs.next()) {
-                Item buffer = Item.class.getConstructor().newInstance();
-                for (int i = 0; i < fields.length; i++) {
-                    ObjectHelper.setter(buffer, fields[i], rs.getObject(i + 1));
-                }
-                res.add(buffer);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return res;
-    }
 
     public List<Object> findAll(Class theClass, HashMap params) {
         PreparedStatement pstm = null;
