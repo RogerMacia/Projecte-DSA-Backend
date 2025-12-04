@@ -1,6 +1,7 @@
 package edu.upc.backend.database;
 
 import edu.upc.backend.classes.Item;
+import edu.upc.backend.classes.UserItem;
 import edu.upc.backend.database.util.*;
 import org.apache.log4j.Logger;
 
@@ -46,102 +47,72 @@ public class SessionImpl implements Session {
 
             pstm.executeQuery();
 
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             log.error(insertQuery);
             e.printStackTrace();
         }
 
     }
 
-    public void close() throws SQLException {
-        conn.close();
-    }
-
-    public Object get(Class theClass, int ID) throws NameNotFoundException {
-
-        /*
-        Object res = _cache.get(ID);
-        res = ObjectHelper.getter()
-
-
-        if(res != null) return res;
-        */
+    public Object update(Class theClass, HashMap<String, Object> paramsSearch, HashMap<String, Object> paramsUpdate) {
         PreparedStatement pstm = null;
-        Object res = null;
-
-        try{
-            res = theClass.getConstructor().newInstance();
-            String query = QueryHelper.createQuerySELECT(res);
-            pstm = conn.prepareStatement(query);
-
-            pstm.setObject(1,ID);
-
-            ResultSet rs = pstm.executeQuery();
-
-            if(!rs.next()) throw new NameNotFoundException("Objeto con id " + ID + " no fue encontrado."); // next una vez, creo
-
-            String[] f =  ObjectHelper.getFields(res);
-            for(int i = 0; i < f.length; i++)
-            {
-                ObjectHelper.setter(res,f[i],rs.getObject(i+1));
-            }
-
-            //_cache.put(ID,res);
-        }
-        catch (SQLException | NoSuchFieldException | IllegalAccessException | NoSuchMethodException |
-               InvocationTargetException | InstantiationException e)
-        {
-            e.printStackTrace(); // errores importantes
-        }
-
-        return res;
-    }
-
-    public void update(Object object) throws NameNotFoundException {
-        PreparedStatement pstm = null;
-        //Integer id = Utils.getKeyByValue(_cache,object);
-        //Object old = _cache.get(id);
-
-        String[] fields = ObjectHelper.getFields(object);
-        Stream<String> buffer = Arrays.stream(fields).filter(x->!x.equals("id")); // solucion chapucera
-        fields = buffer.toArray(String[]::new);
-        String query = "";
-        PreparedStatement pstm2 = null;
+        String query = QueryHelper.createUPDATEMASTERFUNCTION(theClass, paramsSearch, paramsUpdate);
         try {
-            Integer id = (Integer) ObjectHelper.getter(object,"id");
-            if(id < 0) throw new NameNotFoundException("Id not found! Unknown object.");
-            /*
-            //region buscar id
-            String query = QueryHelper.createQuerySELECTID(object);
             pstm = conn.prepareStatement(query);
-            ResultSet rs = pstm.executeQuery();
-            if(!rs.next()) throw new NameNotFoundException("ID no encontrado");
+            int i = 1;
 
-            int id = rs.getInt(1);
-            //endregion buscar id
-            */
-            query = QueryHelper.createQueryUPDATE(object);
-            pstm2 = conn.prepareStatement(query);
-
-
-            for(int i = 0; i < fields.length;i++)
-            {
-
-                pstm2.setObject(i+1,ObjectHelper.getter(object,fields[i]));
+            // The order of keys is not guaranteed, but we're following the same order as query creation.
+            String[] updateKeys = paramsUpdate.keySet().toArray(new String[0]);
+            for (String key : updateKeys) {
+                pstm.setObject(i++, paramsUpdate.get(key));
             }
-            pstm2.setObject(fields.length+1,id);
 
-            pstm2.executeQuery();
+            String[] searchKeys = paramsSearch.keySet().toArray(new String[0]);
+            for (String key : searchKeys) {
+                pstm.setObject(i++, paramsSearch.get(key));
+            }
 
-
-
+            int affectedRows = pstm.executeUpdate();
+            return affectedRows;
         }
-        catch (SQLException | NoSuchFieldException | IllegalAccessException | NoSuchMethodException |
-               InvocationTargetException e)
-        {
-            log.error(query);
+        catch (SQLException e) {
             e.printStackTrace();
+            return null;
         }
+    }
+
+    public List<Object> get(Class theClass, HashMap<String, Object> paramsSearch) {
+        PreparedStatement pstm = null;
+        String query = QueryHelper.createSELECTMASTERFUNCTION(theClass, paramsSearch);
+        List<Object> results = new LinkedList<>();
+        try {
+            pstm = conn.prepareStatement(query);
+
+            if (paramsSearch != null && !paramsSearch.isEmpty()) {
+                // The order of keys is not guaranteed, but we're following the same order as query creation in QueryHelper.
+                String[] searchKeys = paramsSearch.keySet().toArray(new String[0]);
+                for (int i = 0; i < searchKeys.length; i++) {
+                    pstm.setObject(i + 1, paramsSearch.get(searchKeys[i]));
+                }
+            }
+
+            ResultSet rs = pstm.executeQuery();
+            String[] fields = ObjectHelper.getFields(theClass);
+
+            while (rs.next()) {
+                Object instance = theClass.getConstructor().newInstance();
+                for (int i = 0; i < fields.length; i++) {
+                    ObjectHelper.setter(instance, fields[i], rs.getObject(i + 1));
+                }
+                results.add(instance);
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        return results;
     }
 
     public void delete(Object object) {
@@ -191,12 +162,103 @@ public class SessionImpl implements Session {
         return res;
     }
 
+    public void close() throws SQLException {
+        conn.close();
+    }
+
+    /*public Object get(Class theClass, int ID) throws NameNotFoundException {
+
+        *//*
+        Object res = _cache.get(ID);
+        res = ObjectHelper.getter()
+
+
+        if(res != null) return res;
+        *//*
+        PreparedStatement pstm = null;
+        Object res = null;
+
+        try{
+            res = theClass.getConstructor().newInstance();
+            String query = QueryHelper.createQuerySELECT(res);
+            pstm = conn.prepareStatement(query);
+
+            pstm.setObject(1,ID);
+
+            ResultSet rs = pstm.executeQuery();
+
+            if(!rs.next()) throw new NameNotFoundException("Objeto con id " + ID + " no fue encontrado."); // next una vez, creo
+
+            String[] f =  ObjectHelper.getFields(res);
+            for(int i = 0; i < f.length; i++)
+            {
+                ObjectHelper.setter(res,f[i],rs.getObject(i+1));
+            }
+
+            //_cache.put(ID,res);
+        }
+        catch (SQLException | NoSuchFieldException | IllegalAccessException | NoSuchMethodException |
+               InvocationTargetException | InstantiationException e)
+        {
+            e.printStackTrace(); // errores importantes
+        }
+
+        return res;
+    }*/
+
+    /*public void update(Object object) throws NameNotFoundException {
+        PreparedStatement pstm = null;
+        //Integer id = Utils.getKeyByValue(_cache,object);
+        //Object old = _cache.get(id);
+
+        String[] fields = ObjectHelper.getFields(object);
+        Stream<String> buffer = Arrays.stream(fields).filter(x->!x.equals("id")); // solucion chapucera
+        fields = buffer.toArray(String[]::new);
+        String query = "";
+        PreparedStatement pstm2 = null;
+        try {
+            Integer id = (Integer) ObjectHelper.getter(object,"id");
+            if(id < 0) throw new NameNotFoundException("Id not found! Unknown object.");
+            *//*
+            //region buscar id
+            String query = QueryHelper.createQuerySELECTID(object);
+            pstm = conn.prepareStatement(query);
+            ResultSet rs = pstm.executeQuery();
+            if(!rs.next()) throw new NameNotFoundException("ID no encontrado");
+
+            int id = rs.getInt(1);
+            //endregion buscar id
+            *//*
+            query = QueryHelper.createQueryUPDATE(object);
+            pstm2 = conn.prepareStatement(query);
+
+
+            for(int i = 0; i < fields.length;i++)
+            {
+
+                pstm2.setObject(i+1,ObjectHelper.getter(object,fields[i]));
+            }
+            pstm2.setObject(fields.length+1,id);
+
+            pstm2.executeQuery();
+
+
+
+        }
+        catch (SQLException | NoSuchFieldException | IllegalAccessException | NoSuchMethodException |
+               InvocationTargetException e)
+        {
+            log.error(query);
+            e.printStackTrace();
+        }
+    }*/
+
     /* WENJIE
     public List<Object> findAll(Class theClass) {
         PreparedStatement pstm = null;
         String query = QueryHelper.createQuerySelectAll(theClass);
         LinkedList<Object> res = new LinkedList<>();
-        String[] fields = ObjectHelper.getFields(theClass); // fields no s'assigna als paramets que es vol que s'agafin quan fas la consulta a la base de dades, faltaria un set fields a pstm
+        String[] fields = ObjectHelper.getFields(theClass);
 
         try{
 
@@ -226,7 +288,8 @@ public class SessionImpl implements Session {
     }
     */
 
-    public List<Item> getItemlist() {
+    // S'HAURIA D'ELIMINAR AQUESTA FUNCIÓ
+    /*public List<Item> getItemlist() {
         PreparedStatement pstm = null;
         String query = QueryHelper.createQuerySelectAll(Item.class);
         LinkedList<Item> res = new LinkedList<>();
@@ -248,7 +311,7 @@ public class SessionImpl implements Session {
         }
 
         return res;
-    }
+    }*/
 
     public List<Object> findAll(Class theClass, HashMap params) {
         PreparedStatement pstm = null;
@@ -256,7 +319,7 @@ public class SessionImpl implements Session {
         LinkedList<Object> res = new LinkedList<>();
         String[] fields = ObjectHelper.getFields(theClass);
 
-        try{
+        try {
 
             String[] ordered = Utils.computeOrder(query,params.keySet());
 
@@ -326,7 +389,7 @@ public class SessionImpl implements Session {
 
             for(int i = 0; i < ordered.length; i++)
             {
-                pstm.setObject(i+1, params.get(ordered[i]));
+                pstm.setObject(i+1, params.get(ordered[i])); // <---
             }
 
             ResultSet rs = pstm.executeQuery();
@@ -341,6 +404,45 @@ public class SessionImpl implements Session {
             }
 
             return res;
+
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public List<Object> queryMasterFunction(String action, Class theClass, HashMap<String, Object> params ) {
+        PreparedStatement pstm = null;
+        LinkedList<Object> res = new LinkedList<>();
+        try
+        {
+            String query = QueryHelper.createQueryMasterFunction(action,theClass, params);
+            pstm = conn.prepareStatement(query);
+            Set<String> keys = params.keySet();
+            String[] ordered = Utils.computeOrder(query,keys);
+
+            String[] fields = ObjectHelper.getFields(theClass);
+
+
+            for(int i = 0; i < ordered.length; i++)
+            {
+                pstm.setObject(i+1, params.get(ordered[i])); // <---
+            }
+
+            ResultSet rs = pstm.executeQuery();
+            while(rs.next())
+            {
+                Object buffer = theClass.getConstructor().newInstance();
+                for(int x = 0; x < fields.length; x++)
+                {
+                    ObjectHelper.setter(buffer,fields[x],rs.getObject(x+1)); // el primero
+                }
+                res.add(buffer);
+            }
+
+            return res; // Aquí funciona correctament
 
         }
         catch (Exception e)

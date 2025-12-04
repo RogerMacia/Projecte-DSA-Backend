@@ -4,23 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BuyRequest {
-    private int playerId;
+    private int userId;
     private List<Item> items;
 
     public BuyRequest(){
         this.items = new ArrayList<>();
     }
 
-    public BuyRequest(int playerId) {
-        this.playerId = playerId;
+    public BuyRequest(int userId) {
+        this.userId = userId;
     }
 
-    public int getPlayerId() {
-        return playerId;
+    public int getUserId() {
+        return userId;
     }
-
-    public void setPlayerId(int playerId) {
-        this.playerId = playerId;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public List<Item> getItems() {

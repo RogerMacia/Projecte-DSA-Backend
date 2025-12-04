@@ -3,7 +3,9 @@ package edu.upc.backend;
 import edu.upc.backend.classes.*;
 import edu.upc.backend.database.ItemDAO;
 import edu.upc.backend.database.UserDAO;
+import edu.upc.backend.database.UserItemDAO;
 import edu.upc.backend.exceptions.IncorrectPasswordException;
+import edu.upc.backend.exceptions.InsufficientMoneyException;
 import edu.upc.backend.exceptions.UserNotFoundException;
 import org.apache.log4j.Logger;
 
@@ -23,11 +25,6 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
         if(_instance == null) _instance = new EBDBManagerSystem();
         return _instance;
     }
-
-    /*@Override
-    public void addUser(User user){
-        return null;
-    }*/
 
     @Override
     public void registerUser(User user) throws SQLException {
@@ -58,7 +55,8 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
         if (userExists == null) {
             log.error("User " + user.getUsername() + " not found");
             throw new UserNotFoundException();
-        } else {
+        }
+        else {
             log.info("User found");
             if (password.equals(userExists.getPassword())) {
                 log.info("User with correct credentials");
@@ -68,7 +66,39 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
                 throw new IncorrectPasswordException();
             }
         }
+    }
 
+    public void registerPurchase(BuyRequest buyRequest) throws Exception {
+        UserDAO userDAO = UserDAO.getInstance();
+
+        User user = userDAO.getUserById(buyRequest.getUserId());
+        if (user == null) {
+            throw new UserNotFoundException();
+        }
+
+        int totalCost = 0;
+        for (Item item : buyRequest.getItems()) {
+            totalCost += item.getPrice() * item.getQuantity();
+        }
+
+        if (user.getCoins() < totalCost) {
+            throw new InsufficientMoneyException();
+        }
+
+        user.setCoins((user.getCoins() - totalCost));
+        userDAO.updateUser(user);
+
+        for (Item item : buyRequest.getItems()) {
+            UserItemDAO userItemDAO = UserItemDAO.getInstance();
+            UserItem userItem = userItemDAO.getUserItem(user.getId(), item.getId());
+            if (userItem != null) {
+                userItem.setQuantity(userItem.getQuantity() + item.getQuantity());
+                userItemDAO.updateUserItem(userItem);
+            } else {
+                userItem = new UserItem(user.getId(), item.getId(), item.getQuantity());
+                userItemDAO.addUserItem(userItem);
+            }
+        }
     }
 
     @Override
@@ -77,21 +107,18 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
     }
 
     @Override
-    public UsersList getUsersList() {
+    public  List<User> getUsersListDatabase() {
         UserDAO _users = UserDAO.getInstance();
-        UsersList res = null;
+        List<User> list = null;
         try {
-            List<User> list = _users.getUsers();
-            res = new UsersList(list);
+            list = _users.getUsers();
         }
-        catch (Exception e)
-        {
-            log.error("Error: " + e.getMessage() );
+        catch (Exception e) {
+            log.error("Error: " + e.getMessage());
         }
-        return  res;
+        return list;
     }
 
-    @Override
     public List<Item> getItemList() {
         ItemDAO _itemsInstance = ItemDAO.getInstance();
         List<Item> items = null;
@@ -134,7 +161,7 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
         UserDAO _users = UserDAO.getInstance();
         User res = null;
         try{
-            res = _users.getUser(userId);
+            res = _users.getUserById(userId);
         }
         catch (Exception e)
         {
@@ -147,28 +174,6 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
     public Item getItemById(Integer id) {
         return null;
     }
-
-    /*@Override
-    public void logIn(String username, String password) {
-
-        User u = getUserByUsername(username);
-        if (u == null) {
-            log.error("User " + username + " not found");
-            throw new UserNotFoundException();
-        }
-        else {
-            log.info("User found");
-            if (password.equals(u.getPassword())) {
-                log.info("User with correct credentials");
-            }
-            else {
-                log.error("Incorrect password");
-                throw new IncorrectPasswordException();
-            }
-        }
-
-    }*/
-
 
     @Override
     public void createGame(int playerId) {

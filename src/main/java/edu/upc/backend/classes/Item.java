@@ -8,6 +8,7 @@ public class Item {
     int price;
     String emoji;
     String description;
+    int quantity;
 
     public Item() {}
     /*public Item(int id, String name, int durability, int price)
@@ -18,7 +19,7 @@ public class Item {
 
      */
 
-    public Item(String name, int durability, int price, String emoji, String description)
+    public Item(String name, int durability, int price, String emoji, String description, int quantity)
     {
         this.id = 0;
         this.name = name;
@@ -26,7 +27,7 @@ public class Item {
         this.price = price;
         this.emoji = emoji;
         this.description = description;
-
+        this.quantity = quantity;
     }
 
     public int getId() {
@@ -75,5 +76,13 @@ public class Item {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 }

@@ -27,6 +27,7 @@ function onLoginBtnClick() {
     let username = $("#loginUsernameTbx").val();
     let password = $("#loginPasswordTbx").val();
 
+
     if (!username || !password) {
         showNotification("⚠️ Please fill in username and password!");
         return;
@@ -62,6 +63,8 @@ function onLoginBtnClick() {
     }
     );
 }
+
+
 
 function onReadyDocument() {
     console.log("Initializing LOGIN...");

@@ -1,6 +1,5 @@
 package edu.upc.backend.database;
 
-import edu.upc.backend.classes.Item;
 import org.apache.log4j.Logger;
 
 import java.util.HashMap;
@@ -47,12 +46,12 @@ public class SessionLogged implements Session{
     }
 
     @Override
-    public Object get(Class theClass, int ID){
+    public List<Object> get(Class theClass, HashMap<String, Object> paramsSearch){
         //Object res = null;
         try
         {
-            log.info("Selecting object: " + theClass.getName() + " with ID: " + Integer.toString(ID));
-            return _session.get(theClass,ID);
+            log.info("Selecting object: " + theClass.getName());
+            return _session.get(theClass, paramsSearch);
         }
         catch (Exception e)
         {
@@ -61,7 +60,21 @@ public class SessionLogged implements Session{
         return null;
     }
 
-    @Override
+//    public Object getUserItem(Class theClass, ){
+//        //Object res = null;
+//        try
+//        {
+//            log.info("Selecting object: " + theClass.getName() + " with ID: " + Integer.toString(itemId));
+//            return _session.query(theClass,);
+//        }
+//        catch (Exception e)
+//        {
+//            log.error(e.getMessage());
+//        }
+//        return null;
+//    }
+
+    /*@Override
     public void update(Object object) {
         try
         {
@@ -73,7 +86,7 @@ public class SessionLogged implements Session{
         {
             log.error("Error: " + e.getMessage());
         }
-    }
+    }*/
 
     @Override
     public void delete(Object object) {
@@ -105,7 +118,7 @@ public class SessionLogged implements Session{
         return null;
     }
 
-    @Override
+    /*@Override
     public List<Object> findAll(Class theClass, HashMap params) {
         try
         {
@@ -119,22 +132,8 @@ public class SessionLogged implements Session{
             log.warn("Error: " + e.getMessage());
         }
         return null;
-    }
+    }*/
 
-    public List<Item> getItemlist(){
-        try
-        {
-            log.info("Selecting all " + Item.class.getName());
-            List<Item> res = _session.getItemlist();
-            log.info(String.format("%d objects were found.", res.size()));
-            return res;
-        }
-        catch (Exception e)
-        {
-            log.error("Error: " + e.getMessage());
-        }
-        return null;
-    }
 
     @Override
     public List<Object> query(String query, Class theClass, HashMap params) {
@@ -148,6 +147,36 @@ public class SessionLogged implements Session{
         catch (Exception e)
         {
             log.warn("Error: " + e.getMessage());
+        }
+        return null;
+    }
+
+    public List<Object> queryMasterFunction(String query, Class theClass, HashMap params) {
+        try
+        {
+            log.info(String.format("Custom query \" %s \" for the object %s",query ,theClass.getName()));
+            List<Object> res =  _session.queryMasterFunction(query,theClass,params);
+            log.info(String.format("%d objects were found.", res.size()));
+            return res;
+        }
+        catch (Exception e)
+        {
+            log.warn("Error: " + e.getMessage());
+        }
+        return null;
+    }
+
+    public Object update(Class theClasss, HashMap<String, Object> paramsSearch, HashMap<String, Object> paramsUpdate) {
+        try
+        {
+            log.info("Updating object: " + theClasss.getClass().getName());
+            Object res = _session.update(theClasss, paramsSearch, paramsUpdate);
+            log.info("Object successfully updated.");
+            return res;
+        }
+        catch (Exception e)
+        {
+            log.error("Error: " + e.getMessage());
         }
         return null;
     }

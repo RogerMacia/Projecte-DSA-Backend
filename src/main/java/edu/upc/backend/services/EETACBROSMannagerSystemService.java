@@ -2,10 +2,7 @@ package edu.upc.backend.services;
 
 import edu.upc.backend.EBDBManagerSystem;
 import edu.upc.backend.EETACBROSMannagerSystem;
-import edu.upc.backend.EETACBROSMannagerSystemImpl;
 import edu.upc.backend.classes.*;
-import edu.upc.backend.exceptions.IncorrectPasswordException;
-import edu.upc.backend.exceptions.UserNotFoundException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -31,46 +28,6 @@ public class EETACBROSMannagerSystemService {
         // Use the singleton instance
         this.sistema = EBDBManagerSystem.getInstance();
 
-        UsersList userslist = this.sistema.getUsersList();
-        List<Item> itemlist = this.sistema.getItemList();
-        PlayerList playerlist = this.sistema.getPlayerList();
-
-        /*
-        if (userslist.size() == 0 && sistema.getClass() != EBDBManagerSystem.class) {
-
-
-            User user1 = new User("agente007","Manel Colominas Ruiz","Barcelona","Castelldefels");
-            userslist.addUser(user1);
-
-            int playerId = user1.getId();
-            Player player1 = new Player(playerId, 100, 100, 100, 100, 100);
-            playerlist.addPlayer(player1);
-            Item item1 = new Item("Calculator", 200, 200, "📱", "Solve tricky math problems with ease.");
-            Item item2 = new Item("Laptop", 200, 200, "💻", "Complete reports and projects efficiently.");
-            Item item3 = new Item( "Notebook", 150, 150, "📓", "Keep track of class notes and ideas.");
-            Item item4 = new Item( "Pen", 100, 100, "🖊️", "Write down important formulas and reminders.");
-            Item item5 = new Item( "Old Mobile", 180, 180, "☎️", "Check messages and stay connected the old-school way.");
-            Item item6 = new Item( "Energy Drink", 120, 120, "🥤", "Boost your focus and stay awake during long study sessions.");
-            Item item7 = new Item( "Headphones", 160, 160, "🎧", "Concentrate on work and block out distractions.");
-            Item item8 = new Item("Backpack", 200, 200, "🎒", "Carry all your items and tools wherever you go.");
-            Item item9 = new Item( "USB Drive", 100, 100, "💾", "Store and transport your important files easily.");
-            Item item10 = new Item( "Coffee", 100, 100, "☕", "Recharge your energy and stay productive.");
-            itemlist.add(item1);
-            itemlist.add(item2);
-            itemlist.add(item3);
-            itemlist.add(item4);
-            itemlist.add(item5);
-            itemlist.add(item6);
-            itemlist.add(item7);
-            itemlist.add(item8);
-            itemlist.add(item9);
-            itemlist.add(item10);
-
-
-        }
-
-         */
-
     }
 
     // TORNAR LLISTA D'USUARIS;
@@ -83,11 +40,8 @@ public class EETACBROSMannagerSystemService {
     @Path("users")
     @Produces(MediaType.APPLICATION_JSON)
     public Response showUsersList() {
-        UsersList usersList = this.sistema.getUsersList();
-
-        List<User> usuarises = usersList.getUserslist();
-
-        GenericEntity<List<User>> entity = new GenericEntity<List<User>>(usuarises) {};
+        List<User> connectedUsers = this.sistema.getUsersListDatabase();
+        GenericEntity<List<User>> entity = new GenericEntity<List<User>>(connectedUsers) {};
         return Response.ok(entity).build();
     }
 
@@ -142,10 +96,9 @@ public class EETACBROSMannagerSystemService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response logIn(User user) {
         try {
-            user = this.sistema.logIn(user);
-            logger.info(" username: " + user.getUsername() + " password: "+user.getPassword()+" email: "+user.getEmail()+"coins: "+user.getCoins());
-
-            return Response.status(Response.Status.CREATED).entity(user).build();
+            User userlogged = this.sistema.logIn(user);
+            logger.info("id: "+userlogged.getId()+" name: "+userlogged.getName()+" username: " + userlogged.getUsername() + " password: "+userlogged.getPassword()+" email: "+userlogged.getEmail()+"coins: "+userlogged.getCoins());
+            return Response.status(Response.Status.CREATED).entity(userlogged).build();
         }
         catch (SQLException e) {
             throw new RuntimeException(e);
@@ -163,28 +116,14 @@ public class EETACBROSMannagerSystemService {
     })
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response shopBuyItems(BuyRequest request) {
-
-        int playerId = request.getPlayerId();
-        User user = sistema.getUserById(playerId);
-
-        if (user == null) {
+    public Response shopBuyItems(BuyRequest buyrequest) {
+        try {
+            sistema.registerPurchase(buyrequest);
+            return Response.status(Response.Status.CREATED).entity(buyrequest).build();
+        }
+        catch (Exception ex) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-
-        String username = user.getUsername();
-
-        List<Item> itemList = request.getItems();
-
-        Player player = sistema.getPlayerById(playerId);
-        if (player == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-
-        player.setItems(itemList);
-
-        logger.info("Purchase done for user " + username);
-
-        return Response.status(Response.Status.CREATED).entity(request).build();
     }
+
 }

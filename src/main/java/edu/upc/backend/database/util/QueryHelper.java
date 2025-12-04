@@ -4,6 +4,7 @@ package edu.upc.backend.database.util;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.stream.Stream;
 
 public class QueryHelper {
@@ -109,7 +110,7 @@ public class QueryHelper {
         return sb.toString();
     }
 
-    public static String createQyerySELECTSOME(Class theClass)
+    public static String createQyerySELECTSOME(Class theClass, HashMap params)
     {
         StringBuffer sb = new StringBuffer();
         sb.append("SELECT * FROM ").append(theClass.getSimpleName())
@@ -126,6 +127,7 @@ public class QueryHelper {
 
         return sb.toString();
     }
+
 
     public static String createQuerySelectAll(Class theClass)
     {
@@ -210,4 +212,111 @@ public class QueryHelper {
 
     //endregion Tablas relacionales
 
+
+    public static String createQueryMasterFunction(String action, Class theClass, HashMap<String, Object> params) {
+        StringBuilder sb = new StringBuilder();
+        String tableName = theClass.getSimpleName();
+
+        switch (action.toUpperCase()) {
+            case "INSERT":
+                sb.append("INSERT INTO ").append(tableName).append(" (");
+                if (params != null && !params.isEmpty()) {
+                    String[] columns = params.keySet().toArray(new String[0]);
+                    for (int i = 0; i < columns.length; i++) {
+                        sb.append(columns[i]);
+                        if (i < columns.length - 1) {
+                            sb.append(", ");
+                        }
+                    }
+                    sb.append(") VALUES (");
+                    for (int i = 0; i < columns.length; i++) {
+                        sb.append("?");
+                        if (i < columns.length - 1) {
+                            sb.append(", ");
+                        }
+                    }
+                    sb.append(")");
+                }
+                break;
+            case "SELECT":
+                sb.append("SELECT * FROM ").append(tableName);
+                if (params != null && !params.isEmpty()) {
+                    sb.append(buildWhereClause(params));
+                }
+                break;
+            case "UPDATE":
+                sb.append("UPDATE ").append(tableName).append(" SET ");
+                if (params != null && !params.isEmpty()) {
+                    String[] columns = params.keySet().stream().filter(k -> !k.equalsIgnoreCase("ID")).toArray(String[]::new);
+                    for (int i = 0; i < columns.length; i++) {
+                        sb.append(columns[i]).append(" = ?");
+                        if (i < columns.length - 1) {
+                            sb.append(", ");
+                        }
+                    }
+                    if (params.containsKey("ID") || params.containsKey("id")) {
+                         sb.append(" WHERE ID = ?");
+                    }
+                }
+                break;
+            case "DELETE":
+                sb.append("DELETE FROM ").append(tableName);
+                if (params != null && !params.isEmpty()) {
+                    sb.append(buildWhereClause(params));
+                }
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid action: " + action);
+        }
+
+        return sb.toString();
+    }
+
+    public static String createSELECTMASTERFUNCTION(Class theClass, HashMap<String, Object> paramsSearch){
+        StringBuilder sb = new StringBuilder();
+        String tableName = theClass.getSimpleName();
+
+        sb.append("SELECT * FROM ").append(tableName);
+
+        if (paramsSearch != null && !paramsSearch.isEmpty()) {
+            sb.append(buildWhereClause(paramsSearch));
+        }
+
+        return sb.toString();
+    }
+
+    private static String buildWhereClause(HashMap<String, Object> params) {
+        StringBuilder whereClause = new StringBuilder(" WHERE ");
+        String[] conditions = params.keySet().toArray(new String[0]);
+        for (int i = 0; i < conditions.length; i++) {
+            whereClause.append(conditions[i]).append(" = ?");
+            if (i < conditions.length - 1) {
+                whereClause.append(" AND ");
+            }
+        }
+        return whereClause.toString();
+    }
+    
+    public static String createUPDATEMASTERFUNCTION(Class theClass, HashMap<String, Object> paramsSearch, HashMap<String, Object> paramsUpdate) {
+        StringBuilder sb = new StringBuilder();
+        String tableName = theClass.getSimpleName();
+
+        sb.append("UPDATE ").append(tableName).append(" SET ");
+
+        if (paramsUpdate != null && !paramsUpdate.isEmpty()) {
+            String[] columns = paramsUpdate.keySet().toArray(new String[0]);
+            for (int i = 0; i < columns.length; i++) {
+                sb.append(columns[i]).append(" = ?");
+                if (i < columns.length - 1) {
+                    sb.append(", ");
+                }
+            }
+        }
+
+        if (paramsSearch != null && !paramsSearch.isEmpty()) {
+            sb.append(buildWhereClause(paramsSearch));
+        }
+
+        return sb.toString();
+    }
 }

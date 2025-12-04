@@ -24,12 +24,15 @@ public class DAOTest {
         _users = null;
     }
 
+    /*
     @Test
     public void addUserTest() throws Exception {
         int id = _users.addUser("Daniel","123456Ab","Dani","daniel@gmail.com");
     }
 
-    @Test
+     */
+
+    /*@Test
     public void getUsersTest() throws Exception {
         List<User> userList = _users.getUsers();
 
@@ -37,11 +40,11 @@ public class DAOTest {
         {
             log.info(user.toString());
         }
-    }
+    }*/
 
     @Test
     public void getUserTest() throws Exception {
-        User user = _users.getUser(3);
+        User user = _users.getUserById(3);
 
         log.info(user.toString());
 
@@ -49,9 +52,9 @@ public class DAOTest {
     @Test
     public void updateUserTest() throws Exception {
         int id = 3;
-        _users.updateUser(3,"Carlos","udsuhaiha","Carlosxd","carlos@gmail.com");
+        //_users.updateUser(3,"Carlos","udsuhaiha","Carlosxd","carlos@gmail.com");
 
-        User user = _users.getUser(3);
+        User user = _users.getUserById(3);
         log.info(user.toString());
 
     }

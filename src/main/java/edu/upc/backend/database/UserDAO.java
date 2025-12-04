@@ -4,6 +4,7 @@ import edu.upc.backend.classes.User;
 import org.apache.log4j.Logger;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -16,26 +17,37 @@ public class UserDAO implements IUserDAO{
         return _instance;
     }
 
-    private UserDAO()
-    {}
+    private UserDAO() {
+
+    }
 
     private static final Logger log = Logger.getLogger(UserDAO.class);
 
+    /*
     @Override
     public int addUser(String name, String password, String username, String email) throws Exception {
         return registerUser(new User(username,name,email,password));
     }
 
-    public int registerUser(User input) throws SQLException {
+     */
+
+    public int registerUser(User user) throws SQLException {
         int id = -1;
         Session session = null;
         //User input = new User(username,name,email,password);
 
         try{
-
             session = new SessionBuilder().build();
-            session.save(input);
-            id = input.getId();
+            //session.save(input);
+            /*HashMap<String,Object> params = new HashMap<>();
+            params.put("username",user.getUsername());
+            params.put("name",user.getName());
+            params.put("email",user.getEmail());
+            params.put("password",user.getPassword());
+            params.put("coins",user.getCoins());*/
+            session.save(user);
+            //session.queryMasterFunction("INSERT",User.class,params);
+            id = user.getId();
         }
         catch (Exception e)
         {
@@ -49,14 +61,17 @@ public class UserDAO implements IUserDAO{
         return id;
     }
 
-    @Override
-    public User getUser(int userID) throws Exception {
+
+    public User getUserById(int userID) throws Exception {
         User res = null;
         Session session = null;
 
         try{
             session = new SessionBuilder().build();
-            res = (User) session.get(User.class,userID);
+            HashMap<String,Object> paramsSearch = new HashMap<>();
+            paramsSearch.put("id",userID);
+            List<Object> objectList = session.get(User.class,paramsSearch);
+            res = (User) objectList.get(0);
         }
         catch (Exception e)
         {
@@ -68,17 +83,19 @@ public class UserDAO implements IUserDAO{
         }
         return  res;
     }
-
-    @Override
-    public void updateUser(int userID, String name, String password, String username, String email) throws Exception {
-
+    
+    public void updateUser(User user) throws Exception {
         Session session = null;
-        User input = new User(username, name, email,password);
-        input.setId(userID);
-
         try{
             session = new SessionBuilder().build();
-             session.update(input);
+            HashMap<String,Object> paramsSearch = new HashMap<>();
+            paramsSearch.put("id",user.getId());
+            HashMap<String,Object> paramsUpdate = new HashMap<>();
+            paramsUpdate.put("name",user.getName());
+            paramsUpdate.put("email",user.getEmail());
+            paramsUpdate.put("password",user.getPassword());
+            paramsUpdate.put("coins",user.getCoins());
+            session.update(User.class,paramsSearch,paramsUpdate);
         }
         catch (Exception e)
         {
@@ -97,7 +114,9 @@ public class UserDAO implements IUserDAO{
 
         try{
             session = new SessionBuilder().build();
-            User buffer = (User) session.get(User.class, userID);
+            HashMap<String,Object> paramsSearch = new HashMap<>();
+            paramsSearch.put("id",userID);
+            User buffer = (User) session.get(User.class,paramsSearch);
             session.delete(buffer);
         }
         catch (Exception e)
@@ -112,12 +131,14 @@ public class UserDAO implements IUserDAO{
 
     @Override
     public List<User> getUsers() throws Exception {
-        List<User> res = null;
         Session session = null;
+        List<User> userList = new ArrayList<>();
         try{
-
             session = new SessionBuilder().build();
-            res = session.findAll(User.class);
+            List<Object> objectList = session.findAll(User.class);
+            for(Object o : objectList) {
+                userList.add((User) o);
+            }
         }
         catch (Exception e)
         {
@@ -125,9 +146,9 @@ public class UserDAO implements IUserDAO{
             e.printStackTrace();
         }
         finally {
-            session.close();
+                session.close();
         }
-        return res;
+        return userList;
     }
 
     public User getUserByUsername(String username) throws SQLException {
@@ -137,7 +158,9 @@ public class UserDAO implements IUserDAO{
         params.put("username",username);
         try{
             session = new SessionBuilder().build();
-            res = (User) session.query("SELECT * FROM user WHERE username = ?",User.class,params).get(0);
+            //res = (User) session.query("SELECT * FROM user WHERE username = ?",User.class,params).get(0);
+            List<Object> objectList = session.queryMasterFunction("SELECT",User.class,params);
+            res = (User) objectList.get(0);
         }
         catch (Exception e)
         {

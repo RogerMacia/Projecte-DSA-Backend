@@ -11,7 +11,7 @@ public interface EETACBROSMannagerSystem {
     //public void addUser(User user);
     public void registerUser(User user) throws SQLException;
     public void addPlayer(Player player);
-    public UsersList getUsersList();
+    public List<User> getUsersListDatabase();
     public List<Item> getItemList();
     public PlayerList getPlayerList();
     public User getUserByUsername(String username);
@@ -28,4 +28,6 @@ public interface EETACBROSMannagerSystem {
     public void removeGame(int playerId);
 
     void clear();
+
+    void registerPurchase(BuyRequest buyrequest) throws Exception;
 }

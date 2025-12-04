@@ -5,6 +5,7 @@ import edu.upc.backend.classes.User;
 import org.apache.log4j.Logger;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -23,12 +24,15 @@ public class ItemDAO implements IItemDAO {
 
     @Override
     public List<Item> getItemlist() throws Exception {
-        List<Item> res = null;
+        List<Item> itemList = new  ArrayList<>();
         Session session = null;
         try{
 
             session = new SessionBuilder().build();
-            res = session.findAll(Item.class);
+            List<Object> objectList = session.findAll(Item.class);
+            for(Object o : objectList) {
+                itemList.add((Item) o);
+            }
         }
         catch (Exception e)
         {
@@ -38,6 +42,6 @@ public class ItemDAO implements IItemDAO {
         finally {
             session.close();
         }
-        return res;
+        return itemList;
     }
 }
