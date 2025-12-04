@@ -1,4 +1,6 @@
+import edu.upc.backend.classes.Item;
 import edu.upc.backend.classes.User;
+import edu.upc.backend.database.ItemDAO;
 import edu.upc.backend.database.UserDAO;
 import org.junit.After;
 import org.junit.Before;
@@ -12,11 +14,13 @@ public class DAOTest {
 
     Logger log = Logger.getLogger(DAOTest.class);
     UserDAO _users;
+    ItemDAO _items;
 
     @Before
     public void Init()
     {
         _users = UserDAO.getInstance();
+        _items = ItemDAO.getInstance();
     }
     @After
     public void Finalize()
@@ -72,6 +76,13 @@ public class DAOTest {
         String username = "Carlosxd";
         User res = _users.getUserByUsername(username);
         log.info(res.toString());
+    }
+
+    @Test
+    public void getItemList() throws Exception {
+        List<Item> res = _items.getItemlist();
+
+        for(Item i : res) log.info(i.getName());
     }
 
 

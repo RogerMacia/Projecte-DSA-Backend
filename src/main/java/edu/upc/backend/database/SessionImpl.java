@@ -288,6 +288,7 @@ public class SessionImpl implements Session {
     }
     */
 
+<<<<<<< HEAD
     // S'HAURIA D'ELIMINAR AQUESTA FUNCIÓ
     /*public List<Item> getItemlist() {
         PreparedStatement pstm = null;
@@ -312,6 +313,8 @@ public class SessionImpl implements Session {
 
         return res;
     }*/
+=======
+>>>>>>> 6e3699013d9a115113aadaf783cdc66f45c1346d
 
     public List<Object> findAll(Class theClass, HashMap params) {
         PreparedStatement pstm = null;
