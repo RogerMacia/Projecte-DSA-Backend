@@ -31,6 +31,21 @@ public class SessionLogged implements Session{
         log.info("Object successfully saved.");
     }
 
+    public Object update(Class theClasss, HashMap<String, Object> paramsSearch, HashMap<String, Object> paramsUpdate) {
+        try
+        {
+            log.info("Updating object: " + theClasss.getClass().getName());
+            Object res = _session.update(theClasss, paramsSearch, paramsUpdate);
+            log.info("Object successfully updated.");
+            return res;
+        }
+        catch (Exception e)
+        {
+            log.error("Error: " + e.getMessage());
+        }
+        return null;
+    }
+
     @Override
     public void close(){
         try
@@ -59,34 +74,6 @@ public class SessionLogged implements Session{
         }
         return null;
     }
-
-//    public Object getUserItem(Class theClass, ){
-//        //Object res = null;
-//        try
-//        {
-//            log.info("Selecting object: " + theClass.getName() + " with ID: " + Integer.toString(itemId));
-//            return _session.query(theClass,);
-//        }
-//        catch (Exception e)
-//        {
-//            log.error(e.getMessage());
-//        }
-//        return null;
-//    }
-
-    /*@Override
-    public void update(Object object) {
-        try
-        {
-            log.info("Updating object: " + object.getClass().getName());
-            _session.update(object);
-            log.info("Object successfully updated.");
-        }
-        catch (Exception e)
-        {
-            log.error("Error: " + e.getMessage());
-        }
-    }*/
 
     @Override
     public void delete(Object object) {
@@ -118,7 +105,7 @@ public class SessionLogged implements Session{
         return null;
     }
 
-    /*@Override
+    @Override
     public List<Object> findAll(Class theClass, HashMap params) {
         try
         {
@@ -132,9 +119,9 @@ public class SessionLogged implements Session{
             log.warn("Error: " + e.getMessage());
         }
         return null;
-    }*/
+    }
 
-
+    /*
     @Override
     public List<Object> query(String query, Class theClass, HashMap params) {
         try
@@ -150,8 +137,9 @@ public class SessionLogged implements Session{
         }
         return null;
     }
+    */
 
-    public List<Object> queryMasterFunction(String query, Class theClass, HashMap params) {
+    /*public List<Object> queryMasterFunction(String query, Class theClass, HashMap params) {
         try
         {
             log.info(String.format("Custom query \" %s \" for the object %s",query ,theClass.getName()));
@@ -164,21 +152,6 @@ public class SessionLogged implements Session{
             log.warn("Error: " + e.getMessage());
         }
         return null;
-    }
-
-    public Object update(Class theClasss, HashMap<String, Object> paramsSearch, HashMap<String, Object> paramsUpdate) {
-        try
-        {
-            log.info("Updating object: " + theClasss.getClass().getName());
-            Object res = _session.update(theClasss, paramsSearch, paramsUpdate);
-            log.info("Object successfully updated.");
-            return res;
-        }
-        catch (Exception e)
-        {
-            log.error("Error: " + e.getMessage());
-        }
-        return null;
-    }
+    }*/
 
 }

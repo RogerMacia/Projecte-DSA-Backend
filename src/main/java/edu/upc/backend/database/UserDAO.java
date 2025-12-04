@@ -159,7 +159,7 @@ public class UserDAO implements IUserDAO{
         try{
             session = new SessionBuilder().build();
             //res = (User) session.query("SELECT * FROM user WHERE username = ?",User.class,params).get(0);
-            List<Object> objectList = session.queryMasterFunction("SELECT",User.class,params);
+            List<Object> objectList = session.get(User.class,params);
             res = (User) objectList.get(0);
         }
         catch (Exception e)
