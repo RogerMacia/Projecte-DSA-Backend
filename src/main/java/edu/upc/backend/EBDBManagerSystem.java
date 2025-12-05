@@ -10,6 +10,8 @@ import edu.upc.backend.exceptions.UserNotFoundException;
 import org.apache.log4j.Logger;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 // Eetac bros Database manager
@@ -90,12 +92,17 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
 
         for (Item item : buyRequest.getItems()) {
             UserItemDAO userItemDAO = UserItemDAO.getInstance();
-            UserItem userItem = userItemDAO.getUserItem(user.getId(), item.getId());
-            if (userItem != null) {
+            HashMap<String,Object> params = new HashMap<>();
+            params.put("userId",user.getId());
+            params.put("itemId",item.getId());
+            List<UserItem> userItemList = userItemDAO.getUserItems(params);
+            if (userItemList.size() == 1) {
+                UserItem userItem = userItemList.get(0);
                 userItem.setQuantity(userItem.getQuantity() + item.getQuantity());
                 userItemDAO.updateUserItem(userItem);
-            } else {
-                userItem = new UserItem(user.getId(), item.getId(), item.getQuantity());
+            }
+            else {
+                UserItem userItem = new UserItem(user.getId(), item.getId(), item.getQuantity());
                 userItemDAO.addUserItem(userItem);
             }
         }
@@ -170,8 +177,30 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
         return  res;
     }
 
+    public List<Item> getUserItems(int userId){
+        UserItemDAO _userItemInstance = UserItemDAO.getInstance();
+        List<Item> items = null;
+        HashMap<String,Object> paramsSearch = new HashMap<>();
+        paramsSearch.put("userId",userId);
+        try {
+            List<UserItem> userItems = _userItemInstance.getUserItems(paramsSearch);
+            items = new ArrayList<>();
+            for (UserItem userItem : userItems) {
+                ItemDAO _itemsInstance = ItemDAO.getInstance();
+                Item item = _itemsInstance.getItemById(userItem.getItemId());
+                item.setQuantity(userItem.getQuantity());
+                items.add(item);
+            }
+        }
+        catch (Exception e)
+        {
+            log.error("Error: " + e.getMessage() );
+        }
+        return  items;
+    }
+
     @Override
-    public Item getItemById(Integer id) {
+    public Item getItemById(int id) {
         return null;
     }
 

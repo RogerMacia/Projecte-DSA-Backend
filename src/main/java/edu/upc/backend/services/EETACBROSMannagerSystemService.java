@@ -45,21 +45,6 @@ public class EETACBROSMannagerSystemService {
         return Response.ok(entity).build();
     }
 
-    @GET
-    @ApiOperation(value = "Consultar llista d'Items", notes = "Mostra tots els Items")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Llista trobada", response = Item.class, responseContainer = "List"),
-            @ApiResponse(code = 404, message = "No hi ha Items")
-    })
-    @Path("shop/items")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response showItemList() {
-        List<Item> itemList = this.sistema.getItemList();
-
-        GenericEntity<List<Item>> entity = new GenericEntity<List<Item>>(itemList) {};
-        return Response.ok(entity).build();
-    }
-
     // REGISTRE
     @POST
     @Path("user/register")
@@ -103,6 +88,38 @@ public class EETACBROSMannagerSystemService {
         catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    // TORNAR LLISTA D'USUARIS;
+    @GET
+    @ApiOperation(value = "Consulta la llista d'items comprats d'un usuari", notes = "Mostra tots els items comprats d'un usuari")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Llista trobada", response = Item.class, responseContainer = "List"),
+            @ApiResponse(code = 404, message = "No hi ha items")
+    })
+    @Path("user/items/{userId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response showUserItems(@PathParam("userId") int userId) {
+        List<Item> items = this.sistema.getUserItems(userId);
+        GenericEntity<List<Item>> entity = new GenericEntity<List<Item>>(items) {};
+        return Response.ok(entity).build();
+    }
+
+
+    // SHOP ITEMS
+    @GET
+    @ApiOperation(value = "Consultar llista d'Items", notes = "Mostra tots els Items")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Llista trobada", response = Item.class, responseContainer = "List"),
+            @ApiResponse(code = 404, message = "No hi ha Items")
+    })
+    @Path("shop/items")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response showItemList() {
+        List<Item> itemList = this.sistema.getItemList();
+
+        GenericEntity<List<Item>> entity = new GenericEntity<List<Item>>(itemList) {};
+        return Response.ok(entity).build();
     }
 
     // BUY ITEMS SHOP

@@ -40,8 +40,33 @@ public class ItemDAO implements IItemDAO {
             e.printStackTrace();
         }
         finally {
-            session.close();
+            if (session != null) {
+                session.close();
+            }
         }
         return itemList;
+    }
+
+    public Item getItemById(int itemId) throws SQLException {
+        Session session = null;
+        try {
+            session = new SessionBuilder().build();
+            HashMap<String,Object> paramsSerch = new HashMap<>();
+            paramsSerch.put("id",itemId);
+            List<Object> objects = session.get(Item.class,paramsSerch);
+            if (!objects.isEmpty()) {
+                return (Item) objects.get(0);
+            }
+        }
+        catch (Exception e) {
+            log.error(e.getMessage());
+            e.printStackTrace();
+        }
+        finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+        return null;
     }
 }

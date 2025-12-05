@@ -7,8 +7,6 @@ import java.util.List;
 
 public interface EETACBROSMannagerSystem {
 
-
-    //public void addUser(User user);
     public void registerUser(User user) throws SQLException;
     public void addPlayer(Player player);
     public List<User> getUsersListDatabase();
@@ -17,8 +15,7 @@ public interface EETACBROSMannagerSystem {
     public User getUserByUsername(String username);
     public Player getPlayerById(int id);
     public User getUserById(int userId);
-    public Item getItemById(Integer id);
-    // public void logIn (String username, String password);
+    public Item getItemById(int id);
     public User logIn (User user) throws SQLException;
 
     public void createGame(int playerId);
@@ -30,4 +27,6 @@ public interface EETACBROSMannagerSystem {
     void clear();
 
     void registerPurchase(BuyRequest buyrequest) throws Exception;
+    List<Item> getUserItems(int userId);
+
 }

@@ -3,6 +3,7 @@ package edu.upc.backend.database;
 import edu.upc.backend.classes.UserItem;
 import org.apache.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -25,29 +26,30 @@ public class UserItemDAO implements IUserItemDAO{
         try {
             session = new SessionBuilder().build();
             session.save(userItem);
+            session.close();
         }
         catch (Exception ex) {
             logger.error(ex);
         }
     }
 
-    public UserItem getUserItem(int userId, int itemId) {
+    public List<UserItem> getUserItems(HashMap<String,Object> params) {
         Session session = null;
-        UserItem useritem = null;
+        List<UserItem> useritemList = null;
         try {
             session = new SessionBuilder().build();
-            HashMap<String,Object> params = new HashMap<>();
-            params.put("userId",userId);
-            params.put("itemId",itemId);
-            //List<Object> objectList = session.queryMasterFunction("SELECT",UserItem.class,params);
             List<Object> objectList = session.get(UserItem.class, params);
-            useritem = (UserItem) objectList.get(0);
+            useritemList = new ArrayList<>();
+            for(Object o : objectList) {
+                useritemList.add((UserItem) o);
+            }
+            session.close();
         }
         catch (Exception e) {
             logger.error(e.getMessage());
             e.printStackTrace();
         }
-        return useritem;
+        return useritemList;
     }
 
     public UserItem updateUserItem(UserItem userItem) throws Exception{
