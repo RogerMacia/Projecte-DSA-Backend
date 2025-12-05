@@ -250,11 +250,29 @@ function buyCartItems() {
     postJsonBuyItems(SHOP_BUY_ITEM_URL, purchaseData)
         .done(function(data) {
             console.log("Purchase successful:", data);
-            showNotification('Items purchased successfully!', 'success'); // Mirar totes les crides a aquesta funció
+            showNotification('Items purchased successfully!', 'success');
+            // Deduct coins and clear cart on success
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            coins -= total;
+            localStorage.setItem("coins", coins); // Update local storage
+            updateCoinsDisplay();
+            clearCart();
+            closeCartModal();
+            loadUserInventory(currentUserId); // Reload user inventory
         })
-        .fail(function(err) {
-            console.error("Error fetching data:", err);
-            showNotification('Error to send the products', 'error');
+        .fail(function(jqXHR, textStatus, errorThrown) {
+            console.error(`Error Status: ${textStatus}, Error Thrown: ${errorThrown}`);
+            console.error(`Response Text: ${jqXHR.responseText}`);
+            try {
+                const errorResponse = JSON.parse(jqXHR.responseText);
+                if (errorResponse.message) {
+                    showNotification(`❌ ${errorResponse.message}`, 'error');
+                } else {
+                    showNotification("❌ An unknown error occurred during purchase.", 'error');
+                }
+            } catch (e) {
+                showNotification("❌ An unexpected error occurred. Please try again.", 'error');
+            }
         });
 }
 
@@ -267,25 +285,13 @@ function checkout() {
     }
 
     buyCartItems();
-    // Deduct coins
-    coins -= total;
-    updateCoinsDisplay();
-
-
-    // Show success message
-    showNotification(`Purchase complete! You spent ${total} coins`, 'success');
-
-    // Clear cart
-    clearCart();
-
-    // Close cart modal
-    closeCartModal();
 }
 
 // =================  =================
 function onLogoutClick() {
     localStorage.removeItem("userId");
     localStorage.removeItem("username");
+    localStorage.removeItem("coins"); // Clear coins on logout
     window.location.href = "../login"; // Canvia la ruta si el login està en un altre lloc
 }
 

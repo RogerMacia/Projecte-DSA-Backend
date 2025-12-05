@@ -4,6 +4,7 @@ import io.swagger.jaxrs.config.BeanConfig;
 import org.glassfish.grizzly.http.server.*;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.jackson.JacksonFeature; // Import JacksonFeature
 
 import java.io.IOException;
 import java.net.URI;
@@ -31,6 +32,7 @@ public class Main {
 
         rc.register(io.swagger.jaxrs.listing.ApiListingResource.class);
         rc.register(io.swagger.jaxrs.listing.SwaggerSerializers.class);
+        rc.register(JacksonFeature.class); // Register JacksonFeature for JSON serialization
 
         BeanConfig beanConfig = new BeanConfig();
 
@@ -71,7 +73,6 @@ public class Main {
                 "/" // ONLY handles "/", not other paths
         );
 
-        // Static handler for everything else
         server.getServerConfiguration().addHttpHandler(staticHttpHandler);
 
         System.out.println(String.format("Jersey app started with WADL available at "

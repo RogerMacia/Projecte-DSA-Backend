@@ -1,12 +1,9 @@
 package edu.upc.backend.services;
 
-import edu.upc.backend.EBDBManagerSystem;
-import edu.upc.backend.EETACBROSMannagerSystem;
+import edu.upc.backend.*;
 import edu.upc.backend.classes.*;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import edu.upc.backend.exceptions.*;
+import io.swagger.annotations.*;
 import org.apache.log4j.Logger;
 
 import javax.ws.rs.*;
@@ -14,7 +11,6 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import java.sql.SQLException;
 import java.util.List;
 
 @Api(value = "/eetacbros", description = "Endpoint de biblioteca Service")
@@ -50,8 +46,9 @@ public class EETACBROSMannagerSystemService {
     @Path("user/register")
     @ApiOperation(value = "Registrar un nou usuari", notes = "Registrar un nou usuari")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Usuari nou registrat", response = User.class),
-            @ApiResponse(code = 409, message = "Nom d'usuari no disponible")
+            @ApiResponse(code = 200, message = "New user registered", response = User.class),
+            @ApiResponse(code = 409, message = "Username is not available"),
+            @ApiResponse(code = 500, message = "Internal Server Error")
     })
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -61,9 +58,15 @@ public class EETACBROSMannagerSystemService {
             this.sistema.registerUser(user);
             return Response.status(Response.Status.CREATED).entity(user).build();
         }
+        catch (UsernameAlreadyExistsException e) {
+            logger.error("Error registering user: " + e.getMessage());
+            ErrorResponse errorResponse = new ErrorResponse("USERNAME_IS_NOT_AVAILABLE", e.getMessage());
+            return Response.status(Response.Status.CONFLICT).entity(errorResponse).build();
+        }
         catch (Exception e) {
             logger.error("Error registering user: " + e.getMessage());
-            return Response.status(Response.Status.CONFLICT).entity("Username not available").build();
+            ErrorResponse errorResponse = new ErrorResponse("GENERIC_REGISTRATION_ERROR", "An unexpected error occurred during registration.");
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(errorResponse).build();
         }
 
     }
@@ -74,8 +77,8 @@ public class EETACBROSMannagerSystemService {
     @ApiOperation(value = "User log in", notes = "User log in")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Successful", response = User.class),
-            @ApiResponse(code = 404, message = "Not found"),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 404, message = "Invalid username or password"),
+            @ApiResponse(code = 500, message = "Internal Server Error")
     })
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -83,10 +86,17 @@ public class EETACBROSMannagerSystemService {
         try {
             User userlogged = this.sistema.logIn(user);
             logger.info("id: "+userlogged.getId()+" name: "+userlogged.getName()+" username: " + userlogged.getUsername() + " password: "+userlogged.getPassword()+" email: "+userlogged.getEmail()+"coins: "+userlogged.getCoins());
-            return Response.status(Response.Status.CREATED).entity(userlogged).build();
+            return Response.status(Response.Status.OK).entity(userlogged).build();
         }
-        catch (SQLException e) {
-            throw new RuntimeException(e);
+        catch (UserOrPasswordInvalidException e) {
+            logger.error("Error logging in: " + e.getMessage());
+            ErrorResponse errorResponse = new ErrorResponse("USER_OR_PASSWORD_INVALID", e.getMessage());
+            return Response.status(Response.Status.NOT_FOUND).entity(errorResponse).build();
+        }
+        catch (Exception e) {
+            logger.error("Error logging in: " + e.getMessage());
+            ErrorResponse errorResponse = new ErrorResponse("GENERIC_LOGIN_ERROR", "An unexpected error occurred during login.");
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(errorResponse).build();
         }
     }
 
@@ -94,8 +104,8 @@ public class EETACBROSMannagerSystemService {
     @GET
     @ApiOperation(value = "Consulta la llista d'items comprats d'un usuari", notes = "Mostra tots els items comprats d'un usuari")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Llista trobada", response = Item.class, responseContainer = "List"),
-            @ApiResponse(code = 404, message = "No hi ha items")
+            @ApiResponse(code = 200, message = "Items found.", response = Item.class, responseContainer = "List"),
+            @ApiResponse(code = 404, message = "No items found.")
     })
     @Path("user/items/{userId}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -127,9 +137,10 @@ public class EETACBROSMannagerSystemService {
     @Path("shop/buy")
     @ApiOperation(value = "Item buy", notes = "Item buy")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Successful", response = Item.class, responseContainer = "List"),
-            @ApiResponse(code = 404, message = "Couldn't buy"),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 201, message = "Successful", response = BuyRequest.class),
+            @ApiResponse(code = 404, message = "User not found"),
+            @ApiResponse(code = 400, message = "Insufficient money"),
+            @ApiResponse(code = 500, message = "Internal Server Error")
     })
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -138,8 +149,20 @@ public class EETACBROSMannagerSystemService {
             sistema.registerPurchase(buyrequest);
             return Response.status(Response.Status.CREATED).entity(buyrequest).build();
         }
+        catch (UserNotFoundException e) {
+            logger.error("Error buying items: " + e.getMessage());
+            ErrorResponse errorResponse = new ErrorResponse("USER_NOT_FOUND", e.getMessage());
+            return Response.status(Response.Status.NOT_FOUND).entity(errorResponse).build();
+        }
+        catch (InsufficientMoneyException e) {
+            logger.error("Error buying items: " + e.getMessage());
+            ErrorResponse errorResponse = new ErrorResponse("INSUFFICIENT_MONEY", e.getMessage());
+            return Response.status(Response.Status.BAD_REQUEST).entity(errorResponse).build();
+        }
         catch (Exception ex) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            logger.error("Error buying items: " + ex.getMessage());
+            ErrorResponse errorResponse = new ErrorResponse("GENERIC_BUY_ERROR", "An unexpected error occurred during purchase.");
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(errorResponse).build();
         }
     }
 

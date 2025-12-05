@@ -2,7 +2,7 @@ const LOGIN_URL = `${BASE_URL}/user/login`;
 // "http://localhost:8080/example/eetacbros/user/login"
 console.log("Calling:", LOGIN_URL);
 
-$.postJSON = function (url, data, callback) {
+$.postJSON = function (url, data, callback, errorCallback) { // Added errorCallback parameter
     return jQuery.ajax({
         headers: {
             'Accept': 'application/json',
@@ -12,7 +12,8 @@ $.postJSON = function (url, data, callback) {
         url: url,
         data: JSON.stringify(data),
         dataType: 'json',
-        success: callback
+        success: callback,
+        error: errorCallback // Pass errorCallback to jQuery.ajax
     });
 };
 
@@ -35,32 +36,38 @@ function onLoginBtnClick() {
 
     let credentials = { username: username, password: password };
 
-    $.postJSON(LOGIN_URL, credentials, (data, status) => {
-        console.log(`Status: ${status}`);
+    $.postJSON(LOGIN_URL, credentials,
+        (data, status) => { // Success callback
+            console.log(`Status: ${status}`);
 
-        if (status === "success") {
-            showNotification("✅ Login successful! Redirecting...");
+            if (status === "success") {
+                showNotification("✅ Login successful! Redirecting...");
 
-             //Store user data (Note: In production, consider security implications)
-             localStorage.setItem("userId", data.id);
-             localStorage.setItem("username", data.username);
-             localStorage.setItem("coins", data.coins);
+                //Store user data (Note: In production, consider security implications)
+                localStorage.setItem("userId", data.id);
+                localStorage.setItem("username", data.username);
+                localStorage.setItem("coins", data.coins);
 
 
-            setTimeout(() => {
-                window.location.href = "./shop";
-            }, 1000);
+                setTimeout(() => {
+                    window.location.href = "./shop";
+                }, 1000);
+            }
+        },
+        (jqXHR, textStatus, errorThrown) => { // Error callback
+            console.error(`Error Status: ${textStatus}, Error Thrown: ${errorThrown}`);
+            console.error(`Response Text: ${jqXHR.responseText}`);
+            try {
+                const errorResponse = JSON.parse(jqXHR.responseText);
+                if (errorResponse.message) {
+                    showNotification(`❌ ${errorResponse.message}`);
+                } else {
+                    showNotification("❌ An unknown error occurred during login.");
+                }
+            } catch (e) {
+                showNotification("❌ An unexpected error occurred. Please try again.");
+            }
         }
-    })
-    .fail((jqXHR) => {
-        if (jqXHR.status === 400) {
-            showNotification("❌ Incorrect password!");
-        } else if (jqXHR.status === 404) {
-            showNotification("❌ User not found!");
-        } else {
-            showNotification("❌ Server or connection error!");
-        }
-    }
     );
 }
 

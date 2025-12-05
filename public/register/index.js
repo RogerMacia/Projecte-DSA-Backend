@@ -1,6 +1,6 @@
 const REGISTER_URL = `${BASE_URL}/user/register`;
 
-$.postJSON = function(url, data, callback) { // https://stackoverflow.com/questions/40804301/jquery-ajax-post-call-unsupported-media-type
+$.postJSON = function(url, data, callback, errorCallback) { // https://stackoverflow.com/questions/40804301/jquery-ajax-post-call-unsupported-media-type
     return jQuery.ajax({
     headers: {
         'Accept': 'application/json',
@@ -10,7 +10,8 @@ $.postJSON = function(url, data, callback) { // https://stackoverflow.com/questi
     'url': url,
     'data': JSON.stringify(data),
     'dataType': 'json',
-    'success': callback
+    'success': callback,
+    'error': errorCallback // Add error callback
     });
 };
 
@@ -36,13 +37,27 @@ function onSignUpbtnClick() {
     user = { username:username, name:name, email:email, password:password};
     buffer = JSON.stringify(user);
     console.log(buffer);
-    $.postJSON(REGISTER_URL, user ,(data, status) => {
-        console.log(`Satus: ${status} \n${data}`);
-        //$("#res").slideDown("slow");
-        $("#res").fadeIn("slow");
-        $("#res").text(status);
-        setTimeout(function(){ window.location = "login"; }, 1000);
-    });
+    $.postJSON(REGISTER_URL, user ,
+        (data, status) => { // Success callback
+            console.log(`Status: ${status} \n${JSON.stringify(data)}`);
+            showBubble("Registration successful!");
+            setTimeout(function(){ window.location = "login"; }, 1000);
+        },
+        (jqXHR, textStatus, errorThrown) => { // Error callback
+            console.error(`Error Status: ${textStatus}, Error Thrown: ${errorThrown}`);
+            console.error(`Response Text: ${jqXHR.responseText}`);
+            try {
+                const errorResponse = JSON.parse(jqXHR.responseText);
+                if (errorResponse.message) {
+                    showBubble(errorResponse.message);
+                } else {
+                    showBubble("An unknown error occurred during registration.");
+                }
+            } catch (e) {
+                showBubble("An unexpected error occurred. Please try again.");
+            }
+        }
+    );
 }
 
 function onReadyDocument() {
@@ -74,7 +89,7 @@ function checkUsername()
     special_chars_test = !special_chars.test(username);
     special_ending_test = !special_ending.test(username);
 
-    if(special_chars_test) 
+    if(special_chars_test)
     {
         //console.log("Invalid username")
         showBubble("Invalid username, it must begin with a non-special character.");
@@ -152,4 +167,3 @@ function checkPassword() {
 
     return true;
 }
-

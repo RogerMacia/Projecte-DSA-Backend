@@ -34,28 +34,20 @@ public class UserDAO implements IUserDAO{
     public int registerUser(User user) throws SQLException {
         int id = -1;
         Session session = null;
-        //User input = new User(username,name,email,password);
-
         try{
             session = new SessionBuilder().build();
-            //session.save(input);
-            /*HashMap<String,Object> params = new HashMap<>();
-            params.put("username",user.getUsername());
-            params.put("name",user.getName());
-            params.put("email",user.getEmail());
-            params.put("password",user.getPassword());
-            params.put("coins",user.getCoins());*/
             session.save(user);
-            //session.queryMasterFunction("INSERT",User.class,params);
             id = user.getId();
         }
-        catch (Exception e)
+        catch (Exception e) // Catch other exceptions
         {
-            log.error(e.getMessage());
-            e.printStackTrace();
+            log.error("Unexpected error registering user in DAO: " + e.getMessage());
+            throw new SQLException("Unexpected error during user registration", e); // Wrap and rethrow
         }
         finally {
-            session.close();
+            if (session != null) {
+                session.close();
+            }
         }
 
         return id;
@@ -71,15 +63,20 @@ public class UserDAO implements IUserDAO{
             HashMap<String,Object> paramsSearch = new HashMap<>();
             paramsSearch.put("id",userID);
             List<Object> objectList = session.get(User.class,paramsSearch);
-            res = (User) objectList.get(0);
+            if (!objectList.isEmpty()) {
+                res = (User) objectList.get(0);
+            }
         }
         catch (Exception e)
         {
             log.error(e.getMessage());
             e.printStackTrace();
+            throw e; // Rethrow the exception
         }
         finally {
-            session.close();
+            if (session != null) {
+                session.close();
+            }
         }
         return  res;
     }
@@ -101,9 +98,12 @@ public class UserDAO implements IUserDAO{
         {
             log.error(e.getMessage());
             e.printStackTrace();
+            throw e; // Rethrow the exception
         }
         finally {
-            session.close();
+            if (session != null) {
+                session.close();
+            }
         }
     }
 
@@ -117,15 +117,20 @@ public class UserDAO implements IUserDAO{
             HashMap<String,Object> paramsSearch = new HashMap<>();
             paramsSearch.put("id",userID);
             User buffer = (User) session.get(User.class,paramsSearch);
-            session.delete(buffer);
+            if (buffer != null) {
+                session.delete(buffer);
+            }
         }
         catch (Exception e)
         {
             log.error(e.getMessage());
             e.printStackTrace();
+            throw e; // Rethrow the exception
         }
         finally {
-            session.close();
+            if (session != null) {
+                session.close();
+            }
         }
     }
 
@@ -144,9 +149,12 @@ public class UserDAO implements IUserDAO{
         {
             log.error(e.getMessage());
             e.printStackTrace();
+            throw e; // Rethrow the exception
         }
         finally {
+            if (session != null) {
                 session.close();
+            }
         }
         return userList;
     }
@@ -158,17 +166,21 @@ public class UserDAO implements IUserDAO{
         params.put("username",username);
         try{
             session = new SessionBuilder().build();
-            //res = (User) session.query("SELECT * FROM user WHERE username = ?",User.class,params).get(0);
             List<Object> objectList = session.get(User.class,params);
-            res = (User) objectList.get(0);
+            if (!objectList.isEmpty()) {
+                res = (User) objectList.get(0);
+            }
         }
         catch (Exception e)
         {
             log.error(e.getMessage());
             e.printStackTrace();
+            throw new SQLException("Error retrieving user by username", e); // Wrap and rethrow
         }
         finally {
-            session.close();
+            if (session != null) {
+                session.close();
+            }
         }
         return res;
     }

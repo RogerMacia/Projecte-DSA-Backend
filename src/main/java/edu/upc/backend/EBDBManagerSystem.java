@@ -1,12 +1,8 @@
 package edu.upc.backend;
 
 import edu.upc.backend.classes.*;
-import edu.upc.backend.database.ItemDAO;
-import edu.upc.backend.database.UserDAO;
-import edu.upc.backend.database.UserItemDAO;
-import edu.upc.backend.exceptions.IncorrectPasswordException;
-import edu.upc.backend.exceptions.InsufficientMoneyException;
-import edu.upc.backend.exceptions.UserNotFoundException;
+import edu.upc.backend.database.*;
+import edu.upc.backend.exceptions.*;
 import org.apache.log4j.Logger;
 
 import java.sql.SQLException;
@@ -29,14 +25,14 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
     }
 
     @Override
-    public void registerUser(User user) throws SQLException {
+    public void registerUser(User user) throws SQLException, UsernameAlreadyExistsException {
         UserDAO _users = UserDAO.getInstance();
 
         User userExists = _users.getUserByUsername(user.getUsername());
 
         if (userExists != null) {
             log.error("User " + user.getUsername() + " already exists");
-            throw new SQLException("User already exists");
+            throw new UsernameAlreadyExistsException("Username is not available");
         }
         else {
             try {
@@ -48,15 +44,23 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
         }
     }
 
-    public User logIn(User user) throws SQLException {
+    @Override
+    public User logIn(User user) throws UserOrPasswordInvalidException {
 
         UserDAO _users = UserDAO.getInstance();
-        User userExists = _users.getUserByUsername(user.getUsername());
+        User userExists = null;
+        try {
+            userExists = _users.getUserByUsername(user.getUsername());
+        } catch (SQLException e) {
+            log.error("Database error during login: " + e.getMessage());
+            // Re-throw as a generic runtime exception or a custom LoginFailedException if needed
+            throw new RuntimeException("Login failed due to a database error.", e);
+        }
         String password = user.getPassword();
 
         if (userExists == null) {
             log.error("User " + user.getUsername() + " not found");
-            throw new UserNotFoundException();
+            throw new UserOrPasswordInvalidException("Invalid username or password.");
         }
         else {
             log.info("User found");
@@ -65,17 +69,18 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
                 return userExists;
             } else {
                 log.error("Incorrect password");
-                throw new IncorrectPasswordException();
+                throw new UserOrPasswordInvalidException("Invalid username or password.");
             }
         }
     }
 
-    public void registerPurchase(BuyRequest buyRequest) throws Exception {
+    @Override
+    public void registerPurchase(BuyRequest buyRequest) throws UserNotFoundException, InsufficientMoneyException, Exception {
         UserDAO userDAO = UserDAO.getInstance();
 
         User user = userDAO.getUserById(buyRequest.getUserId());
         if (user == null) {
-            throw new UserNotFoundException();
+            throw new UserNotFoundException("User not found");
         }
 
         int totalCost = 0;
@@ -84,7 +89,7 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
         }
 
         if (user.getCoins() < totalCost) {
-            throw new InsufficientMoneyException();
+            throw new InsufficientMoneyException("Insufficient money to complete the purchase.");
         }
 
         user.setCoins((user.getCoins() - totalCost));
