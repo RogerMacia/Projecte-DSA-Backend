@@ -1,7 +1,7 @@
 package edu.upc.backend.database;
 
 import edu.upc.backend.classes.Item;
-import edu.upc.backend.classes.User;
+import edu.upc.backend.util.EmojiManager; // Import the new EmojiManager
 import org.apache.log4j.Logger;
 
 import java.sql.SQLException;
@@ -31,7 +31,9 @@ public class ItemDAO implements IItemDAO {
             session = new SessionBuilder().build();
             List<Object> objectList = session.findAll(Item.class);
             for(Object o : objectList) {
-                itemList.add((Item) o);
+                Item item = (Item) o;
+                item.setEmoji(EmojiManager.getEmoji(item.getId())); // Set emoji from EmojiManager using item ID
+                itemList.add(item);
             }
         }
         catch (Exception e)
@@ -55,7 +57,9 @@ public class ItemDAO implements IItemDAO {
             paramsSerch.put("id",itemId);
             List<Object> objects = session.get(Item.class,paramsSerch);
             if (!objects.isEmpty()) {
-                return (Item) objects.get(0);
+                Item item = (Item) objects.get(0);
+                item.setEmoji(EmojiManager.getEmoji(item.getId())); // Set emoji from EmojiManager using item ID
+                return item;
             }
         }
         catch (Exception e) {

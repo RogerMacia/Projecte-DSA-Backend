@@ -55,16 +55,16 @@ CREATE TABLE Item (
 );
 
 INSERT INTO `Item` (ID, name, durability, price, emoji, description, quantity) VALUES
-(1, 'Calculator', 200, 200, '📱', 'Solve tricky math problems with ease.',0),
-(2, 'Laptop', 200, 200, '💻', 'Complete reports and projects efficiently.',0),
-(3, 'Notebook', 150, 150, '📓', 'Keep track of class notes and ideas.',0),
-(4, 'Pen', 100, 100, '🖊️', 'Write down important formulas and reminders.',0),
-(5, 'Old Mobile', 180, 180, '☎️', 'Check messages and stay connected the old-school way.',0),
-(6, 'Energy Drink', 120, 120, '🥤', 'Boost your focus and stay awake during long study sessions.',0),
-(7, 'Headphones', 160, 160, '🎧', 'Concentrate on work and block out distractions.',0),
-(8, 'Backpack', 200, 200, '🎒', 'Carry all your items and tools wherever you go.',0),
-(9, 'USB Drive', 100, 100, '💾', 'Store and transport your important files easily.',0),
-(10, 'Coffee', 100, 100, '☕','Recharge your energy and stay productive.',0);
+(1, 'Calculator', 200, 200, 'Calculator', 'Solve tricky math problems with ease.',0),
+(2, 'Laptop', 200, 200, 'Laptop', 'Complete reports and projects efficiently.',0),
+(3, 'Notebook', 150, 150, 'Notebook', 'Keep track of class notes and ideas.',0),
+(4, 'Pen', 100, 100, 'Pen','Write down important formulas and reminders.',0),
+(5, 'Old Mobile', 180, 180,'Old Mobile', 'Check messages and stay connected the old-school way.',0),
+(6, 'Energy Drink', 120, 120,'Energy Drink', 'Boost your focus and stay awake during long study sessions.',0),
+(7, 'Headphones', 160, 160, 'Headphones', 'Concentrate on work and block out distractions.',0),
+(8, 'Backpack', 200, 200,'Backpack', 'Carry all your items and tools wherever you go.',0),
+(9, 'USB Drive', 100, 100,'USB Drive', 'Store and transport your important files easily.',0),
+(10, 'Coffee', 100, 100,'Coffee','Recharge your energy and stay productive.',0);
 
 DROP TABLE item;
 
