@@ -28,24 +28,41 @@
     <p>¡Buy items for your adventure!</p>
 </div>
 
-<div class="container">
-    <div class="shop-container">
-        <div class="shop-header">
-            <div class="coins-display">
-                <span class="coin-icon">🪙</span>
-                <span id="coins"></span> coins
-            </div>
-            <div class="cart-icon" id="cartIcon">
-                🛒
-                <span class="cart-count" id="cartCount">0</span>
-            </div>
+<div class="logout-container">
+    <button class="nes-btn is-error" id="logoutBtn">Log Out</button>
+</div>
 
-            <button class="nes-btn is-error" id="logoutBtn">Log Out</button>
-
+<div class="main-container">
+    <!-- Inventory Section (Left) -->
+    <div class="inventory-section">
+        <div class="inventory-header">
+            <span style="font-size: 1.5em;">🎒</span>
+            <h2>My Inventory</h2>
         </div>
+        <div class="inventory-items" id="inventoryItems">
+            <div class="inventory-empty">
+                <p>Loading inventory...</p>
+            </div>
+        </div>
+    </div>
 
-        <div class="products-grid" id="productsGrid">
-            <!-- Los productos se cargarán aquí con JavaScript -->
+    <!-- Shop Section (Right) -->
+    <div class="shop-section">
+        <div class="shop-container">
+            <div class="shop-header">
+                <div class="coins-display">
+                    <span class="coin-icon">🪙</span>
+                    <span id="coins">0</span> coins
+                </div>
+                <div class="cart-icon" id="cartIcon">
+                    🛒
+                    <span class="cart-count" id="cartCount">0</span>
+                </div>
+            </div>
+
+            <div class="products-grid" id="productsGrid">
+                <!-- Los productos se cargarán aquí con JavaScript -->
+            </div>
         </div>
     </div>
 </div>
@@ -58,12 +75,9 @@
             <button class="nes-btn is-error" id="closeCart">X</button>
         </div>
 
-
         <div class="cart-items" id="cartItems">
             <!-- Los items del carrito se cargarán aquí -->
-
         </div>
-
 
         <div class="cart-total">
             <span>Total:</span>
@@ -81,6 +95,7 @@
         </div>
     </div>
 </div>
+
 <script src="base.js"></script>
 <script src="shop/index.js"></script>
 </body>

@@ -55,7 +55,7 @@ body::before {
             background: white;
             border-radius: 100px;
             opacity: 0.8;
-            z-index: 1;
+            z-index: -1;
             animation: bobBlock 2s infinite ease-in-out;
         }
 
@@ -125,7 +125,7 @@ body::before {
     background: #f4a460;
     border: 3px solid #000;
     box-shadow: inset -3px -3px 0 #d97426, inset 3px 3px 0 #ffd4a3;
-    z-index: 1;
+    z-index: -1;
     animation: bobBlock 2s infinite ease-in-out;
 }
 
@@ -167,9 +167,108 @@ body::before {
     50% { transform: translateY(-8px); }
 }
 
-.container {
+.main-container {
+    display: flex;
+    gap: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
     position: relative;
-    z-index: 10;
+    z-index: 2;
+}
+
+.inventory-section {
+    flex: 0 0 350px;
+    background: white;
+    border: 4px solid #000;
+    border-radius: 8px;
+    padding: 20px;
+    height: fit-content;
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.shop-section {
+    flex: 1;
+    min-width: 0; /* Prevents flex items from overflowing their container */
+}
+
+.inventory-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 3px solid #000;
+}
+
+.inventory-header h2 {
+    font-size: 1em;
+    margin: 0;
+}
+
+.inventory-items {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.inventory-item {
+    background: #f7f7f7;
+    border: 3px solid #000;
+    padding: 15px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: transform 0.2s;
+}
+
+.inventory-item:hover {
+    transform: translateX(5px);
+    background: #fff3cd;
+}
+
+.inventory-item-emoji {
+    font-size: 2em;
+    min-width: 40px;
+    text-align: center;
+}
+
+.inventory-item-details {
+    flex: 1;
+}
+
+.inventory-item-name {
+    font-size: 0.8em;
+    margin-bottom: 5px;
+    color: #212529;
+}
+
+.inventory-item-description {
+    font-size: 0.5em;
+    color: #666;
+    margin-bottom: 8px;
+}
+
+.inventory-item-stats {
+    display: flex;
+    gap: 10px;
+    font-size: 0.6em;
+}
+
+.inventory-stat {
+    background: #209cee;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 4px;
+    border: 2px solid #000;
+}
+
+.inventory-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: #666;
+    font-size: 0.7em;
 }
 
 .header {
@@ -224,10 +323,18 @@ body::before {
     align-items: center;
     gap: 10px;
     font-size: 1.2em;
+    color: #f7d51d;
+    text-shadow: 2px 2px 0px #000;
 }
 
 .coin-icon {
     font-size: 1.5em;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotateY(0deg); }
+    100% { transform: rotateY(360deg); }
 }
 
 .cart-icon {
@@ -252,8 +359,10 @@ body::before {
 
 .products-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Allow flexibility */
     gap: 20px;
+    max-width: 1000px; /* Max 3 columns (3*250 + 2*20) */
+    margin: 0 auto; /* Center the grid */
 }
 
 .product-card {
@@ -288,7 +397,7 @@ body::before {
 }
 
 .product-description {
-    font-size: 0.6em;
+    font-size: 0.5em;
     color: #666;
     margin-bottom: 10px;
     line-height: 1.4;
@@ -575,6 +684,43 @@ body::before {
     color: #666;
 }
 
+.logout-container {
+    position: absolute;
+    top: 115px;
+    right: 20px;
+    z-index: 10;
+}
+
+@media (min-width: 993px) {
+    .shop-section {
+        margin-right: 120px; /* Adjust based on logout button width (~100px) + right offset (20px) */
+    }
+}
+
+@media (max-width: 992px) {
+    .main-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .inventory-section {
+        flex-basis: auto;
+        width: 100%;
+        max-width: 700px;
+        max-height: 350px;
+    }
+
+    .shop-section {
+        width: 100%;
+        max-width: 700px;
+    }
+
+    .products-grid {
+        max-width: none; /* Remove max-width for smaller screens */
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); /* Adjust min-width for 2-3 columns */
+    }
+}
+
 @media (max-width: 768px) {
     .header h1 {
         font-size: 1.5em;
@@ -586,6 +732,6 @@ body::before {
     }
 
     .products-grid {
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Allow even smaller min-width for 1-2 columns */
     }
 }

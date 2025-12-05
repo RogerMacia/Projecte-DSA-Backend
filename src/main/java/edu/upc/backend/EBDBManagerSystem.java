@@ -200,11 +200,6 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
     }
 
     @Override
-    public Item getItemById(int id) {
-        return null;
-    }
-
-    @Override
     public void createGame(int playerId) {
 
     }

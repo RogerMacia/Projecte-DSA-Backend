@@ -6,7 +6,6 @@ console.log("Calling:", SHOP_GET_ITEMS_URL);
 // ================= State Variables =================
 let cart = [];
 let coins = localStorage.getItem("coins");
-currentUserId = localStorage.getItem("userId");
 
 // ================= API Functions =================
 function getJsonItems(url) {
@@ -231,6 +230,8 @@ function buyCartItems() {
         return;
     }
 
+    const currentUserId = localStorage.getItem("userId");
+
     // Build the purchase JSON
     const purchaseData = {
         userId: currentUserId,
@@ -288,6 +289,54 @@ function onLogoutClick() {
     window.location.href = "../login"; // Canvia la ruta si el login està en un altre lloc
 }
 
+// ================= =================
+function loadUserInventory(userId) {
+    const SHOP_GET_USER_ITEMS_URL = `${BASE_URL}/user/items/${userId}`;
+    getJsonItems(SHOP_GET_USER_ITEMS_URL)
+        .done(function(data) {
+            displayInventory(data);
+        })
+        .fail(function(err) {
+            console.error("Error fetching user inventory:", err);
+            document.getElementById('inventoryItems').innerHTML = `
+                <div class="inventory-empty">
+                    <p>❌ Error loading inventory</p>
+                    <p style="font-size: 0.6em; margin-top: 10px;">Could not connect to server or retrieve data</p>
+                </div>
+            `;
+            showNotification('Error loading user inventory', 'error');
+        });
+}
+
+// Function to display inventory items
+function displayInventory(items) {
+    const inventoryContainer = document.getElementById('inventoryItems');
+
+    if (!items || items.length === 0) {
+        inventoryContainer.innerHTML = `
+                <div class="inventory-empty">
+                    <p>📦 No items yet</p>
+                    <p style="font-size: 0.6em; margin-top: 10px;">Purchase items from the shop!</p>
+                </div>
+            `;
+        return;
+    }
+
+    inventoryContainer.innerHTML = items.map(item => `
+            <div class="inventory-item">
+                <div class="inventory-item-emoji">${item.emoji || '📦'}</div>
+                <div class="inventory-item-details">
+                    <div class="inventory-item-name">${item.name}</div>
+                    <div class="inventory-item-description">${item.description || 'No description'}</div>
+                    <div class="inventory-item-stats">
+                        <span class="inventory-stat">⚡ ${item.durability || 0}</span>
+                        <span class="inventory-stat">× ${item.quantity || 1}</span>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+}
+
 // ================= Modal Functions =================
 function openCartModal() {
     $('#cartModal').addClass('active');
@@ -326,6 +375,10 @@ function initializeShop() {
     // Initialize cart display
     renderCart();
     updateCoinsDisplay();
+
+    // Get the user Inventory
+    const userId = localStorage.getItem('userId'); //
+    loadUserInventory(userId);
 }
 
 // ================= Main =================
