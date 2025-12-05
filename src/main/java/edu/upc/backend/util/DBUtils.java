@@ -8,13 +8,20 @@ public class DBUtils {
 
     public static final String DB_NAME = "projecte_dsa_db";
     public static final String DB_HOST = "localhost";
-    public static final String DB_USER = "root";
-    // localhost Production
-        public static final String DB_PASS = "mariadb";
 
-    /*// Enviroment Production
+    /*// localhost Production
+    public static final String DB_USER = "root";
+    public static final String DB_PASS = "mariadb";
+    */
+
+    /*// Enviroment Production 1
+    public static final String DB_USER = "root";
     public static final String DB_PASS = "Mazinger72";
     */
+
+    // Enviroment Production 2
+    public static final String DB_USER = "userDSA";
+    public static final String DB_PASS = "mariadb";
 
     public static final String DB_PORT = "3306";
 
