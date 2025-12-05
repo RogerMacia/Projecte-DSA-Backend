@@ -15,6 +15,7 @@ SELECT User, Host FROM mysql.user;
 
 CREATE USER 'userDSA'@'localhost' IDENTIFIED BY 'mariadb';
 GRANT ALL PRIVILEGES ON projecte_dsa_db.* TO 'userDSA'@'localhost';
+FLUSH PRIVILEGES;
 
 
 
@@ -70,7 +71,6 @@ DROP TABLE item;
 
 SELECT * FROM `User`;
 SELECT * FROM `Item`;
-
 
 CREATE TABLE UserItem (
     userId INT NOT NULL,
