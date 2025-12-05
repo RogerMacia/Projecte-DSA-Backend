@@ -35,5 +35,5 @@ public interface EETACBROSMannagerSystem {
     public void removeGame(int playerId);
 
 
-
+    User updateUserData(User user) throws Exception;
 }

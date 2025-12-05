@@ -13,6 +13,12 @@ password: mariadb
 
 SELECT User, Host FROM mysql.user;
 
+CREATE USER 'userDSA'@'localhost' IDENTIFIED BY 'mariadb';
+GRANT ALL PRIVILEGES ON projecte_dsa_db.* TO 'userDSA'@'localhost';
+
+
+
+
 CREATE DATABASE projecte_dsa_db;
 
 SHOW DATABASES;
@@ -34,7 +40,7 @@ CREATE TABLE `User` (
 );
 
 INSERT INTO user( username, name, email, password, coins)
- VALUES ('agente009', 'Manel Colominas', 'manel@gmail.com', '1234567Ab',10000000);
+ VALUES ('agente007', 'Manel Colominas', 'manel@gmail.com', '1234567Ab',10000000);
 
 SELECT ID, username, name FROM `User`;
 
@@ -48,7 +54,7 @@ CREATE TABLE Item (
     quantity INT NOT NULL
 );
 
-INSERT INTO item (ID, name, durability, price, emoji, description, quantity) VALUES
+INSERT INTO `Item` (ID, name, durability, price, emoji, description, quantity) VALUES
 (1, 'Calculator', 200, 200, '📱', 'Solve tricky math problems with ease.',0),
 (2, 'Laptop', 200, 200, '💻', 'Complete reports and projects efficiently.',0),
 (3, 'Notebook', 150, 150, '📓', 'Keep track of class notes and ideas.',0),

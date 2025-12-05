@@ -113,6 +113,27 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
         }
     }
 
+    public User updateUserData(User user) throws Exception {
+        UserDAO _users = UserDAO.getInstance();
+        User userExists = null;
+
+        userExists = _users.getUserById(user.getId());
+        if (userExists == null){
+            throw new UserNotFoundException("User not found");
+        }
+        try {
+            userExists.setName(user.getName());
+            userExists.setEmail(user.getEmail());
+            userExists.setPassword(user.getPassword());
+            userExists.setCoins(user.getCoins());
+            _users.updateUser(userExists);
+        }
+        catch (SQLException e) {
+            log.error("Database error during updating: " + e.getMessage());
+        }
+        return userExists;
+    }
+
     @Override
     public void addPlayer(Player player) {
 
