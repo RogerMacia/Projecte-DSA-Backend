@@ -18,6 +18,9 @@ public interface EETACBROSMannagerSystem {
     void clear();
     void registerPurchase(BuyRequest buyrequest) throws UserNotFoundException, InsufficientMoneyException, Exception;
     List<Item> getUserItems(int userId);
+    User updateUserData(User user) throws Exception;
+
+    void deleteUserData(int id) throws Exception;
 
 
     public void addPlayer(Player player);
@@ -33,7 +36,4 @@ public interface EETACBROSMannagerSystem {
     public Game findGame(int playerId);
     public void updateGame(Game game);
     public void removeGame(int playerId);
-
-
-    User updateUserData(User user) throws Exception;
 }

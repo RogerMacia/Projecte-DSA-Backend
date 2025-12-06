@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EETAC BROS - Settings</title>
+
+    <!-- NES.css for retro gaming style -->
+    <link href="https://unpkg.com/nes.css@2.3.0/css/nes.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="/settings/index.css">
+</head>
+<body class="pixel-bg">
+<!-- Decorative elements -->
+<div class="cloud-1"></div>
+<div class="cloud-2"></div>
+<div class="pixel-bricks"></div>
+<div class="question-block block-1"></div>
+<div class="question-block block-2"></div>
+
+<!-- Header -->
+<div class="header">
+    <h1>⚙️ EETAC BROS ⚙️</h1>
+    <p>Account Settings</p>
+</div>
+
+<!-- Navigation Bar -->
+<div class="nav-bar">
+    <button class="nes-btn is-primary" id="profileBtn">
+        Profile
+    </button>
+</div>
+
+<!-- Settings Container -->
+<div class="settings-container">
+    <!-- Account Information Section -->
+    <div class="settings-section">
+        <div class="section-title">
+            <span class="section-icon">👤</span>
+            <h2>Account Information</h2>
+        </div>
+
+        <div class="form-group">
+            <label for="username">
+                Username
+                <span class="label-description">Your unique username in EETAC BROS</span>
+            </label>
+            <input type="text" class="nes-input" id="username" placeholder="Enter new username">
+        </div>
+
+        <div class="form-group">
+            <label for="email">
+                Email Address
+                <span class="label-description">Used for account recovery and notifications</span>
+            </label>
+            <input type="email" class="nes-input" id="email" placeholder="Enter your email">
+        </div>
+
+        <div class="form-group">
+            <label for="name">
+                Display Name
+                <span class="label-description">How your name appears to other players</span>
+            </label>
+            <input type="text" class="nes-input" id="name" placeholder="Enter your new name">
+        </div>
+    </div>
+
+    <!-- Security Section -->
+    <div class="settings-section">
+        <div class="section-title">
+            <span class="section-icon">🔒</span>
+            <h2>Security</h2>
+        </div>
+
+        <div class="form-group">
+            <label for="currentPassword">
+                Current Password
+                <span class="label-description">Required to change password</span>
+            </label>
+            <input type="password" class="nes-input" id="currentPassword" placeholder="Enter current password">
+        </div>
+
+        <div class="form-group">
+            <label for="newPassword">
+                New Password
+                <span class="label-description">Leave blank if you don't want to change it</span>
+            </label>
+            <input type="password" class="nes-input" id="newPassword" placeholder="Enter new password">
+
+            <div class="password-requirements">
+                <strong>Password Requirements:</strong>
+                <ul>
+                    <li>At least 8 characters long</li>
+                    <li>Contains at least one uppercase letter</li>
+                    <li>Contains at least one number</li>
+                    <li>Contains at least one special character</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="confirmPassword">
+                Confirm New Password
+            </label>
+            <input type="password" class="nes-input" id="confirmPassword" placeholder="Confirm new password">
+        </div>
+    </div>
+
+    <!-- Preferences Section -->
+    <div class="settings-section">
+        <div class="section-title">
+            <span class="section-icon">🎨</span>
+            <h2>Preferences</h2>
+        </div>
+
+        <div class="form-group">
+            <label>
+                Email Notifications
+                <span class="label-description">Receive updates about your games and achievements</span>
+            </label>
+            <div class="toggle-group">
+                <label>
+                    <input type="radio" class="nes-radio" name="emailNotifications" value="enabled" checked />
+                    <span>Enabled</span>
+                </label>
+                <label>
+                    <input type="radio" class="nes-radio" name="emailNotifications" value="disabled" />
+                    <span>Disabled</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>
+                Profile Visibility
+                <span class="label-description">Who can see your profile and game stats</span>
+            </label>
+            <div class="toggle-group">
+                <label>
+                    <input type="radio" class="nes-radio" name="profileVisibility" value="public" checked />
+                    <span>Public</span>
+                </label>
+                <label>
+                    <input type="radio" class="nes-radio" name="profileVisibility" value="private" />
+                    <span>Private</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>
+                Sound Effects
+                <span class="label-description">Enable or disable game sound effects</span>
+            </label>
+            <div class="toggle-group">
+                <label>
+                    <input type="radio" class="nes-radio" name="soundEffects" value="enabled" checked />
+                    <span>Enabled</span>
+                </label>
+                <label>
+                    <input type="radio" class="nes-radio" name="soundEffects" value="disabled" />
+                    <span>Disabled</span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="settings-section">
+        <div class="button-group">
+            <button class="nes-btn is-warning" id="clearBtn">
+                🔄 Clear
+            </button>
+            <button class="nes-btn is-success" id="saveBtn">
+                💾 Save Changes
+            </button>
+        </div>
+    </div>
+
+    <!-- Danger Zone -->
+    <div class="settings-section danger-zone">
+        <div class="section-title">
+            <span class="section-icon">⚠️</span>
+            <h2>Danger Zone</h2>
+        </div>
+
+        <div class="warning-text">
+            ⚠️ Warning: These actions are irreversible. Please proceed with caution.
+        </div>
+
+        <button class="nes-btn is-error" id="deleteAccountBtn">
+            🗑️ Delete Account
+        </button>
+    </div>
+</div>
+
+<!-- Notification -->
+<div class="notification hidden" id="notification">
+    <p id="notificationText"></p>
+</div>
+
+<!-- Delete Confirmation Dialog -->
+<dialog class="nes-dialog" id="deleteDialog">
+    <form method="dialog">
+        <p class="title">Delete Account</p>
+        <p style="font-size: 0.7em; margin: 20px 0;">
+            Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently lost.
+        </p>
+        <menu class="dialog-menu" style="display: flex; gap: 10px; justify-content: flex-end;">
+            <button class="nes-btn" style="font-size: 0.7em;">Cancel</button>
+            <button class="nes-btn is-error" id="confirmDeleteBtn" style="font-size: 0.7em;">Delete</button>
+        </menu>
+    </form>
+</dialog>
+<script src="base.js"></script>
+<script src="settings/index.js"></script>
+</body>
+</html>

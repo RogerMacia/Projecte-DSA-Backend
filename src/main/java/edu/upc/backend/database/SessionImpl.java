@@ -109,20 +109,14 @@ public class SessionImpl implements Session {
 
     public void delete(Object object) {
         PreparedStatement pstm = null;
-        PreparedStatement pstm2 = null;
         try
         {
-            //region buscar id
-            //Integer id = Utils.getKeyByValue(_cache,object);
             Integer id = (Integer) ObjectHelper.getter(object,"id");
-            //if(id < 0) throw new NameNotFoundException("Id not found.");
-            //endregion buscar id
 
-            String query2 = QueryHelper.createQueryDELETE(object);
-            pstm2 = conn.prepareStatement(query2);
-            //log.info("La id es " + id);
-            pstm2.setObject(1,id);
-            pstm2.executeQuery();
+            String query = QueryHelper.createQueryDELETE(object);
+            pstm = conn.prepareStatement(query);
+            pstm.setObject(1,id);
+            pstm.executeUpdate();
         }
         catch (Exception e)
         {

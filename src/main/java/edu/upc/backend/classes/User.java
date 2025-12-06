@@ -14,7 +14,6 @@ public class User {
 
     // 🔧 Constructor buit (necessari per frameworks o JSON)
     public User() {
-        this.id = DBUtils.retrieveUserID();
     }
 
     // 🔧 Constructor complet

@@ -108,16 +108,17 @@ public class UserDAO implements IUserDAO{
     }
 
     @Override
-    public void deleteUser(int userID) throws Exception {
+    public void deleteUser(int id) throws Exception {
 
         Session session = null;
 
         try{
             session = new SessionBuilder().build();
             HashMap<String,Object> paramsSearch = new HashMap<>();
-            paramsSearch.put("id",userID);
-            User buffer = (User) session.get(User.class,paramsSearch);
-            if (buffer != null) {
+            paramsSearch.put("id",id);
+            List<Object> objectList = session.get(User.class,paramsSearch);
+            if (!objectList.isEmpty()) {
+                User buffer = (User) objectList.get(0);
                 session.delete(buffer);
             }
         }

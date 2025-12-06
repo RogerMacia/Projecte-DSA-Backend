@@ -128,17 +128,41 @@ public class EETACBROSMannagerSystemService {
     public Response updateUserData(User user) {
         try {
             User updatedUser = this.sistema.updateUserData(user);
-            logger.info("id: "+updatedUser.getId()+" name: "+updatedUser.getName()+" username: " + updatedUser.getUsername() + " password: "+updatedUser.getPassword()+" email: "+updatedUser.getEmail()+"coins: "+updatedUser.getCoins());
+            logger.info("id: " + updatedUser.getId() + " name: " + updatedUser.getName() + " username: " + updatedUser.getUsername() + " password: " + updatedUser.getPassword() + " email: " + updatedUser.getEmail() + "coins: " + updatedUser.getCoins());
             return Response.status(Response.Status.OK).entity(updatedUser).build();
+        } catch (UserNotFoundException e) {
+            logger.error("Error updating in: " + e.getMessage());
+            ErrorResponse errorResponse = new ErrorResponse("USER_NOT_FOUND", e.getMessage());
+            return Response.status(Response.Status.NOT_FOUND).entity(errorResponse).build();
+        } catch (Exception e) {
+            logger.error("Error updating in: " + e.getMessage());
+            ErrorResponse errorResponse = new ErrorResponse("GENERIC_UPDATING_ERROR", "An unexpected error occurred during updating.");
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(errorResponse).build();
+        }
+    }
+    // DELET USER
+    @DELETE
+    @Path("user/delete/{id}")
+    @ApiOperation(value = "Delete a user", notes = "Deletes an existing user by ID.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "User deleted successfully"),
+            @ApiResponse(code = 404, message = "User not found"),
+            @ApiResponse(code = 500, message = "Internal Server Error")
+    })
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteUser(@PathParam("id") int id) {
+        try {
+            this.sistema.deleteUserData(id);
+            return Response.status(Response.Status.OK).build();
         }
         catch (UserNotFoundException e) {
-            logger.error("Error updating in: " + e.getMessage());
+            logger.error("Error deleting in: " + e.getMessage());
             ErrorResponse errorResponse = new ErrorResponse("USER_NOT_FOUND", e.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(errorResponse).build();
         }
         catch (Exception e) {
-            logger.error("Error updating in: " + e.getMessage());
-            ErrorResponse errorResponse = new ErrorResponse("GENERIC_UPDATING_ERROR", "An unexpected error occurred during updating.");
+            logger.error("Error deleting in: " + e.getMessage());
+            ErrorResponse errorResponse = new ErrorResponse("GENERIC_DELETING_ERROR", "An unexpected error occurred during deleting.");
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(errorResponse).build();
         }
     }

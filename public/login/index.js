@@ -50,7 +50,8 @@ function onLoginBtnClick() {
 
 
                 setTimeout(() => {
-                    window.location.href = "./shop";
+                    //window.location.href = "./shop";
+                    window.location.href = "./profile";
                 }, 1000);
             }
         },
@@ -80,7 +81,7 @@ function onReadyDocument() {
      const userId = localStorage.getItem("userId");
      if (userId) {
          console.log(`User already logged in with ID: ${userId}. Redirecting to shop...`);
-         window.location.href = "./shop";
+         window.location.href = "./profile";
          return;
      }
 

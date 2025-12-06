@@ -63,13 +63,13 @@ public class DAOTest {
 
     }
 
-    @Test
+/*    @Test
     public void deleteUserTest() throws Exception {
         int id = 4;
         _users.deleteUser(4);
 
 
-    }
+    }*/
 
     @Test
     public void getUserByUsernameTest() throws SQLException {

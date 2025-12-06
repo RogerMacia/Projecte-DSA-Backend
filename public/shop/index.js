@@ -295,6 +295,10 @@ function onLogoutClick() {
     window.location.href = "../login"; // Canvia la ruta si el login està en un altre lloc
 }
 
+function onProfileClick() {
+    window.location.href = "../profile";
+}
+
 // ================= =================
 function loadUserInventory(userId) {
     const SHOP_GET_USER_ITEMS_URL = `${BASE_URL}/user/items/${userId}`;
@@ -391,4 +395,5 @@ function initializeShop() {
 $(document).ready(function() {
     initializeShop();
     $("#logoutBtn").click(onLogoutClick);
+    $("#profileBtn").click(onProfileClick);
 });

@@ -134,6 +134,20 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
         return userExists;
     }
 
+    public void deleteUserData(int id) throws Exception {
+        UserDAO _users = UserDAO.getInstance();
+        User userExists = _users.getUserById(id);
+        if (userExists == null){
+            throw new UserNotFoundException("User not found");
+        }
+        try {
+            _users.deleteUser(id);
+        }
+        catch (SQLException e) {
+            log.error("Database error during deleting: " + e.getMessage());
+        }
+    }
+
     @Override
     public void addPlayer(Player player) {
 
