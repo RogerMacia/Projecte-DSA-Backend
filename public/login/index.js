@@ -47,6 +47,7 @@ function onLoginBtnClick() {
                 localStorage.setItem("userId", data.id);
                 localStorage.setItem("username", data.username);
                 localStorage.setItem("coins", data.coins);
+                localStorage.setItem("email",data.email);
 
 
                 setTimeout(() => {
@@ -80,7 +81,7 @@ function onReadyDocument() {
     // Uncomment if you want to check for existing session
      const userId = localStorage.getItem("userId");
      if (userId) {
-         console.log(`User already logged in with ID: ${userId}. Redirecting to shop...`);
+         console.log(`User already logged in with ID: ${userId}. Redirecting to profile...`);
          window.location.href = "./profile";
          return;
      }

@@ -1,24 +1,11 @@
-// Load current user data
-const currentUserData = {
-    username: localStorage.getItem("username") || "Player1",
-    email: "player1@eetacbros.com",
-    name: "The Amazing Player",
-    emailNotifications: "enabled",
-    profileVisibility: "public",
-    soundEffects: "enabled",
-    coins: localStorage.getItem("coins") || 0
-};
+const UPDATE_URL = `${BASE_URL}/user/update`;
 
 // Initialize form with current data
 function loadUserData() {
-    document.getElementById('username').value = currentUserData.username;
-    document.getElementById('email').value = currentUserData.email;
-    document.getElementById('name').value = currentUserData.name;
-
-    // Set radio buttons
-    document.querySelector(`input[name="emailNotifications"][value="${currentUserData.emailNotifications}"]`).checked = true;
-    document.querySelector(`input[name="profileVisibility"][value="${currentUserData.profileVisibility}"]`).checked = true;
-    document.querySelector(`input[name="soundEffects"][value="${currentUserData.soundEffects}"]`).checked = true;
+    document.getElementById('username').value = localStorage.getItem("username") || '';
+    document.getElementById('email').value = localStorage.getItem("email") || '';
+    document.getElementById('name').value = localStorage.getItem("name") || '';
+    document.getElementById('coins').value = localStorage.getItem("coins") || '';
 }
 
 // Show notification
@@ -40,13 +27,12 @@ function validatePassword(password) {
     const minLength = password.length >= 8;
     const hasUpperCase = /[A-Z]/.test(password);
     const hasNumber = /[0-9]/.test(password);
-    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
 
-    return minLength && hasUpperCase && hasNumber && hasSpecialChar;
+    return minLength && hasUpperCase && hasNumber;
 }
 
 // Save changes
-document.getElementById('saveBtn').addEventListener('click', async function() {
+document.getElementById('saveBtn').addEventListener('click', function() {
     const username = document.getElementById('username').value.trim();
     const email = document.getElementById('email').value.trim();
     const name = document.getElementById('name').value.trim();
@@ -78,41 +64,43 @@ document.getElementById('saveBtn').addEventListener('click', async function() {
 
     // Prepare data to send to backend
     const updateData = {
-        id: localStorage.getItem("userId"),
+        id: parseInt(localStorage.getItem("userId")),
         username: username,
         name: name,
         email: email,
         password: newPassword
+
     };
 
-    try {
-        const response = await fetch(`${BASE_URL}/example/eetacbros/user/update`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(updateData)
-        });
+    console.log("Sending update data:", updateData); // Log the data being sent
 
-        if (!response.ok) {
-            throw new Error('Failed to update profile');
-        }
+    $.ajax({
+        url: UPDATE_URL,
+        type: 'PUT',
+        contentType: 'application/json',
+        data: JSON.stringify(updateData)
+    })
+    .done(function(data) {
+        // Update local storage
+        localStorage.setItem('username', username);
+        localStorage.setItem('name', name);
+        localStorage.setItem('email', email);
 
         // Clear password fields
         document.getElementById('newPassword').value = '';
         document.getElementById('confirmPassword').value = '';
 
         showNotification('✓ Settings saved successfully!', 'success');
-    } catch (error) {
-        console.error('Error updating profile:', error);
+    })
+    .fail(function(jqXHR, textStatus, errorThrown) {
+        console.error(`Error saving settings: ${textStatus}`, errorThrown);
         showNotification('Failed to save changes. Please try again.', 'error');
-    }
+    });
 });
 
 // Clear changes
 document.getElementById('clearBtn').addEventListener('click', function() {
     if (confirm('Are you sure you want to clear all changes?')) {
-        loadUserData();
         document.getElementById('currentPassword').value = '';
         document.getElementById('newPassword').value = '';
         document.getElementById('confirmPassword').value = '';
@@ -135,20 +123,6 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', async func
         // Simulated API call
         console.log('Deleting account...');
 
-        // Example API call (uncomment and modify when ready):
-        /*
-        const response = await fetch('/api/user/delete', {
-            method: 'DELETE',
-            headers: {
-                'Authorization': 'Bearer ' + localStorage.getItem('token')
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error('Failed to delete account');
-        }
-        */
-
         deleteDialog.close();
         showNotification('Account deleted successfully', 'success');
 
@@ -162,10 +136,10 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', async func
     }
 });
 
-// Initialize page
-loadUserData();
-
 // Event listener for the profile button
 document.getElementById('profileBtn').addEventListener('click', function() {
     window.location.href = '../profile';
 });
+
+// Load user data when the page loads
+document.addEventListener('DOMContentLoaded', loadUserData);

@@ -92,6 +92,7 @@ public class UserDAO implements IUserDAO{
             paramsUpdate.put("email",user.getEmail());
             paramsUpdate.put("password",user.getPassword());
             paramsUpdate.put("coins",user.getCoins());
+            paramsUpdate.put("username",user.getUsername());
             session.update(User.class,paramsSearch,paramsUpdate);
         }
         catch (Exception e)
