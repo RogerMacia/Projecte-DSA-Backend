@@ -1,5 +1,7 @@
 const UPDATE_URL = `${BASE_URL}/user/update`;
 
+const DELETE_USER_URL = `${BASE_URL}/user/delete/{id}`;
+
 // Initialize form with current data
 function loadUserData() {
     document.getElementById('username').value = localStorage.getItem("username") || '';
@@ -72,6 +74,7 @@ document.getElementById('saveBtn').addEventListener('click', function() {
 
     };
 
+
     console.log("Sending update data:", updateData); // Log the data being sent
 
     $.ajax({
@@ -115,26 +118,39 @@ document.getElementById('deleteAccountBtn').addEventListener('click', function()
     deleteDialog.showModal();
 });
 
-document.getElementById('confirmDeleteBtn').addEventListener('click', async function(e) {
+document.getElementById('confirmDeleteBtn').addEventListener('click', function(e) {
     e.preventDefault();
 
-    // TODO: Replace with actual API call
-    try {
-        // Simulated API call
-        console.log('Deleting account...');
+    const userId = localStorage.getItem("userId");
 
+    if (!userId) {
+        showNotification('User ID not found. Please log in again.', 'error');
+        return;
+    }
+
+    const deleteUrl = DELETE_USER_URL.replace('{id}', userId);
+
+    $.ajax({
+        url: deleteUrl,
+        type: 'DELETE',
+        contentType: 'application/json'
+    })
+    .done(function(data) {
         deleteDialog.close();
         showNotification('Account deleted successfully', 'success');
 
-        // Redirect to login after 2 seconds
+        // Clear local storage and redirect to login
+        localStorage.clear();
         setTimeout(() => {
-            window.location.href = '/login';
+            window.location.href = '../login';
         }, 2000);
-    } catch (error) {
-        console.error('Error deleting account:', error);
+    })
+    .fail(function(jqXHR, textStatus, errorThrown) {
+        console.error(`Error deleting account: ${textStatus}`, errorThrown);
         showNotification('Failed to delete account. Please try again.', 'error');
-    }
+    });
 });
+
 
 // Event listener for the profile button
 document.getElementById('profileBtn').addEventListener('click', function() {
