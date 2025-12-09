@@ -1,16 +1,92 @@
-const UPDATE_URL = `${BASE_URL}/user/update`;
+// ============================================================================
+// CONSTANTS
+// ============================================================================
 
+const UPDATE_URL = `${BASE_URL}/user/update`;
 const DELETE_USER_URL = `${BASE_URL}/user/delete/{id}`;
 
-// Initialize form with current data
+const NOTIFICATION_DURATION = 3000;
+const REDIRECT_DELAY = 2000;
+
+const PASSWORD_REQUIREMENTS = {
+    minLength: 8,
+    hasUpperCase: /[A-Z]/,
+    hasNumber: /[0-9]/
+};
+
+
+// ============================================================================
+// USER DATA MANAGEMENT
+// ============================================================================
+
 function loadUserData() {
-    document.getElementById('username').value = localStorage.getItem("username") || '';
-    document.getElementById('email').value = localStorage.getItem("email") || '';
-    document.getElementById('name').value = localStorage.getItem("name") || '';
-    document.getElementById('coins').value = localStorage.getItem("coins") || '';
+    const fields = ['username', 'email', 'name', 'coins'];
+    fields.forEach(field => {
+        const element = document.getElementById(field);
+        if (element) {
+            element.value = localStorage.getItem(field) || '';
+        }
+    });
 }
 
-// Show notification
+function saveUserDataToLocalStorage(username, name, email) {
+    localStorage.setItem('username', username);
+    localStorage.setItem('name', name);
+    localStorage.setItem('email', email);
+}
+
+function getUserIdFromStorage() {
+    return localStorage.getItem('userId');
+}
+
+
+// ============================================================================
+// VALIDATION
+// ============================================================================
+
+function validateEmail(email) {
+    return email && email.includes('@');
+}
+
+function validatePassword(password) {
+    const meetsLength = password.length >= PASSWORD_REQUIREMENTS.minLength;
+    const hasUpperCase = PASSWORD_REQUIREMENTS.hasUpperCase.test(password);
+    const hasNumber = PASSWORD_REQUIREMENTS.hasNumber.test(password);
+
+    return meetsLength && hasUpperCase && hasNumber;
+}
+
+function validateUserInput(username, email, newPassword, confirmPassword) {
+    if (!username) {
+        showNotification('Username cannot be empty', 'error');
+        return false;
+    }
+
+    if (!validateEmail(email)) {
+        showNotification('Please enter a valid email address', 'error');
+        return false;
+    }
+
+    if (newPassword) {
+        if (newPassword !== confirmPassword) {
+            showNotification('New passwords do not match', 'error');
+            return false;
+        }
+
+        if (!validatePassword(newPassword)) {
+            showNotification('Password does not meet requirements', 'error');
+            return false;
+        }
+    }
+
+    return true;
+}
+
+
+// ============================================================================
+// UI NOTIFICATIONS
+// ============================================================================
+
 function showNotification(message, type = 'success') {
     const notification = document.getElementById('notification');
     const notificationText = document.getElementById('notificationText');
@@ -21,141 +97,171 @@ function showNotification(message, type = 'success') {
 
     setTimeout(() => {
         notification.classList.add('hidden');
-    }, 3000);
+    }, NOTIFICATION_DURATION);
 }
 
-// Validate password
-function validatePassword(password) {
-    const minLength = password.length >= 8;
-    const hasUpperCase = /[A-Z]/.test(password);
-    const hasNumber = /[0-9]/.test(password);
 
-    return minLength && hasUpperCase && hasNumber;
-}
+// ============================================================================
+// FORM HANDLING
+// ============================================================================
 
-// Save changes
-document.getElementById('saveBtn').addEventListener('click', function() {
-    const username = document.getElementById('username').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const name = document.getElementById('name').value.trim();
-    const newPassword = document.getElementById('newPassword').value;
-    const confirmPassword = document.getElementById('confirmPassword').value;
-
-    // Validation
-    if (!username) {
-        showNotification('Username cannot be empty', 'error');
-        return;
-    }
-
-    if (!email || !email.includes('@')) {
-        showNotification('Please enter a valid email address', 'error');
-        return;
-    }
-
-    if (newPassword) {
-        if (newPassword !== confirmPassword) {
-            showNotification('New passwords do not match', 'error');
-            return;
-        }
-
-        if (!validatePassword(newPassword)) {
-            showNotification('Password does not meet requirements', 'error');
-            return;
-        }
-    }
-
-    // Prepare data to send to backend
-    const updateData = {
-        id: parseInt(localStorage.getItem("userId")),
-        username: username,
-        name: name,
-        email: email,
-        password: newPassword
-
+function getFormValues() {
+    return {
+        username: document.getElementById('username').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        name: document.getElementById('name').value.trim(),
+        newPassword: document.getElementById('newPassword').value,
+        confirmPassword: document.getElementById('confirmPassword').value
     };
+}
+
+function clearPasswordFields() {
+    document.getElementById('newPassword').value = '';
+    document.getElementById('confirmPassword').value = '';
+
+    const currentPasswordField = document.getElementById('currentPassword');
+    if (currentPasswordField) {
+        currentPasswordField.value = '';
+    }
+}
+
+function buildUpdateData(username, name, email, password) {
+    return {
+        id: parseInt(getUserIdFromStorage()),
+        username,
+        name,
+        email,
+        password
+    };
+}
 
 
-    console.log("Sending update data:", updateData); // Log the data being sent
+// ============================================================================
+// API CALLS
+// ============================================================================
 
-    $.ajax({
+function updateUserSettings(updateData) {
+    return $.ajax({
         url: UPDATE_URL,
         type: 'PUT',
         contentType: 'application/json',
         data: JSON.stringify(updateData)
-    })
-    .done(function(data) {
-        // Update local storage
-        localStorage.setItem('username', username);
-        localStorage.setItem('name', name);
-        localStorage.setItem('email', email);
-
-        // Clear password fields
-        document.getElementById('newPassword').value = '';
-        document.getElementById('confirmPassword').value = '';
-
-        showNotification('✓ Settings saved successfully!', 'success');
-    })
-    .fail(function(jqXHR, textStatus, errorThrown) {
-        console.error(`Error saving settings: ${textStatus}`, errorThrown);
-        showNotification('Failed to save changes. Please try again.', 'error');
     });
-});
+}
 
-// Clear changes
-document.getElementById('clearBtn').addEventListener('click', function() {
+function deleteUserAccount(userId) {
+    const deleteUrl = DELETE_USER_URL.replace('{id}', userId);
+
+    return $.ajax({
+        url: deleteUrl,
+        type: 'DELETE',
+        contentType: 'application/json'
+    });
+}
+
+
+// ============================================================================
+// EVENT HANDLERS
+// ============================================================================
+
+function handleSaveSettings() {
+    const { username, email, name, newPassword, confirmPassword } = getFormValues();
+
+    if (!validateUserInput(username, email, newPassword, confirmPassword)) {
+        return;
+    }
+
+    const updateData = buildUpdateData(username, name, email, newPassword);
+    console.log('Sending update data:', updateData);
+
+    updateUserSettings(updateData)
+        .done(() => {
+            saveUserDataToLocalStorage(username, name, email);
+            clearPasswordFields();
+            showNotification('✓ Settings saved successfully!', 'success');
+        })
+        .fail((jqXHR, textStatus, errorThrown) => {
+            console.error(`Error saving settings: ${textStatus}`, errorThrown);
+            showNotification('Failed to save changes. Please try again.', 'error');
+        });
+}
+
+function handleClearChanges() {
     if (confirm('Are you sure you want to clear all changes?')) {
-        document.getElementById('currentPassword').value = '';
-        document.getElementById('newPassword').value = '';
-        document.getElementById('confirmPassword').value = '';
+        clearPasswordFields();
         showNotification('Changes cleared', 'success');
     }
-});
+}
 
-// Delete account
-const deleteDialog = document.getElementById('deleteDialog');
-
-document.getElementById('deleteAccountBtn').addEventListener('click', function() {
-    deleteDialog.showModal();
-});
-
-document.getElementById('confirmDeleteBtn').addEventListener('click', function(e) {
+function handleDeleteAccount(e) {
     e.preventDefault();
 
-    const userId = localStorage.getItem("userId");
+    const userId = getUserIdFromStorage();
 
     if (!userId) {
         showNotification('User ID not found. Please log in again.', 'error');
         return;
     }
 
-    const deleteUrl = DELETE_USER_URL.replace('{id}', userId);
+    deleteUserAccount(userId)
+        .done(() => {
+            closeDeleteDialog();
+            showNotification('Account deleted successfully', 'success');
+            redirectToLogin();
+        })
+        .fail((jqXHR, textStatus, errorThrown) => {
+            console.error(`Error deleting account: ${textStatus}`, errorThrown);
+            showNotification('Failed to delete account. Please try again.', 'error');
+        });
+}
 
-    $.ajax({
-        url: deleteUrl,
-        type: 'DELETE',
-        contentType: 'application/json'
-    })
-    .done(function(data) {
-        deleteDialog.close();
-        showNotification('Account deleted successfully', 'success');
-
-        // Clear local storage and redirect to login
-        localStorage.clear();
-        setTimeout(() => {
-            window.location.href = '../login';
-        }, 2000);
-    })
-    .fail(function(jqXHR, textStatus, errorThrown) {
-        console.error(`Error deleting account: ${textStatus}`, errorThrown);
-        showNotification('Failed to delete account. Please try again.', 'error');
-    });
-});
-
-
-// Event listener for the profile button
-document.getElementById('profileBtn').addEventListener('click', function() {
+function handleProfileNavigation() {
     window.location.href = '../profile';
-});
+}
 
-// Load user data when the page loads
-document.addEventListener('DOMContentLoaded', loadUserData);
+
+// ============================================================================
+// DIALOG MANAGEMENT
+// ============================================================================
+
+function showDeleteDialog() {
+    const deleteDialog = document.getElementById('deleteDialog');
+    deleteDialog.showModal();
+}
+
+function closeDeleteDialog() {
+    const deleteDialog = document.getElementById('deleteDialog');
+    deleteDialog.close();
+}
+
+
+// ============================================================================
+// NAVIGATION
+// ============================================================================
+
+function redirectToLogin() {
+    localStorage.clear();
+    setTimeout(() => {
+        window.location.href = '../login';
+    }, REDIRECT_DELAY);
+}
+
+
+// ============================================================================
+// INITIALIZATION
+// ============================================================================
+
+function initializeEventListeners() {
+    document.getElementById('saveBtn').addEventListener('click', handleSaveSettings);
+    document.getElementById('clearBtn').addEventListener('click', handleClearChanges);
+    document.getElementById('deleteAccountBtn').addEventListener('click', showDeleteDialog);
+    document.getElementById('confirmDeleteBtn').addEventListener('click', handleDeleteAccount);
+    document.getElementById('profileBtn').addEventListener('click', handleProfileNavigation);
+}
+
+function initialize() {
+    loadUserData();
+    initializeEventListeners();
+}
+
+document.addEventListener('DOMContentLoaded', initialize);
