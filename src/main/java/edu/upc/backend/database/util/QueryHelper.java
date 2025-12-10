@@ -41,8 +41,17 @@ public class QueryHelper {
     }
 
     public static String createQuerySELECT(Object entity) {
+        return createQuerySELECT(entity.getClass());
+    }
+
+    public static String createQuerySELECT(Class theClass) {
         StringBuffer sb = new StringBuffer();
-        sb.append("SELECT * FROM ").append(entity.getClass().getSimpleName());
+        String[] fields = ObjectHelper.getFields(theClass);
+        sb.append("SELECT ");
+        sb.append(fields[0]);
+        for(int i = 1; i < fields.length; i++)
+            sb.append(",").append(fields[i]);
+        sb.append(" FROM ").append(theClass.getSimpleName());
         sb.append(" WHERE ID = ?");
 
         return sb.toString();
@@ -92,7 +101,9 @@ public class QueryHelper {
 
         for(int i = 1; i < fields.length; i++)
         {
+
             String f = fields[i];
+            if(f.equals("id")) continue;
             Object value = ObjectHelper.getter(entity,f);
             sb.append(",").append(f).append("=");
 
@@ -131,8 +142,18 @@ public class QueryHelper {
 
     public static String createQuerySelectAll(Class theClass)
     {
-        String res = "SELECT * FROM %s";
-        return String.format(res,theClass.getSimpleName());
+        //String res = "SELECT * FROM %s";
+
+        StringBuffer sb = new StringBuffer().append("SELECT ");
+        String[] fields = ObjectHelper.getFields(theClass);
+        sb.append(fields[0]);
+        for(int i = 1; i < fields.length; i++)
+        {
+            sb.append(",").append(fields[i]);
+        }
+
+        sb.append(String.format(" FROM %s", theClass.getSimpleName()));
+        return sb.toString();
     }
 
     // Todas las operaciones CRUD implementadas
@@ -209,6 +230,26 @@ public class QueryHelper {
         return sb.toString();
         //endregion insert
     }
+
+    public static String createQyerySELECTSOME(Class theClass)
+    {
+        StringBuffer sb = new StringBuffer();
+        sb.append("SELECT * FROM ").append(theClass.getSimpleName())
+                .append(" WHERE ");
+        String [] fields = ObjectHelper.getFields(theClass);
+
+        String first = fields[0];
+        sb.append(first).append(" = ?");
+
+        for(int i = 1; i < fields.length; i++)
+        {
+            sb.append(",").append(fields[i]).append(" = ?");
+        }
+
+        return sb.toString();
+    }
+
+
 
     //endregion Tablas relacionales
 

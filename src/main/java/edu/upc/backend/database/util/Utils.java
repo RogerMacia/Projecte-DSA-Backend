@@ -11,25 +11,14 @@ public class Utils {
         String output = input.substring(0, 1).toUpperCase() + input.substring(1);
         return output;
     }
-    //https://www.access-programmers.co.uk/forums/threads/decimal-points-only-if-it-has-decimal-values-no-decimal-if-it-is-a-full-number.315747/
-    public static String checkDecimal(double dec)
-    {
-        if((int)dec == dec)
-        {
-            return Integer.toString((int)dec);
-        }
-        else
-        {
-            return Double.toString(dec);
-        }
-    }
+
 
     public static void valueParser(StringBuffer sb, Object value) throws ClassNotFoundException {
         // switch no funciona con Classes a este nivel de lenguaje...
         if(value.getClass() == String.class)
             sb.append("'").append(value).append("'");
-        else if (value.getClass().isPrimitive()) sb.append(value.toString()); // creo que es asi
-        else if(value.getClass() == Double.class) sb.append(Utils.checkDecimal((double)value)); // por alguna razon esto funciona
+        else if (value.getClass().isPrimitive() || value.getClass() == Integer.class) sb.append(value.toString()); // creo que es asi
+        else if(value.getClass() == Float.class || value.getClass() == Double.class ) sb.append(value.toString()); // por alguna razon esto funciona
         else throw new ClassNotFoundException(String.format("Class %s not found.",value.getClass()));
     }
 

@@ -31,19 +31,18 @@ public class SessionLogged implements Session{
         log.info("Object successfully saved.");
     }
 
-    public Object update(Class theClasss, HashMap<String, Object> paramsSearch, HashMap<String, Object> paramsUpdate) {
+    @Override
+    public void update(Object object) {
         try
         {
-            log.info("Updating object: " + theClasss.getClass().getName());
-            Object res = _session.update(theClasss, paramsSearch, paramsUpdate);
+            log.info("Updating object: " + object.getClass().getName());
+            _session.update(object);
             log.info("Object successfully updated.");
-            return res;
         }
         catch (Exception e)
         {
             log.error("Error: " + e.getMessage());
         }
-        return null;
     }
 
     @Override
@@ -61,12 +60,12 @@ public class SessionLogged implements Session{
     }
 
     @Override
-    public List<Object> get(Class theClass, HashMap<String, Object> paramsSearch){
+    public Object get(Class theClass, int id){
         //Object res = null;
         try
         {
             log.info("Selecting object: " + theClass.getName());
-            return _session.get(theClass, paramsSearch);
+            return _session.get(theClass, id);
         }
         catch (Exception e)
         {
@@ -90,6 +89,22 @@ public class SessionLogged implements Session{
     }
 
     @Override
+    public List<Object> query(String query, Class theClass, HashMap params) {
+        try
+        {
+            log.info(String.format("Custom query \" %s ",query ));
+            List<Object> res =  _session.query(query,theClass,params);
+            //log.info(String.format("%d objects were found.", res.size()));
+            return res;
+        }
+        catch (Exception e)
+        {
+            log.warn("Error: " + e.getMessage());
+        }
+        return null;
+    }
+
+    @Override
     public List<Object> findAll(Class theClass) {
         try
         {
@@ -104,6 +119,8 @@ public class SessionLogged implements Session{
         }
         return null;
     }
+
+
 
     @Override
     public List<Object> findAll(Class theClass, HashMap params) {
@@ -121,37 +138,37 @@ public class SessionLogged implements Session{
         return null;
     }
 
-    /*
     @Override
-    public List<Object> query(String query, Class theClass, HashMap params) {
+    public int findId(Object object) {
         try
         {
-            log.info(String.format("Custom query \" %s \" for the object %s",query ,theClass.getName()));
-            List<Object> res =  _session.query(query,theClass,params);
-            log.info(String.format("%d objects were found.", res.size()));
+            log.info("Findind id for " + object.toString());
+            int res = _session.findId(object);
+            log.info(String.format("%d was found"));
             return res;
         }
         catch (Exception e)
         {
             log.warn("Error: " + e.getMessage());
         }
-        return null;
+        return -1;
     }
-    */
 
-    /*public List<Object> queryMasterFunction(String query, Class theClass, HashMap params) {
+    @Override
+    public int findId(String query, HashMap params) {
         try
         {
-            log.info(String.format("Custom query \" %s \" for the object %s",query ,theClass.getName()));
-            List<Object> res =  _session.queryMasterFunction(query,theClass,params);
-            log.info(String.format("%d objects were found.", res.size()));
+            log.info("Executing custom query: " + query);
+            int res = _session.findId(query,params);
+            log.info(String.format("id: %d was found",res));
             return res;
         }
         catch (Exception e)
         {
             log.warn("Error: " + e.getMessage());
         }
-        return null;
-    }*/
+        return -1;
+    }
+
 
 }

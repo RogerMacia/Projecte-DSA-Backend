@@ -55,7 +55,7 @@ public class ItemDAO implements IItemDAO {
             session = new SessionBuilder().build();
             HashMap<String,Object> paramsSerch = new HashMap<>();
             paramsSerch.put("id",itemId);
-            List<Object> objects = session.get(Item.class,paramsSerch);
+            List<Object> objects = session.findAll(Item.class,paramsSerch);
             if (!objects.isEmpty()) {
                 Item item = (Item) objects.get(0);
                 item.setEmoji(EmojiManager.getEmoji(item.getId())); // Set emoji from EmojiManager using item ID

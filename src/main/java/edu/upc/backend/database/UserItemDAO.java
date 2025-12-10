@@ -38,7 +38,7 @@ public class UserItemDAO implements IUserItemDAO{
         List<UserItem> useritemList = null;
         try {
             session = new SessionBuilder().build();
-            List<Object> objectList = session.get(UserItem.class, params);
+            List<Object> objectList = session.findAll(UserItem.class, params);
             useritemList = new ArrayList<>();
             for(Object o : objectList) {
                 useritemList.add((UserItem) o);
@@ -52,24 +52,14 @@ public class UserItemDAO implements IUserItemDAO{
         return useritemList;
     }
 
-    public UserItem updateUserItem(UserItem userItem) throws Exception{
+    public void updateUserItem(UserItem userItem) throws Exception{
         Session session = null;
         try {
             session = new SessionBuilder().build();
-            HashMap<String,Object> paramsSearch = new HashMap<>();
-            paramsSearch.put("userId",userItem.getUserId());
-            paramsSearch.put("itemId",userItem.getItemId());
-            HashMap<String,Object> paramsUpdate = new HashMap<>();
-            paramsUpdate.put("quantity",userItem.getQuantity());
-            int affectedRows = (int) session.update(UserItem.class,paramsSearch,paramsUpdate);
-            if (affectedRows > 0) {
-                return userItem;
-            }
-            return null;
+            session.update(userItem);
         }
         catch (Exception e) {
             logger.error(e.getMessage());
-            return  null;
         }
         finally {
             if (session != null) {

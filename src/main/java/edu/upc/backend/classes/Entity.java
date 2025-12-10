@@ -7,7 +7,7 @@ public abstract class Entity {
         return hp;
     }
 
-    public void setHp(int hp) {
+    public void setHp(Integer hp) {
         this.hp = hp;
     }
 

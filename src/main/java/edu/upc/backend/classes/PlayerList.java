@@ -20,7 +20,7 @@ public class PlayerList {
     // 🔍 Buscar un client per ID
     public Player getPlayerByPlayerId(int playerId) {
         for (Player p : playerList) {
-            if (p.getPlayerId() == playerId) {
+            if (p.getId() == playerId) {
                 return p;
             }
         }

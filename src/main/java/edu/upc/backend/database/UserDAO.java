@@ -60,12 +60,8 @@ public class UserDAO implements IUserDAO{
 
         try{
             session = new SessionBuilder().build();
-            HashMap<String,Object> paramsSearch = new HashMap<>();
-            paramsSearch.put("id",userID);
-            List<Object> objectList = session.get(User.class,paramsSearch);
-            if (!objectList.isEmpty()) {
-                res = (User) objectList.get(0);
-            }
+            res = (User)session.get(User.class,userID);
+
         }
         catch (Exception e)
         {
@@ -83,17 +79,10 @@ public class UserDAO implements IUserDAO{
     
     public void updateUser(User user) throws Exception {
         Session session = null;
+
         try{
             session = new SessionBuilder().build();
-            HashMap<String,Object> paramsSearch = new HashMap<>();
-            paramsSearch.put("id",user.getId());
-            HashMap<String,Object> paramsUpdate = new HashMap<>();
-            paramsUpdate.put("name",user.getName());
-            paramsUpdate.put("email",user.getEmail());
-            paramsUpdate.put("password",user.getPassword());
-            paramsUpdate.put("coins",user.getCoins());
-            paramsUpdate.put("username",user.getUsername());
-            session.update(User.class,paramsSearch,paramsUpdate);
+            session.update(user);
         }
         catch (Exception e)
         {
@@ -112,15 +101,13 @@ public class UserDAO implements IUserDAO{
     public void deleteUser(int id) throws Exception {
 
         Session session = null;
-
+        User user = null;
         try{
             session = new SessionBuilder().build();
-            HashMap<String,Object> paramsSearch = new HashMap<>();
-            paramsSearch.put("id",id);
-            List<Object> objectList = session.get(User.class,paramsSearch);
-            if (!objectList.isEmpty()) {
-                User buffer = (User) objectList.get(0);
-                session.delete(buffer);
+
+            user = (User)session.get(User.class,id);
+            if (user != null) {
+                session.delete(user);
             }
         }
         catch (Exception e)
@@ -164,11 +151,13 @@ public class UserDAO implements IUserDAO{
     public User getUserByUsername(String username) throws SQLException {
         Session session = null;
         User res = null;
+        String customQuery = "SELECT * FROM User WHERE username=?";
         HashMap<String,Object> params = new HashMap<>();
         params.put("username",username);
         try{
             session = new SessionBuilder().build();
-            List<Object> objectList = session.get(User.class,params);
+            //List<Object> objectList = session.findAll(User.class,params);
+            List<Object> objectList = session.query(customQuery,User.class,params);
             if (!objectList.isEmpty()) {
                 res = (User) objectList.get(0);
             }

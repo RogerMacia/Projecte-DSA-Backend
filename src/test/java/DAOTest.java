@@ -1,11 +1,16 @@
 import edu.upc.backend.classes.Item;
+import edu.upc.backend.classes.Player;
 import edu.upc.backend.classes.User;
 import edu.upc.backend.database.ItemDAO;
+import edu.upc.backend.database.PlayerDAO;
 import edu.upc.backend.database.UserDAO;
+import edu.upc.backend.database.util.ObjectHelper;
+import edu.upc.backend.database.util.QueryHelper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.List;
 import org.apache.log4j.Logger;
@@ -15,12 +20,14 @@ public class DAOTest {
     Logger log = Logger.getLogger(DAOTest.class);
     UserDAO _users;
     ItemDAO _items;
+    PlayerDAO _players;
 
     @Before
     public void Init()
     {
         _users = UserDAO.getInstance();
         _items = ItemDAO.getInstance();
+        _players = PlayerDAO.getInstance();
     }
     @After
     public void Finalize()
@@ -28,15 +35,16 @@ public class DAOTest {
         _users = null;
     }
 
-    /*
     @Test
     public void addUserTest() throws Exception {
-        int id = _users.addUser("Daniel","123456Ab","Dani","daniel@gmail.com");
+        User u = new User("Daniel","123456Ab","Dani","daniel@gmail.com");
+        int id = _users.registerUser(u);
     }
 
-     */
 
-    /*@Test
+
+
+    @Test
     public void getUsersTest() throws Exception {
         List<User> userList = _users.getUsers();
 
@@ -44,7 +52,7 @@ public class DAOTest {
         {
             log.info(user.toString());
         }
-    }*/
+    }
 
     @Test
     public void getUserTest() throws Exception {
@@ -56,10 +64,18 @@ public class DAOTest {
     @Test
     public void updateUserTest() throws Exception {
         int id = 3;
-        //_users.updateUser(3,"Carlos","udsuhaiha","Carlosxd","carlos@gmail.com");
+        User user = new User("Carlos","udsuhaiha","Carlosxd","carlos@gmail.com");
+        user.setId(id);
+        _users.updateUser(user);
 
-        User user = _users.getUserById(3);
-        log.info(user.toString());
+        User user2 = _users.getUserById(3);
+        log.info(user2.toString());
+
+    }
+
+    @Test
+    public void getIdByUsername()
+    {
 
     }
 
@@ -73,7 +89,7 @@ public class DAOTest {
 
     @Test
     public void getUserByUsernameTest() throws SQLException {
-        String username = "Carlosxd";
+        String username = "wenjie2";
         User res = _users.getUserByUsername(username);
         log.info(res.toString());
     }
@@ -85,5 +101,49 @@ public class DAOTest {
         for(Item i : res) log.info(i.getName());
     }
 
+    @Test
+    public void PlayerFields()
+    {
+        String[] f = ObjectHelper.getFields(Player.class);
+        for(String name : f) log.info(name);
+    }
+
+    @Test
+    public void PlayerTest() throws Exception {
+        _players.addPlayer(1);
+
+    }
+
+    @Test
+    public void PlayerQueryTest() throws  Exception
+    {
+        log.info(QueryHelper.createQuerySELECT(Player.class));
+    }
+
+    @Test
+    public void PlayerByUserId() throws Exception {
+        Player player = (Player) _players.getPlayerbyUserId(1);
+        log.info(player.toString());
+    }
+
+    @Test
+    public void PlayerUpdateTest() throws Exception {
+        Player player = new Player(5,50,2,3,7,42);
+        _players.updatePlayer(player);
+    }
+
+    @Test
+    public void PlayerDeleteTest() throws Exception
+    {
+        Player player = new Player(6,0,0,0,0,0);
+        _players.deletePlayer(player);
+    }
+
+    @Test
+    public void ListPlayersTest() throws Exception {
+        List<Object> res = _players.getPlayers();
+
+        for(Object o : res) log.info(o.toString());
+    }
 
 }

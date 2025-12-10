@@ -88,6 +88,24 @@ CREATE TABLE UserItem (
 );
 SELECT * FROM UserItem;
 
+CREATE TABLE Player(
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	hp INT,
+	speed INT,
+	score INT,
+	X FLOAT(24),
+	Y FLOAT(24)
+);
+
+CREATE TABLE Core(
+	userId INT NOT NULL,
+	playerId INT NOT NULL,
+	FOREIGN KEY (userId) REFERENCES User(ID),
+	FOREIGN KEY (playerId) REFERENCES Player(ID),
+	
+	FOREIGN KEY (userId) REFERENCES User(ID) ON DELETE CASCADE,
+    FOREIGN KEY (playerId) REFERENCES Player(id) ON DELETE CASCADE
+);
 
 Per eliminar la base de dades:
 DROP DATABASE projecte_dsa_db;

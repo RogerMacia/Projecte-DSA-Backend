@@ -37,36 +37,13 @@ public class ObjectHelper {
     public static void setter(Object object, String property, Object value) throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         // Method // invoke
         // https://medium.com/@ossamakharbaq4/demystifying-java-reflection-a-guide-to-dynamic-code-capabilities-part-1-3225cfebbd61
-
+        // Siguiendo el principio KISS, 4 lineas de codigo es mejor que los 16 lineas de codigo
         String capital = Utils.CapitalizeFirst(property);
-        String setterName = "set" + capital;
-        Method[] methods = object.getClass().getMethods();
-        for (Method method : methods) {
-            if (method.getName().equals(setterName) && method.getParameterCount() == 1) {
-                Class<?> paramType = method.getParameterTypes()[0];
-                if (paramType.isAssignableFrom(value.getClass()) || isPrimitiveWrapper(paramType, value.getClass())) {
-                    try {
-                        method.invoke(object, value);
-                        return;
-                    } catch (IllegalAccessException | InvocationTargetException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            }
-        }
-        throw new NoSuchMethodException("No suitable setter found for property: " + property + " with value type: " + value.getClass().getName());
+        String m_name = String.format("set%s",capital);
+        Method m_function = object.getClass().getMethod(m_name,value.getClass());
+        m_function.invoke(object,value);
     }
 
-    private static boolean isPrimitiveWrapper(Class<?> primitive, Class<?> wrapper) {
-        if (!primitive.isPrimitive()) {
-            return false;
-        }
-        try {
-            return primitive.equals(wrapper.getField("TYPE").get(null));
-        } catch (Exception e) {
-            return false;
-        }
-    }
 
     public static Object getter(Object object, String property) throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         // Method // invoke

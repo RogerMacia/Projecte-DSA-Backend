@@ -1,0 +1,149 @@
+package edu.upc.backend.database;
+
+import edu.upc.backend.classes.Player;
+import edu.upc.backend.classes.User;
+import edu.upc.backend.database.*;
+import edu.upc.backend.database.util.ObjectHelper;
+import org.apache.log4j.Logger;
+
+import javax.print.attribute.standard.Finishings;
+import java.util.HashMap;
+import java.util.List;
+
+public class PlayerDAO implements IPlayerDAO{
+
+    private static final Logger log = Logger.getLogger(PlayerDAO.class);
+    private static PlayerDAO _instance;
+    public static PlayerDAO getInstance()
+    {
+        if(_instance == null) _instance = new PlayerDAO();
+        return _instance;
+    }
+    private PlayerDAO() {}
+
+
+    @Override
+    public int addPlayer(int userId) throws Exception {
+        Player player = new Player(0,100,10,0,0,0);
+        //String insertQuery = "INSERT INTO Player (score, id, hp, speed, X, Y) VALUES (?, ?, ?, ?, ?, ?)";
+        int playerId = -1;
+        Session session = null;
+        try{
+            session = new SessionBuilder().build();
+            session.save(player);
+
+            HashMap<String,Object> params = new HashMap<>();
+            HashMap<String,Object> params2 = new HashMap<>(); //
+            params.put("userId",userId);
+            List<Object> players = session.findAll(Player.class);
+            String fields[] = ObjectHelper.getFields(Player.class);
+            //for (int x = 0; x < players.size(); x++) log.info(((Player)players.get(x)).toString());
+            playerId = ((Player) players.get(players.size() - 1)).getId();
+            params.put("playerId",playerId);
+            session.query("INSERT INTO CORE (userId, playerId) VALUES (?, ?)",null,params);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        finally {
+            session.close();
+        }
+        return playerId;
+    }
+
+    @Override
+    public Player getPlayer(int playerId) throws Exception {
+        Player player = null;
+        Session session;
+        //String customQuery = "SELECT playerId FROM Core WHERE userId=?";
+        try{
+            session = new SessionBuilder().build();
+            player = (Player) session.get(Player.class,playerId);
+
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return player;
+    }
+
+    @Override
+    public Player getPlayerbyUserId(int userId) throws Exception {
+        Session session = null;
+        String customQuery = "SELECT playerId FROM Core WHERE userId=?";
+        Player res = null;
+        try{
+            session = new SessionBuilder().build();
+            HashMap<String,Object> params = new HashMap<>();
+            params.put("userId",userId);
+            int playerId = session.findId(customQuery,params);
+            res = (Player) session.get(Player.class,playerId);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        finally {
+            session.close();
+        }
+
+        return res;
+    }
+
+    @Override
+    public void updatePlayer(Player player) throws Exception {
+        Session session = null;
+
+        try{
+            session = new SessionBuilder().build();
+            session.update(player);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        finally {
+            session.close();
+        }
+
+    }
+
+    @Override
+    public void deletePlayer(Player player) throws Exception {
+        Session session = null;
+        int playerId = player.getId();
+        String customQuery = "DELETE FROM Core WHERE playerId=?";
+        try{
+            session = new SessionBuilder().build();
+            HashMap<String,Object> params = new HashMap<>();
+            params.put("playerId",playerId);
+            session.query(customQuery,null,params);
+            session.delete(player);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        finally {
+            session.close();
+        }
+    }
+
+    @Override
+    public List<Object> getPlayers() throws Exception {
+        List<Object> res = null;
+        Session session = null;
+        try {
+            session = new SessionBuilder().build();
+            res = session.findAll(Player.class);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        finally {
+            session.close();
+        }
+
+        return res;
+    }
+}
