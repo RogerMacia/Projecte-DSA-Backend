@@ -1,9 +1,11 @@
 import edu.upc.backend.classes.Item;
 import edu.upc.backend.classes.Player;
 import edu.upc.backend.classes.User;
+import edu.upc.backend.classes.UserItem;
 import edu.upc.backend.database.ItemDAO;
 import edu.upc.backend.database.PlayerDAO;
 import edu.upc.backend.database.UserDAO;
+import edu.upc.backend.database.UserItemDAO;
 import edu.upc.backend.database.util.ObjectHelper;
 import edu.upc.backend.database.util.QueryHelper;
 import org.junit.After;
@@ -21,6 +23,7 @@ public class DAOTest {
     UserDAO _users;
     ItemDAO _items;
     PlayerDAO _players;
+    UserItemDAO _inventory;
 
     @Before
     public void Init()
@@ -28,6 +31,7 @@ public class DAOTest {
         _users = UserDAO.getInstance();
         _items = ItemDAO.getInstance();
         _players = PlayerDAO.getInstance();
+        _inventory = UserItemDAO.getInstance();
     }
     @After
     public void Finalize()
@@ -144,6 +148,34 @@ public class DAOTest {
         List<Object> res = _players.getPlayers();
 
         for(Object o : res) log.info(o.toString());
+    }
+
+    @Test
+    public void getItemByIdTest() throws Exception
+    {
+        Item res = _items.getItemById(4);
+        log.info(res.toString());
+    }
+
+    @Test
+    public void getAllItemTest() throws Exception
+    {
+        List<Item> res = _items.getItemlist();
+        for(Item i : res) log.info(i.toString());
+    }
+
+    @Test
+    public void buyTest() throws Exception
+    {
+        UserItem test = new UserItem(2,5,7);
+        _inventory.addUserItem(test);
+    }
+
+    @Test
+    public void getUserInventory() throws Exception
+    {
+        List<UserItem> res = _inventory.getUserItems(1);
+        for(UserItem ui : res) log.info(res.toString());
     }
 
 }

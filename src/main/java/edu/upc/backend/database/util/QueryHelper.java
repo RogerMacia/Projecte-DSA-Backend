@@ -121,7 +121,7 @@ public class QueryHelper {
         return sb.toString();
     }
 
-    public static String createQyerySELECTSOME(Class theClass, HashMap params)
+    public static String createQuerySELECTSOME(Class theClass, HashMap params)
     {
         StringBuffer sb = new StringBuffer();
         sb.append("SELECT * FROM ").append(theClass.getSimpleName())
@@ -155,6 +155,8 @@ public class QueryHelper {
         sb.append(String.format(" FROM %s", theClass.getSimpleName()));
         return sb.toString();
     }
+
+
 
     // Todas las operaciones CRUD implementadas
 

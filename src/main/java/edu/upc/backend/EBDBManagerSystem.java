@@ -97,20 +97,10 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
 
         for (Item item : buyRequest.getItems()) {
             UserItemDAO userItemDAO = UserItemDAO.getInstance();
-            HashMap<String,Object> params = new HashMap<>();
-            params.put("userId",user.getId());
-            params.put("itemId",item.getId());
-            List<UserItem> userItemList = userItemDAO.getUserItems(params);
-            if (userItemList.size() == 1) {
-                UserItem userItem = userItemList.get(0);
-                userItem.setQuantity(userItem.getQuantity() + item.getQuantity());
-                userItemDAO.updateUserItem(userItem);
-            }
-            else {
-                UserItem userItem = new UserItem(user.getId(), item.getId(), item.getQuantity());
-                userItemDAO.addUserItem(userItem);
-            }
+            userItemDAO.addUserItem(new UserItem(user.getId(),item.getId(),item.getQuantity()));
         }
+
+
     }
 
     public User updateUserData(User user) throws Exception {
@@ -222,9 +212,9 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
         UserItemDAO _userItemInstance = UserItemDAO.getInstance();
         List<Item> items = null;
         HashMap<String,Object> paramsSearch = new HashMap<>();
-        paramsSearch.put("userId",userId);
+        //paramsSearch.put("userId",userId);
         try {
-            List<UserItem> userItems = _userItemInstance.getUserItems(paramsSearch);
+            List<UserItem> userItems = _userItemInstance.getUserItems(userId);
             items = new ArrayList<>();
             for (UserItem userItem : userItems) {
                 ItemDAO _itemsInstance = ItemDAO.getInstance();

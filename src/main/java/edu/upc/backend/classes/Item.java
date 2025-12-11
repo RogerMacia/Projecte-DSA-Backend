@@ -34,7 +34,7 @@ public class Item {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -50,7 +50,7 @@ public class Item {
         return durability;
     }
 
-    public void setDurability(int durability) {
+    public void setDurability(Integer durability) {
         this.durability = durability;
     }
 
@@ -58,7 +58,7 @@ public class Item {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(Integer price) {
         this.price = price;
     }
 
@@ -82,7 +82,12 @@ public class Item {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(Integer quantity) {
         this.quantity = quantity;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Item with id: %d is %s for only %d . Look it is a great deal!", getId(), getName(), getPrice());
     }
 }

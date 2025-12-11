@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 public class ItemDAO implements IItemDAO {
@@ -24,7 +25,7 @@ public class ItemDAO implements IItemDAO {
 
     @Override
     public List<Item> getItemlist() throws Exception {
-        List<Item> itemList = new  ArrayList<>();
+        List<Item> items = new LinkedList<>();
         Session session = null;
         try{
 
@@ -33,7 +34,7 @@ public class ItemDAO implements IItemDAO {
             for(Object o : objectList) {
                 Item item = (Item) o;
                 item.setEmoji(EmojiManager.getEmoji(item.getId())); // Set emoji from EmojiManager using item ID
-                itemList.add(item);
+                items.add(item);
             }
         }
         catch (Exception e)
@@ -46,7 +47,7 @@ public class ItemDAO implements IItemDAO {
                 session.close();
             }
         }
-        return itemList;
+        return items;
     }
 
     public Item getItemById(int itemId) throws SQLException {
@@ -55,11 +56,10 @@ public class ItemDAO implements IItemDAO {
             session = new SessionBuilder().build();
             HashMap<String,Object> paramsSerch = new HashMap<>();
             paramsSerch.put("id",itemId);
-            List<Object> objects = session.findAll(Item.class,paramsSerch);
-            if (!objects.isEmpty()) {
-                Item item = (Item) objects.get(0);
-                item.setEmoji(EmojiManager.getEmoji(item.getId())); // Set emoji from EmojiManager using item ID
-                return item;
+            Item res = (Item)session.get(Item.class,itemId);
+            if (res != null) {
+                res.setEmoji(EmojiManager.getEmoji(res.getId())); // Set emoji from EmojiManager using item ID
+                return res;
             }
         }
         catch (Exception e) {
