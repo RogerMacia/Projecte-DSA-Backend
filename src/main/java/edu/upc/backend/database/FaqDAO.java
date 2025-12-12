@@ -17,7 +17,7 @@ public class FaqDAO implements IFaqDAO{
     }
 
     @Override
-    public void addFaq(Faq faq) throws SQLException {
+    public void add(Faq faq) throws SQLException {
         Session session = null;
         try{
             session = new SessionBuilder().build();
@@ -33,7 +33,7 @@ public class FaqDAO implements IFaqDAO{
     }
 
     @Override
-    public Faq getFaq(int faqId) throws SQLException {
+    public Faq get(int faqId) throws SQLException {
 
         Session session = null;
         Faq res = null;
@@ -53,7 +53,7 @@ public class FaqDAO implements IFaqDAO{
     }
 
     @Override
-    public List<Faq> getFaqs() throws SQLException {
+    public List<Faq> getAll() throws SQLException {
         Session session = null;
         List<Faq> res = null;
         try{

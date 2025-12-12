@@ -176,7 +176,13 @@ public class DAOTest {
 
     @Test
     public void testFaq() throws SQLException {
-        Faq faq = _faqs.getFaq(4);
+        Faq faq = _faqs.get(4);
         log.info(faq.toString());
+    }
+
+    @Test
+    public void testFaqs() throws SQLException {
+        List<Faq> faqs = _faqs.getAll();
+        for(Faq faq : faqs) log.info(faq.toString());
     }
 }
