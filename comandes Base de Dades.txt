@@ -107,6 +107,15 @@ CREATE TABLE Core(
     FOREIGN KEY (playerId) REFERENCES Player(id) ON DELETE CASCADE
 );
 
+CREATE TABLE Faq(
+	ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	question VARCHAR(280),
+	answer TEXT);
+
+INSERT INTO Faq (question, answer) VALUES 
+	("How to register?", "To register you have to input your real name, email and a password"),
+	("How to buy game items?","Go to our shop website www.dsa3.upc.edu/shop or to the EETACBro app.");
+
 Per eliminar la base de dades:
 DROP DATABASE projecte_dsa_db;
 

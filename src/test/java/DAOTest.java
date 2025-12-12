@@ -1,11 +1,5 @@
-import edu.upc.backend.classes.Item;
-import edu.upc.backend.classes.Player;
-import edu.upc.backend.classes.User;
-import edu.upc.backend.classes.UserItem;
-import edu.upc.backend.database.ItemDAO;
-import edu.upc.backend.database.PlayerDAO;
-import edu.upc.backend.database.UserDAO;
-import edu.upc.backend.database.UserItemDAO;
+import edu.upc.backend.classes.*;
+import edu.upc.backend.database.*;
 import edu.upc.backend.database.util.ObjectHelper;
 import edu.upc.backend.database.util.QueryHelper;
 import org.junit.After;
@@ -24,6 +18,7 @@ public class DAOTest {
     ItemDAO _items;
     PlayerDAO _players;
     UserItemDAO _inventory;
+    FaqDAO _faqs;
 
     @Before
     public void Init()
@@ -32,6 +27,7 @@ public class DAOTest {
         _items = ItemDAO.getInstance();
         _players = PlayerDAO.getInstance();
         _inventory = UserItemDAO.getInstance();
+        _faqs = FaqDAO.getInstance();
     }
     @After
     public void Finalize()
@@ -178,4 +174,9 @@ public class DAOTest {
         for(UserItem ui : res) log.info(res.toString());
     }
 
+    @Test
+    public void testFaq() throws SQLException {
+        Faq faq = _faqs.getFaq(4);
+        log.info(faq.toString());
+    }
 }

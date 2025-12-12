@@ -121,5 +121,15 @@ public class Utils {
         return url;
     }
 
+    public static <T> List<T> castList(List<Object> list)
+    {
+        List<T> res = new LinkedList<>();
+        for(int i = 0; i < list.size(); i++)
+        {
+            res.add((T)list.get(i));
+        }
+        return res;
+    }
+
 
 }
