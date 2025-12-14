@@ -58,7 +58,7 @@ public class GameDAO implements IGameDAO{
             session = new SessionBuilder().build();
             HashMap<String,Object> params = new HashMap<>();
             params.put("userId",userId);
-            int gameId = session.findId("",params);
+            int gameId = session.findId(customQuery,params);
             res = (Game )session.get(Game.class, gameId);
         }
         catch (Exception e)

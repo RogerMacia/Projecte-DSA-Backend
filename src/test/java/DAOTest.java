@@ -203,4 +203,11 @@ public class DAOTest {
         int gameId = _games.add(userId,playerId);
 
     }
+
+    @Test
+    public void testGame() throws Exception
+    {
+        int playerId = ((Game)_games.getbyUserId(6)).getId();
+        log.info(playerId);
+    }
 }
