@@ -362,4 +362,15 @@ public class QueryHelper {
 
         return sb.toString();
     }
+
+    public static String createSELECTLast(Class theClass)
+    {
+        StringBuffer sb = new StringBuffer();
+        sb.append("SELECT ");
+        String[] fields = ObjectHelper.getFields(theClass);
+        sb.append(String.format("%s ",fields[0]));
+        for(int i = 1; i < fields.length; i++) sb.append(String.format(",%s ",fields[i]));
+        sb.append(" FROM ").append(theClass.getSimpleName()).append(" ORDER BY ID DESC LIMIT 1");
+        return sb.toString();
+    }
 }

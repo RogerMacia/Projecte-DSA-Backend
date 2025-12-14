@@ -105,6 +105,22 @@ public class SessionLogged implements Session{
     }
 
     @Override
+    public Object findLast(Class theClass) {
+        Object res = null;
+        try
+        {
+            log.info(String.format("Finding the last entry for %s ",theClass.getSimpleName() ));
+            res = _session.findLast(theClass);
+            log.info("Last entry was found!");
+        }
+        catch (Exception e)
+        {
+            log.warn("Error: " + e.getMessage());
+        }
+        return res;
+    }
+
+    @Override
     public List<Object> findAll(Class theClass) {
         try
         {

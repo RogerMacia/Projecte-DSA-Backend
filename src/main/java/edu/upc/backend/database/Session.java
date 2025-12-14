@@ -81,5 +81,12 @@ public interface Session {
      * @return
      */
     List<Object> query(String query, Class theClass, HashMap params);
+
+    /**
+     * Selects the last record from the specific table.
+     * @param theClass The specific table.
+     * @return
+     */
+    Object findLast(Class theClass);
     //List<Object> queryMasterFunction(String action, Class theClass, HashMap<String, Object> params);
 }

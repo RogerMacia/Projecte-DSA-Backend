@@ -1,5 +1,6 @@
 package edu.upc.backend.database;
 
+import edu.upc.backend.classes.Game;
 import edu.upc.backend.classes.User;
 import org.apache.log4j.Logger;
 
@@ -37,7 +38,11 @@ public class UserDAO implements IUserDAO{
         try{
             session = new SessionBuilder().build();
             session.save(user);
-            id = user.getId();
+            /*
+            List<Object> users = session.findAll(Game.class);
+            id = ((User) users.get(users.size() - 1)).getId();
+            */
+            id = ((User)session.findLast(User.class)).getId();
         }
         catch (Exception e) // Catch other exceptions
         {

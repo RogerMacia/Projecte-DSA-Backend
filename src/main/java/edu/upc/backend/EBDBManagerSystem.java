@@ -27,7 +27,8 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
     @Override
     public void registerUser(User user) throws SQLException, UsernameAlreadyExistsException {
         UserDAO _users = UserDAO.getInstance();
-
+        PlayerDAO _players = PlayerDAO.getInstance();
+        GameDAO _games = GameDAO.getInstance();
         User userExists = _users.getUserByUsername(user.getUsername());
 
         if (userExists != null) {
@@ -36,7 +37,10 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
         }
         else {
             try {
-                _users.registerUser(user);
+
+                int userId = _users.registerUser(user);
+                int playerId = _players.addPlayer(userId);
+                int gameId = _games.add(userId,playerId);
             }
             catch (Exception e) {
                 log.error("Error: " + e.getMessage() );

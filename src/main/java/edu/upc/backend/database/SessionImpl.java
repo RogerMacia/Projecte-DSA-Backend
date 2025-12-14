@@ -352,4 +352,30 @@ public class SessionImpl implements Session {
         return null;
     }
 
+    @Override
+    public Object findLast(Class theClass) {
+        PreparedStatement pstm = null;
+        Object res = null;
+        String query = QueryHelper.createSELECTLast(theClass);
+        try{
+            String[] fields = ObjectHelper.getFields(theClass);
+            pstm = conn.prepareStatement(query);
+            ResultSet rs = pstm.executeQuery();
+            if(rs.next())
+            {
+                res = theClass.getConstructor().newInstance();
+                for(int x = 0; x < fields.length; x++)
+                {
+                    ObjectHelper.setter(res,fields[x],rs.getObject(x+1));
+                }
+            }
+        }
+        catch (Exception e)
+        {
+
+        }
+
+        return res;
+    }
+
 }

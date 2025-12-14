@@ -25,22 +25,18 @@ public class PlayerDAO implements IPlayerDAO{
     @Override
     public int addPlayer(int userId) throws Exception {
         Player player = new Player(0,100,10,0,0,0);
-        //String insertQuery = "INSERT INTO Player (score, id, hp, speed, X, Y) VALUES (?, ?, ?, ?, ?, ?)";
         int playerId = -1;
         Session session = null;
         try{
             session = new SessionBuilder().build();
             session.save(player);
 
-            HashMap<String,Object> params = new HashMap<>();
-            HashMap<String,Object> params2 = new HashMap<>(); //
-            params.put("userId",userId);
+            /*
             List<Object> players = session.findAll(Player.class);
-            String fields[] = ObjectHelper.getFields(Player.class);
-            //for (int x = 0; x < players.size(); x++) log.info(((Player)players.get(x)).toString());
             playerId = ((Player) players.get(players.size() - 1)).getId();
-            params.put("playerId",playerId);
-            session.query("INSERT INTO CORE (userId, playerId) VALUES (?, ?)",null,params);
+            */
+            playerId = ((Player)session.findLast(Player.class)).getId();
+
         }
         catch (Exception e)
         {
