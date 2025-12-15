@@ -11,6 +11,7 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import java.sql.SQLException;
 import java.util.List;
 
 @Api(value = "/eetacbros", description = "Endpoint de biblioteca Service")
@@ -216,6 +217,56 @@ public class EETACBROSMannagerSystemService {
             ErrorResponse errorResponse = new ErrorResponse("GENERIC_BUY_ERROR", "An unexpected error occurred during purchase.");
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(errorResponse).build();
         }
+    }
+
+    @GET
+    @ApiOperation(value = "Get Player by id", notes = "Hola k ase")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Successful", response = Player.class),
+            @ApiResponse(code = 404, message = "User not found", response = Player.class)
+    })
+    @Path("/player/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getPlayerByUserId(@PathParam("id") String id)
+    {
+        try {
+            Player res = sistema.getPlayerByUserId(Integer.parseInt(id));
+            return Response.status(201).entity(res).build();
+        }
+        catch (Exception e) { Response.status((404)).entity(e.getMessage()).build(); }
+        return Response.status((404)).build();
+    }
+
+    @GET
+    @ApiOperation(value = "Get game by id", notes = "Hola k ase")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Successful", response = Game.class),
+            @ApiResponse(code = 404, message = "User not found", response = Game.class)
+    })
+    @Path("/game/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getGameByUserId(@PathParam("id") String id)
+    {
+        try {
+            Game res = sistema.getGameByUserId(Integer.parseInt(id));
+            return Response.status(201).entity(res).build();
+        }
+        catch (Exception e) { Response.status((404)).entity(e.getMessage()).build(); }
+        return Response.status((404)).build();
+    }
+
+    @GET
+    @ApiOperation(value = "Get all available faqs", notes = "Hola k ase")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Successful", response = Faq.class, responseContainer = "List"),
+    })
+    @Path("/faq")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getExamples() throws SQLException {
+        List<Faq> buffer = sistema.getAllFaqs();
+        Faq[] res = buffer.toArray(new Faq[]{});
+        GenericEntity<Faq[]> entity = new GenericEntity<Faq[]>(res) {};
+        return Response.status(201).entity(entity).build();
     }
 
 }

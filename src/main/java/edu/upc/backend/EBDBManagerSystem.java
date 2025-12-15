@@ -234,28 +234,28 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
         return  items;
     }
 
-    @Override
-    public void createGame(int playerId) {
 
-    }
-
-    @Override
-    public Game findGame(int playerId) {
-        return null;
-    }
-
-    @Override
-    public void updateGame(Game game) {
-
-    }
-
-    @Override
-    public void removeGame(int playerId) {
-
-    }
 
     @Override
     public void clear() {
 
+    }
+
+    @Override
+    public Player getPlayerByUserId(int userId) throws Exception {
+        PlayerDAO players = PlayerDAO.getInstance();
+        return players.getPlayerbyUserId(userId);
+    }
+
+    @Override
+    public Game getGameByUserId(int userId) throws SQLException {
+        GameDAO games = GameDAO.getInstance();
+        return games.getbyUserId(userId);
+    }
+
+    @Override
+    public List<Faq> getAllFaqs() throws SQLException {
+        FaqDAO faqs = FaqDAO.getInstance();
+        return faqs.getAll();
     }
 }

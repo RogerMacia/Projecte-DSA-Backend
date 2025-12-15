@@ -30,10 +30,9 @@ public interface EETACBROSMannagerSystem {
     public Player getPlayerById(int id);
     public User getUserById(int userId);
 
+    public Player getPlayerByUserId(int userId) throws Exception;
+    public Game getGameByUserId(int userId) throws SQLException;
+    public List<Faq> getAllFaqs() throws SQLException;
 
-    public void createGame(int playerId);
 
-    public Game findGame(int playerId);
-    public void updateGame(Game game);
-    public void removeGame(int playerId);
 }
