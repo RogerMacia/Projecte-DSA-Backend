@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import javax.print.attribute.standard.Finishings;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PlayerDAO implements IPlayerDAO{
 
@@ -24,6 +25,7 @@ public class PlayerDAO implements IPlayerDAO{
 
     @Override
     public int addPlayer(int userId) throws Exception {
+        log.info("\u001B[32mAccessing Database: addPlayer\u001B[0m");
         Player player = new Player(0,100,10,0,0,0);
         int playerId = -1;
         Session session = null;
@@ -40,7 +42,7 @@ public class PlayerDAO implements IPlayerDAO{
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
         finally {
             session.close();
@@ -50,6 +52,7 @@ public class PlayerDAO implements IPlayerDAO{
 
     @Override
     public Player getPlayer(int playerId) throws Exception {
+        log.info("\u001B[32mAccessing Database: getPlayer\u001B[0m");
         Player player = null;
         Session session;
         //String customQuery = "SELECT playerId FROM Core WHERE userId=?";
@@ -60,13 +63,14 @@ public class PlayerDAO implements IPlayerDAO{
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
         return player;
     }
 
     @Override
     public Player getPlayerbyUserId(int userId) throws Exception {
+        log.info("\u001B[32mAccessing Database: getPlayerbyUserId\u001B[0m");
         Session session = null;
         String customQuery = "SELECT playerId FROM Core WHERE userId=?";
         Player res = null;
@@ -78,7 +82,7 @@ public class PlayerDAO implements IPlayerDAO{
             res = (Player) session.get(Player.class,playerId);
         }
         catch (Exception e){
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
         finally {
             session.close();
@@ -89,6 +93,7 @@ public class PlayerDAO implements IPlayerDAO{
 
     @Override
     public void updatePlayer(Player player) throws Exception {
+        log.info("\u001B[32mAccessing Database: updatePlayer\u001B[0m");
         Session session = null;
 
         try{
@@ -96,7 +101,7 @@ public class PlayerDAO implements IPlayerDAO{
             session.update(player);
         }
         catch (Exception e){
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
         finally {
             session.close();
@@ -106,6 +111,7 @@ public class PlayerDAO implements IPlayerDAO{
 
     @Override
     public void deletePlayer(Player player) throws Exception {
+        log.info("\u001B[32mAccessing Database: deletePlayer\u001B[0m");
         Session session = null;
         int playerId = player.getId();
         String customQuery = "DELETE FROM Core WHERE playerId=?";
@@ -117,7 +123,7 @@ public class PlayerDAO implements IPlayerDAO{
             session.delete(player);
         }
         catch (Exception e){
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
         finally {
             session.close();
@@ -125,7 +131,8 @@ public class PlayerDAO implements IPlayerDAO{
     }
 
     @Override
-    public List<Object> getPlayers() throws Exception {
+    public List<Player> getPlayers() throws Exception {
+        log.info("\u001B[32mAccessing Database: getPlayers\u001B[0m");
         List<Object> res = null;
         Session session = null;
         try {
@@ -134,12 +141,12 @@ public class PlayerDAO implements IPlayerDAO{
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
         finally {
             session.close();
         }
 
-        return res;
+        return res.stream().map(object -> (Player) object).collect(Collectors.toList());
     }
 }

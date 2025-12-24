@@ -1,20 +1,20 @@
 package edu.upc.backend.classes;
 
 public class ErrorResponse {
-    private String errorCode;
+    private String code;
     private String message;
 
-    public ErrorResponse(String errorCode, String message) {
-        this.errorCode = errorCode;
+    public ErrorResponse(String code, String message) {
+        this.code = code;
         this.message = message;
     }
 
-    public String getErrorCode() {
-        return errorCode;
+    public String getCode() {
+        return code;
     }
 
-    public void setErrorCode(String errorCode) {
-        this.errorCode = errorCode;
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public String getMessage() {

@@ -33,6 +33,7 @@ public interface EETACBROSMannagerSystem {
     public Player getPlayerByUserId(int userId) throws Exception;
     public Game getGameByUserId(int userId) throws SQLException;
     public List<Faq> getAllFaqs() throws SQLException;
+    public RankingResponse getRanking(int userId) throws UserNotFoundException;
 
 
 }

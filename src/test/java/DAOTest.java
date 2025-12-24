@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 import org.apache.log4j.Logger;
 
@@ -143,7 +144,7 @@ public class DAOTest {
 
     @Test
     public void ListPlayersTest() throws Exception {
-        List<Object> res = _players.getPlayers();
+        List<Object> res = Collections.singletonList(_players.getPlayers());
 
         for(Object o : res) log.info(o.toString());
     }

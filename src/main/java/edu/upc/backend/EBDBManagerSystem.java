@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -32,7 +33,6 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
         User userExists = _users.getUserByUsername(user.getUsername());
 
         if (userExists != null) {
-            log.error("User " + user.getUsername() + " already exists");
             throw new UsernameAlreadyExistsException("Username is not available");
         }
         else {
@@ -63,16 +63,12 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
         String password = user.getPassword();
 
         if (userExists == null) {
-            log.error("User " + user.getUsername() + " not found");
             throw new UserOrPasswordInvalidException("Invalid username or password.");
         }
         else {
-            log.info("User found");
             if (password.equals(userExists.getPassword())) {
-                log.info("User with correct credentials");
                 return userExists;
             } else {
-                log.error("Incorrect password");
                 throw new UserOrPasswordInvalidException("Invalid username or password.");
             }
         }
@@ -234,6 +230,44 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
         return  items;
     }
 
+    public RankingResponse getRanking(int userId) throws UserNotFoundException {
+        List<User> allUsers = getUsersListDatabase();
+        if (allUsers == null || allUsers.isEmpty()) {
+            return new RankingResponse(new ArrayList<>(), null);
+        }
+
+        allUsers.sort(Comparator.comparingInt(User::getScore).reversed());
+
+        List<RankingEntry> podium = new ArrayList<>();
+        for (int i = 0; i < Math.min(3, allUsers.size()); i++) {
+            User user = allUsers.get(i);
+            podium.add(new RankingEntry(i + 1, user.getUsername(), user.getScore()));
+        }
+
+        RankingEntry userEntry = null;
+        boolean userInPodium = false;
+        for (int i = 0; i < allUsers.size(); i++) {
+            if (allUsers.get(i).getId() == userId) {
+                User user = allUsers.get(i);
+                userEntry = new RankingEntry(i + 1, user.getUsername(), user.getScore());
+                if (i < 3) {
+                    userInPodium = true;
+                }
+                break;
+            }
+        }
+
+        if (userEntry == null) {
+            throw new UserNotFoundException("User with ID " + userId + " not found in ranking.");
+        }
+
+        if (userInPodium) {
+            return new RankingResponse(podium, null);
+        } else {
+            return new RankingResponse(podium, userEntry);
+        }
+    }
+
 
 
     @Override
@@ -244,7 +278,14 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
     @Override
     public Player getPlayerByUserId(int userId) throws Exception {
         PlayerDAO players = PlayerDAO.getInstance();
-        return players.getPlayerbyUserId(userId);
+        Player player = null;
+        try {
+            player = players.getPlayerbyUserId(userId);
+        }
+        catch (Exception e) {
+            log.error("Error: " + e.getMessage());
+        }
+        return player;
     }
 
     @Override

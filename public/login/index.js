@@ -1,3 +1,4 @@
+
 const LOGIN_URL = `${BASE_URL}/user/login`;
 // "http://localhost:8080/example/eetacbros/user/login"
 console.log("Calling:", LOGIN_URL);
@@ -51,8 +52,7 @@ function onLoginBtnClick() {
 
 
                 setTimeout(() => {
-                    //window.location.href = "./shop";
-                    window.location.href = "./profile";
+                    window.location.href = "../profile";
                 }, 1000);
             }
         },
@@ -82,7 +82,7 @@ function onReadyDocument() {
      const userId = localStorage.getItem("userId");
      if (userId) {
          console.log(`User already logged in with ID: ${userId}. Redirecting to profile...`);
-         window.location.href = "./profile";
+         window.location.href = "../profile";
          return;
      }
 

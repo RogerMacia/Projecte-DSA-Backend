@@ -1,6 +1,7 @@
 package edu.upc.backend.services;
 
-import edu.upc.backend.*;
+import edu.upc.backend.EBDBManagerSystem;
+import edu.upc.backend.EETACBROSMannagerSystem;
 import edu.upc.backend.classes.*;
 import edu.upc.backend.exceptions.*;
 import io.swagger.annotations.*;
@@ -10,7 +11,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
 import java.sql.SQLException;
 import java.util.List;
 
@@ -19,13 +19,34 @@ import java.util.List;
 public class EETACBROSMannagerSystemService {
 
     private static final Logger logger = Logger.getLogger(EETACBROSMannagerSystemService.class);
-    private EETACBROSMannagerSystem sistema;
+    private final EETACBROSMannagerSystem sistema;
 
     public EETACBROSMannagerSystemService() {
-        // Use the singleton instance
         this.sistema = EBDBManagerSystem.getInstance();
-
     }
+
+    @GET
+    @ApiOperation(value = "Get user ranking", notes = "Returns the top 3 users and the current user's rank.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Ranking retrieved successfully", response = RankingResponse.class),
+            @ApiResponse(code = 404, message = "User not found"),
+            @ApiResponse(code = 500, message = "Internal Server Error")
+    })
+    @Path("/ranking/{userId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getRanking(@PathParam("userId") int userId) {
+        try {
+            RankingResponse rankingResponse = sistema.getRanking(userId);
+            return Response.ok(rankingResponse).build();
+        } catch (UserNotFoundException e) {
+            logger.error("Error getting ranking: " + e.getMessage());
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorResponse("USER_NOT_FOUND", e.getMessage())).build();
+        } catch (Exception e) {
+            logger.error("Unexpected error while fetching ranking: " + e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorResponse("UNEXPECTED_ERROR", "An unexpected error occurred.")).build();
+        }
+    }
+
 
     // TORNAR LLISTA D'USUARIS;
     @GET
@@ -55,7 +76,7 @@ public class EETACBROSMannagerSystemService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response registerUser(User user) {
         try {
-            logger.info("Trying to register user:" + user.getUsername());
+            logger.info("Registering new user:" + user.getUsername());
             this.sistema.registerUser(user);
             return Response.status(Response.Status.CREATED).entity(user).build();
         }
@@ -86,11 +107,11 @@ public class EETACBROSMannagerSystemService {
     public Response logIn(User user) {
         try {
             User userlogged = this.sistema.logIn(user);
-            logger.info("id: "+userlogged.getId()+" name: "+userlogged.getName()+" username: " + userlogged.getUsername() + " password: "+userlogged.getPassword()+" email: "+userlogged.getEmail()+"coins: "+userlogged.getCoins());
+            logger.info("User logged in: " + userlogged.getUsername());
             return Response.status(Response.Status.OK).entity(userlogged).build();
         }
         catch (UserOrPasswordInvalidException e) {
-            logger.error("Error logging in: " + e.getMessage());
+            logger.error("Error logging user "+user.getUsername()+" : " + e.getMessage());
             ErrorResponse errorResponse = new ErrorResponse("USER_OR_PASSWORD_INVALID", e.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(errorResponse).build();
         }
@@ -129,7 +150,6 @@ public class EETACBROSMannagerSystemService {
     public Response updateUserData(User user) {
         try {
             User updatedUser = this.sistema.updateUserData(user);
-            logger.info("id: " + updatedUser.getId() + " name: " + updatedUser.getName() + " username: " + updatedUser.getUsername() + " password: " + updatedUser.getPassword() + " email: " + updatedUser.getEmail() + "coins: " + updatedUser.getCoins());
             return Response.status(Response.Status.OK).entity(updatedUser).build();
         } catch (UserNotFoundException e) {
             logger.error("Error updating in: " + e.getMessage());
@@ -141,6 +161,7 @@ public class EETACBROSMannagerSystemService {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(errorResponse).build();
         }
     }
+
     // DELET USER
     @DELETE
     @Path("user/delete/{id}")
@@ -153,6 +174,7 @@ public class EETACBROSMannagerSystemService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteUser(@PathParam("id") int id) {
         try {
+            logger.info("Deleting user with id: " + id);
             this.sistema.deleteUserData(id);
             return Response.status(Response.Status.OK).build();
         }
@@ -167,7 +189,6 @@ public class EETACBROSMannagerSystemService {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(errorResponse).build();
         }
     }
-
 
     // SHOP ITEMS
     @GET
@@ -199,6 +220,7 @@ public class EETACBROSMannagerSystemService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response shopBuyItems(BuyRequest buyrequest) {
         try {
+            logger.info("User " + buyrequest.getUserId() + " bought items.");
             sistema.registerPurchase(buyrequest);
             return Response.status(Response.Status.CREATED).entity(buyrequest).build();
         }
@@ -222,37 +244,47 @@ public class EETACBROSMannagerSystemService {
     @GET
     @ApiOperation(value = "Get Player by id", notes = "Hola k ase")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Successful", response = Player.class),
-            @ApiResponse(code = 404, message = "User not found", response = Player.class)
+            @ApiResponse(code = 200, message = "Successful", response = Player.class),
+            @ApiResponse(code = 404, message = "Player not found")
     })
     @Path("/player/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getPlayerByUserId(@PathParam("id") String id)
-    {
+    public Response getPlayerByUserId(@PathParam("id") int id) {
         try {
-            Player res = sistema.getPlayerByUserId(Integer.parseInt(id));
-            return Response.status(201).entity(res).build();
+            Player res = sistema.getPlayerByUserId(id);
+            return Response.status(Response.Status.OK).entity(res).build();
+        } catch (PlayerNotFoundException e) {
+            logger.error("Error getting player: " + e.getMessage());
+            ErrorResponse errorResponse = new ErrorResponse("PLAYER_NOT_FOUND", e.getMessage());
+            return Response.status(Response.Status.NOT_FOUND).entity(errorResponse).build();
+        } catch (Exception e) {
+            logger.error("Error getting player: " + e.getMessage());
+            ErrorResponse errorResponse = new ErrorResponse("GENERIC_GET_PLAYER_ERROR", "An unexpected error occurred while getting player.");
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(errorResponse).build();
         }
-        catch (Exception e) { Response.status((404)).entity(e.getMessage()).build(); }
-        return Response.status((404)).build();
     }
 
     @GET
     @ApiOperation(value = "Get game by id", notes = "Hola k ase")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Successful", response = Game.class),
-            @ApiResponse(code = 404, message = "User not found", response = Game.class)
+            @ApiResponse(code = 200, message = "Successful", response = Game.class),
+            @ApiResponse(code = 404, message = "Game not found")
     })
     @Path("/game/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getGameByUserId(@PathParam("id") String id)
-    {
+    public Response getGameByUserId(@PathParam("id") int id) {
         try {
-            Game res = sistema.getGameByUserId(Integer.parseInt(id));
-            return Response.status(201).entity(res).build();
+            Game res = sistema.getGameByUserId(id);
+            return Response.status(Response.Status.OK).entity(res).build();
+        } catch (GameNotFoundException e) {
+            logger.error("Error getting game: " + e.getMessage());
+            ErrorResponse errorResponse = new ErrorResponse("GAME_NOT_FOUND", e.getMessage());
+            return Response.status(Response.Status.NOT_FOUND).entity(errorResponse).build();
+        } catch (Exception e) {
+            logger.error("Error getting game: " + e.getMessage());
+            ErrorResponse errorResponse = new ErrorResponse("GENERIC_GET_GAME_ERROR", "An unexpected error occurred while getting game.");
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(errorResponse).build();
         }
-        catch (Exception e) { Response.status((404)).entity(e.getMessage()).build(); }
-        return Response.status((404)).build();
     }
 
     @GET

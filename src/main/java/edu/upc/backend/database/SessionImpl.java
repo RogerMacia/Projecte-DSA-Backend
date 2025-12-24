@@ -19,6 +19,8 @@ public class SessionImpl implements Session {
     //region magia borras
     //HashMap<Integer,Object> _cache;
     Logger log = Logger.getLogger(SessionImpl.class);
+    public static final String ANSI_GREEN = "\u001B[32m";
+    public static final String ANSI_RESET = "\u001B[0m";
     //endregion magia borras
 
     public SessionImpl(Connection conn) {
@@ -29,6 +31,7 @@ public class SessionImpl implements Session {
     public void save(Object entity) {
 
         String insertQuery = QueryHelper.createQueryINSERT(entity);
+        log.info(ANSI_GREEN + insertQuery + ANSI_RESET);
 
         PreparedStatement pstm = null;
 
@@ -54,6 +57,7 @@ public class SessionImpl implements Session {
     public void update(Class theClass, HashMap<String, Object> paramsSearch, HashMap<String, Object> paramsUpdate) {
         PreparedStatement pstm = null;
         String query = QueryHelper.createUPDATEMASTERFUNCTION(theClass, paramsSearch, paramsUpdate);
+        log.info(ANSI_GREEN + query + ANSI_RESET);
         try {
             pstm = conn.prepareStatement(query);
             int i = 1;
@@ -90,6 +94,7 @@ public class SessionImpl implements Session {
         try{
             res = theClass.getConstructor().newInstance();
             String query = QueryHelper.createQuerySELECT(theClass);
+            log.info(ANSI_GREEN + query + ANSI_RESET);
             pstm = conn.prepareStatement(query);
 
             pstm.setObject(1,ID);
@@ -122,6 +127,7 @@ public class SessionImpl implements Session {
             Integer id = (Integer) ObjectHelper.getter(object,"id");
 
             String query = QueryHelper.createQueryDELETE(object);
+            log.info(ANSI_GREEN + query + ANSI_RESET);
             pstm = conn.prepareStatement(query);
             pstm.setObject(1,id);
             pstm.executeUpdate();
@@ -164,6 +170,7 @@ public class SessionImpl implements Session {
             //endregion buscar id
             */
             query = QueryHelper.createQueryUPDATE(object);
+            log.info(ANSI_GREEN + query + ANSI_RESET);
             pstm2 = conn.prepareStatement(query);
 
 
@@ -191,6 +198,7 @@ public class SessionImpl implements Session {
     public List<Object> findAll(Class theClass) {
         PreparedStatement pstm = null;
         String query = QueryHelper.createQuerySelectAll(theClass);
+        log.info(ANSI_GREEN + query + ANSI_RESET);
         LinkedList<Object> res = new LinkedList<>();
         String[] fields = ObjectHelper.getFields(theClass);
 
@@ -227,6 +235,7 @@ public class SessionImpl implements Session {
     public List<Object> findAll(Class theClass, HashMap params) {
         PreparedStatement pstm = null;
         String query = QueryHelper.createQuerySelectAll(theClass);
+        log.info(ANSI_GREEN + query + ANSI_RESET);
         LinkedList<Object> res = new LinkedList<>();
         String[] fields = ObjectHelper.getFields(theClass);
 
@@ -272,6 +281,7 @@ public class SessionImpl implements Session {
         try {
 
             String query = QueryHelper.createQuerySELECTID(object);
+            log.info(ANSI_GREEN + query + ANSI_RESET);
             pstm = conn.prepareStatement(query);
             ResultSet rs = pstm.executeQuery();
             if(!rs.next()) return id;
@@ -289,6 +299,7 @@ public class SessionImpl implements Session {
     public int findId(String query, HashMap params) {
         int id = -1;
         PreparedStatement pstm = null;
+        log.info(ANSI_GREEN + query + ANSI_RESET);
         try{
             pstm = conn.prepareStatement(query);
             String[] ordered = Utils.computeOrder(query,params.keySet());
@@ -314,6 +325,7 @@ public class SessionImpl implements Session {
     public List<Object> query(String query, Class theClass, HashMap params) {
         PreparedStatement pstm = null;
         LinkedList<Object> res = new LinkedList<>();
+        log.info(ANSI_GREEN + query + ANSI_RESET);
         try
         {
 
@@ -357,6 +369,7 @@ public class SessionImpl implements Session {
         PreparedStatement pstm = null;
         Object res = null;
         String query = QueryHelper.createSELECTLast(theClass);
+        log.info(ANSI_GREEN + query + ANSI_RESET);
         try{
             String[] fields = ObjectHelper.getFields(theClass);
             pstm = conn.prepareStatement(query);

@@ -12,6 +12,6 @@ public interface IPlayerDAO
     public Player getPlayerbyUserId(int userId) throws Exception;
     public void updatePlayer(Player player) throws Exception;
     public void deletePlayer(Player player) throws Exception;
-    public List<Object> getPlayers() throws Exception;
+    public List<Player> getPlayers() throws Exception;
 
 }

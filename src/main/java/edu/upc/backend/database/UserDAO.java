@@ -71,7 +71,6 @@ public class UserDAO implements IUserDAO{
         catch (Exception e)
         {
             log.error(e.getMessage());
-            e.printStackTrace();
             throw e; // Rethrow the exception
         }
         finally {
@@ -92,7 +91,6 @@ public class UserDAO implements IUserDAO{
         catch (Exception e)
         {
             log.error(e.getMessage());
-            e.printStackTrace();
             throw e; // Rethrow the exception
         }
         finally {
@@ -118,7 +116,6 @@ public class UserDAO implements IUserDAO{
         catch (Exception e)
         {
             log.error(e.getMessage());
-            e.printStackTrace();
             throw e; // Rethrow the exception
         }
         finally {
@@ -142,7 +139,6 @@ public class UserDAO implements IUserDAO{
         catch (Exception e)
         {
             log.error(e.getMessage());
-            e.printStackTrace();
             throw e; // Rethrow the exception
         }
         finally {
@@ -170,7 +166,6 @@ public class UserDAO implements IUserDAO{
         catch (Exception e)
         {
             log.error(e.getMessage());
-            e.printStackTrace();
             throw new SQLException("Error retrieving user by username", e); // Wrap and rethrow
         }
         finally {

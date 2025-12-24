@@ -11,6 +11,7 @@ public class User {
     private String email;
     private String password;
     private int coins;
+    private int score;
 
     // 🔧 Constructor buit (necessari per frameworks o JSON)
     public User() {
@@ -24,6 +25,7 @@ public class User {
         this.email = email;
         this.password = password;
         this.coins = 0;
+        this.score = 0;
     }
 
 
@@ -74,6 +76,15 @@ public class User {
     public int getCoins() {
         return coins;
     }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(Integer score) {
+        this.score = score;
+    }
+
 
 
     // 🧾 Representació del client
