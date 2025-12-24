@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EETAC BROS - FAQ</title>
+
+    <!-- NES.css for retro gaming style -->
+    <link href="https://unpkg.com/nes.css@2.3.0/css/nes.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <link rel="stylesheet" href="index.css">
+    <script src="../base.js"></script>
+    <script src="index.js"></script>
+</head>
+<body class="pixel-bg">
+    <!-- Decorative elements -->
+    <div class="cloud-1"></div>
+    <div class="cloud-2"></div>
+    <div class="pixel-bricks"></div>
+    <div class="question-block block-1"></div>
+    <div class="question-block block-2"></div>
+
+    <!-- Header -->
+    <div class="header">
+        <h1>🎮 EETAC BROS - FAQ 🎮</h1>
+        <p>Got questions? We've got answers!</p>
+    </div>
+
+    <!-- FAQ Container -->
+    <div class="faq-container">
+        <div class="nes-container with-title is-rounded">
+            <p class="title">Frequently Asked Questions</p>
+            <div id="faq-list">
+                <!-- FAQs will be loaded here -->
+            </div>
+        </div>
+
+        <div class="nav-links">
+            <button class="nes-btn is-primary" id="profileBtn">
+                Profile
+            </button>
+        </div>
+    </div>
+
+    <!-- Notification (hidden by default) -->
+    <div class="notification hidden" id="notification">
+        <p id="notificationText"></p>
+    </div>
+</body>
+</html>

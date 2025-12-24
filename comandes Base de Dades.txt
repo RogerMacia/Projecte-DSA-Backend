@@ -122,9 +122,22 @@ CREATE TABLE Faq(
 	question VARCHAR(280),
 	answer TEXT);
 
-INSERT INTO Faq (question, answer) VALUES 
-	("How to register?", "To register you have to input your real name, email and a password"),
-	("How to buy game items?","Go to our shop website www.dsa3.upc.edu/shop or to the EETACBROS app.");
+INSERT INTO Faq (question, answer) VALUES
+('What is EETAC BROS?','EETAC BROS is an adventure game set in EETAC, where each level represents a college course filled with challenges, exams, and seemingly impossible projects. As you progress, you can discover superpowers that help you advance, but be careful: some professors can stop you, immobilize you, or even take away your powers. Beat each course, master your skills, and prove that no mistake can stop you on your path to graduation.'),
+('What happens when I create an account?','When you create an account, your user data is securely saved in the database so your progress can be stored and retrieved later.'),
+('Can I change my username later?','Yes, you can change your username, but it must be unique and cannot match another player’s username.'),
+('Can I update my personal information?','Yes. You can update your username, name, email, or password at any time, and the changes take effect immediately.'),
+('Will changing my data affect my progress?','No. Updating your personal information does not affect your score, ranking, or inventory.'),
+('What happens if I delete my account?','Deleting your account permanently removes all your data, including your progress, inventory, and ranking. This action cannot be undone.'),
+('Can I recover my account after deleting it?','No. Once an account is deleted, it cannot be recovered. You would need to create a new account to play again.'),
+('How does the ranking system work?','Players are ranked globally based on their score. The top three players appear on the podium, while all other players can still see their own position.'),
+('Can I lose my ranking position?','Yes. If other players earn higher scores, your position may drop, encouraging continuous competition.'),
+('What are items used for?','Items enhance gameplay by improving abilities or providing advantages during a game session.'),
+('How can I get new items in the game?','You can buy items using the in-game shop. If you have enough coins, the item will be added to your inventory and available for your next game.'),
+('What happens after I buy an item?','The item is added to your inventory, and the corresponding number of coins is automatically deducted from your balance.'),
+('What happens if I don’t have enough coins?','You won’t be able to make the purchase until you earn more coins through gameplay.'),
+('Is my data safe?','Yes. All user data is securely stored and managed by the backend service.');
+
 
 Per eliminar la base de dades:
 DROP DATABASE projecte_dsa_db;

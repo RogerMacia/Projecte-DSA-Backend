@@ -80,7 +80,7 @@ public class EETACBROSMannagerSystemService {
             this.sistema.registerUser(user);
             return Response.status(Response.Status.CREATED).entity(user).build();
         }
-        catch (UsernameAlreadyExistsException e) {
+        catch (UserOrPasswordInvalidException e) {
             logger.error("Error registering user: " + e.getMessage());
             ErrorResponse errorResponse = new ErrorResponse("USERNAME_IS_NOT_AVAILABLE", e.getMessage());
             return Response.status(Response.Status.CONFLICT).entity(errorResponse).build();
@@ -292,9 +292,9 @@ public class EETACBROSMannagerSystemService {
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Successful", response = Faq.class, responseContainer = "List"),
     })
-    @Path("/faq")
+    @Path("/faqs")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getExamples() throws SQLException {
+    public Response getFaqs() throws SQLException {
         List<Faq> buffer = sistema.getAllFaqs();
         Faq[] res = buffer.toArray(new Faq[]{});
         GenericEntity<Faq[]> entity = new GenericEntity<Faq[]>(res) {};

@@ -282,4 +282,7 @@ $(document).ready(function() {
     $("#settingsBtn").click(function() {
         window.location.href = "../settings";
     });
+    $("#faqBtn").click(function() {
+        window.location.href = "../faq";
+    });
 });

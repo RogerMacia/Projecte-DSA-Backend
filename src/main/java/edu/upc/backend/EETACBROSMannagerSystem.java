@@ -4,14 +4,13 @@ import edu.upc.backend.classes.*;
 import edu.upc.backend.exceptions.InsufficientMoneyException;
 import edu.upc.backend.exceptions.UserNotFoundException;
 import edu.upc.backend.exceptions.UserOrPasswordInvalidException;
-import edu.upc.backend.exceptions.UsernameAlreadyExistsException;
 
 import java.sql.SQLException;
 import java.util.List;
 
 public interface EETACBROSMannagerSystem {
 
-    public void registerUser(User user) throws SQLException, UsernameAlreadyExistsException;
+    public void registerUser(User user) throws SQLException, UserOrPasswordInvalidException;
     public List<User> getUsersListDatabase();
     public List<Item> getItemList();
     public User logIn (User user) throws SQLException, UserOrPasswordInvalidException;

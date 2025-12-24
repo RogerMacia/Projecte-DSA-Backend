@@ -1,6 +1,5 @@
 
 const LOGIN_URL = `${BASE_URL}/user/login`;
-// "http://localhost:8080/example/eetacbros/user/login"
 console.log("Calling:", LOGIN_URL);
 
 $.postJSON = function (url, data, callback, errorCallback) { // Added errorCallback parameter

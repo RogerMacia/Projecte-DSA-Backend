@@ -26,14 +26,14 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
     }
 
     @Override
-    public void registerUser(User user) throws SQLException, UsernameAlreadyExistsException {
+    public void registerUser(User user) throws SQLException, UserOrPasswordInvalidException {
         UserDAO _users = UserDAO.getInstance();
         PlayerDAO _players = PlayerDAO.getInstance();
         GameDAO _games = GameDAO.getInstance();
         User userExists = _users.getUserByUsername(user.getUsername());
 
         if (userExists != null) {
-            throw new UsernameAlreadyExistsException("Username is not available");
+            throw new UserOrPasswordInvalidException("Username is not available");
         }
         else {
             try {
