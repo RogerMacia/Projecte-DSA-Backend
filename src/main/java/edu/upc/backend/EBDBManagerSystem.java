@@ -231,7 +231,9 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
     }
 
     public RankingResponse getRanking(int userId) throws UserNotFoundException {
+        int podiumSize = 4;
         List<User> allUsers = getUsersListDatabase();
+
         if (allUsers == null || allUsers.isEmpty()) {
             return new RankingResponse(new ArrayList<>(), null);
         }
@@ -239,7 +241,7 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
         allUsers.sort(Comparator.comparingInt(User::getScore).reversed());
 
         List<RankingEntry> podium = new ArrayList<>();
-        for (int i = 0; i < Math.min(3, allUsers.size()); i++) {
+        for (int i = 0; i < Math.min(podiumSize, allUsers.size()); i++) {
             User user = allUsers.get(i);
             podium.add(new RankingEntry(i + 1, user.getUsername(), user.getScore()));
         }
@@ -250,7 +252,7 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
             if (allUsers.get(i).getId() == userId) {
                 User user = allUsers.get(i);
                 userEntry = new RankingEntry(i + 1, user.getUsername(), user.getScore());
-                if (i < 3) {
+                if (i < podiumSize) {
                     userInPodium = true;
                 }
                 break;

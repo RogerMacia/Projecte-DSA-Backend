@@ -30,5 +30,13 @@ public class BuyRequest {
         this.items = items;
     }
 
+    public int getTotalItems() {
+        int total = 0;
+        for (Item item : this.items) {
+            total += item.getQuantity();
+        }
+        return total;
+    }
+
 }
 

@@ -1,10 +1,12 @@
 // Define BASE_URL if not already defined (adjust to your API URL)
 const userId = localStorage.getItem("userId");
 const username = localStorage.getItem("username");
-const coins = localStorage.getItem("coins");
-const score = localStorage.getItem("score");
+const password = localStorage.getItem("password"); // Retrieve password from localStorage
+// const coins = localStorage.getItem("coins"); // Removed: coins should be fetched from API
+// const score = localStorage.getItem("score"); // Removed: score should be fetched from API
 const SHOP_GET_USER_ITEMS_URL = `${BASE_URL}/user/items`;
 const RANKING_URL = `${BASE_URL}/ranking`;
+const LOGIN_URL = `${BASE_URL}/user/login`; // Added LOGIN_URL to fetch user data
 
 let userData = {
     username: null,
@@ -28,98 +30,117 @@ function getJson(url) {
     });
 }
 
+function postJSON(url, data, callback, errorCallback) { // Added errorCallback parameter
+    return $.ajax({
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        type: 'POST',
+        url: url,
+        data: JSON.stringify(data),
+        dataType: 'json',
+        success: callback,
+        error: errorCallback // Pass errorCallback to jQuery.ajax
+    });
+};
+
+function renderRanking(data) {
+    const rankingBody = $('#ranking-body');
+    rankingBody.empty();
+
+    // Helper function to get medal emoji for top 3
+    function getMedalEmoji(position) {
+        if (position === 1) return '🥇';
+        if (position === 2) return '🥈';
+        if (position === 3) return '🥉';
+        return '';
+    }
+
+    // Helper function to format large numbers
+    function formatScore(score) {
+        if (score >= 1000000) return (score / 1000000).toFixed(1) + 'M';
+        return score;
+    }
+
+    // Display podium entries
+    data.podium.forEach(user => {
+        const isCurrentUser = user.username === username;
+        let rowClass = '';
+
+        if (isCurrentUser) {
+            rowClass = 'is-success current-user-row';
+        } else if (user.position === 1) {
+            rowClass = 'rank-1';
+        } else if (user.position === 2) {
+            rowClass = 'rank-2';
+        } else if (user.position === 3) {
+            rowClass = 'rank-3';
+        }
+
+        const medal = getMedalEmoji(user.position);
+        const displayUsername = isCurrentUser ? `${user.username} (You)` : user.username;
+
+        const row = `
+            <tr class="${rowClass}">
+                <td>${medal} ${user.position}</td>
+                <td class="username-cell">${displayUsername}</td>
+                <td class="score-cell">${formatScore(user.score)}</td>
+            </tr>
+        `;
+        rankingBody.append(row);
+    });
+
+    // Add separator if user is not in podium
+    if (data.userEntry && !data.podium.some(p => p.username === data.userEntry.username)) {
+        // Add visual separator
+        const separator = `
+            <tr class="ranking-separator">
+                <td colspan="3">
+                    <div class="separator-line">â€¢ â€¢ â€¢</div>
+                </td>
+            </tr>
+        `;
+        rankingBody.append(separator);
+
+        // Add user's position
+        const row = `
+            <tr class="is-success current-user-row">
+                <td>#${data.userEntry.position}</td>
+                <td class="username-cell">${data.userEntry.username} (You)</td>
+                <td class="score-cell">${data.userEntry.score}</td>
+            </tr>
+        `;
+        rankingBody.append(row);
+    }
+
+    // Update user stats
+    let userStats = data.userEntry;
+
+    // If user is in top 3, userEntry is null in response, so find in podium
+    if (!userStats) {
+        userStats = data.podium.find(u => u.username === username);
+    }
+
+    if (userStats) {
+        $('#gamesPlayed').text(userStats.gamesPlayed);
+        $('#totalWins').text(userStats.wins);
+        $('#totalScore').text(userStats.score);
+
+        const winRate = userStats.gamesPlayed > 0
+            ? ((userStats.wins / userStats.gamesPlayed) * 100).toFixed(1)
+            : 0;
+        $('#winRate').text(winRate + '%');
+
+        // Add position badge to stats
+        updateUserPositionDisplay(userStats.position);
+    }
+}
+
 function loadRanking() {
     getJson(`${RANKING_URL}/${userId}`)
         .done(function(data) {
-            const rankingBody = $('#ranking-body');
-            rankingBody.empty();
-
-            // Helper function to get medal emoji for top 3
-            function getMedalEmoji(position) {
-                if (position === 1) return '🥇';
-                if (position === 2) return '🥈';
-                if (position === 3) return '🥉';
-                return '';
-            }
-
-            // Helper function to format large numbers
-            function formatScore(score) {
-                if (score >= 1000000) return (score / 1000000).toFixed(1) + 'M';
-                return score;
-            }
-
-            // Display podium entries
-            data.podium.forEach(user => {
-                const isCurrentUser = user.username === username;
-                let rowClass = '';
-
-                if (isCurrentUser) {
-                    rowClass = 'is-success current-user-row';
-                } else if (user.position === 1) {
-                    rowClass = 'rank-1';
-                } else if (user.position === 2) {
-                    rowClass = 'rank-2';
-                } else if (user.position === 3) {
-                    rowClass = 'rank-3';
-                }
-
-                const medal = getMedalEmoji(user.position);
-                const displayUsername = isCurrentUser ? `${user.username} (You)` : user.username;
-
-                const row = `
-                    <tr class="${rowClass}">
-                        <td>${medal} ${user.position}</td>
-                        <td class="username-cell">${displayUsername}</td>
-                        <td class="score-cell">${formatScore(user.score)}</td>
-                    </tr>
-                `;
-                rankingBody.append(row);
-            });
-
-            // Add separator if user is not in podium
-            if (data.userEntry && !data.podium.some(p => p.username === data.userEntry.username)) {
-                // Add visual separator
-                const separator = `
-                    <tr class="ranking-separator">
-                        <td colspan="3">
-                            <div class="separator-line">â€¢ â€¢ â€¢</div>
-                        </td>
-                    </tr>
-                `;
-                rankingBody.append(separator);
-
-                // Add user's position
-                const row = `
-                    <tr class="is-success current-user-row">
-                        <td>#${data.userEntry.position}</td>
-                        <td class="username-cell">${data.userEntry.username} (You)</td>
-                        <td class="score-cell">${data.userEntry.score}</td>
-                    </tr>
-                `;
-                rankingBody.append(row);
-            }
-
-            // Update user stats
-            let userStats = data.userEntry;
-
-            // If user is in top 3, userEntry is null in response, so find in podium
-            if (!userStats) {
-                userStats = data.podium.find(u => u.username === username);
-            }
-
-            if (userStats) {
-                $('#gamesPlayed').text(userStats.gamesPlayed);
-                $('#totalWins').text(userStats.wins);
-                $('#totalScore').text(userStats.score);
-
-                const winRate = userStats.gamesPlayed > 0
-                    ? ((userStats.wins / userStats.gamesPlayed) * 100).toFixed(1)
-                    : 0;
-                $('#winRate').text(winRate + '%');
-
-                // Add position badge to stats
-                updateUserPositionDisplay(userStats.position);
-            }
+            renderRanking(data);
         })
         .fail(function(err) {
             console.error("Error fetching ranking:", err);
@@ -167,16 +188,55 @@ function updateUserPositionDisplay(position) {
 
 function loadUserProfile() {
     userData.userId = userId; // Set userId in userData
-    document.getElementById('username').textContent = username;
-    document.getElementById('memberSince').textContent = new Date(userData.memberSince).toLocaleDateString();
-    document.getElementById('totalCoins').textContent = coins;
-    document.getElementById('totalScore').textContent = score;
 
+    // Fetch latest user data
+    postJSON(
+        LOGIN_URL,
+        {
+            username: username,
+            password: password // Sending password from localStorage
+        },
+        function(data) {
+            // Update UI with latest data
+            document.getElementById('totalCoins').textContent = data.coins;
+            document.getElementById('totalScore').textContent = data.score; // Score is updated in loadRanking
+
+            // Update userData object
+            userData.coins = data.coins;
+            userData.score = data.score;
+            // userData.email = data.email; // If needed
+        },
+        function(err) {
+            console.error("Error fetching user data:", err);
+        }
+    );
 
     loadInventory();
     loadGameResults();
     loadRanking();
     updateAchievements();
+}
+
+function renderInventory(inventoryData) {
+    const inventoryGrid = document.getElementById('inventoryGrid');
+    userData.inventory = inventoryData || [];
+
+    if (userData.inventory.length === 0) {
+        inventoryGrid.innerHTML = '<div class="empty-state"><p>No items yet!<br>Visit the shop to buy items.</p></div>';
+        return;
+    }
+
+    inventoryGrid.innerHTML = '';
+    userData.inventory.forEach(item => {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'inventory-item';
+        itemDiv.innerHTML = `
+            <div class="item-icon">${item.emoji}</div>
+            <div class="item-name">${item.name}</div>
+            <div class="item-quantity">${item.quantity}</div>
+        `;
+        inventoryGrid.appendChild(itemDiv);
+    });
 }
 
 function loadInventory() {
@@ -194,24 +254,7 @@ function loadInventory() {
     // Fetch inventory items from API
     getJson(`${SHOP_GET_USER_ITEMS_URL}/${userId}`)
         .done(function(data) {
-            userData.inventory = data || [];
-
-            if (userData.inventory.length === 0) {
-                inventoryGrid.innerHTML = '<div class="empty-state"><p>No items yet!<br>Visit the shop to buy items.</p></div>';
-                return;
-            }
-
-            inventoryGrid.innerHTML = '';
-            userData.inventory.forEach(item => {
-                const itemDiv = document.createElement('div');
-                itemDiv.className = 'inventory-item';
-                itemDiv.innerHTML = `
-                            <div class="item-icon">${item.emoji}</div>
-                            <div class="item-name">${item.name}</div>
-                            <div class="item-quantity">${item.quantity}</div>
-                        `;
-                inventoryGrid.appendChild(itemDiv);
-            });
+            renderInventory(data);
         })
         .fail(function(err) {
             console.error("Error fetching user inventory:", err);
@@ -266,8 +309,9 @@ function onLogoutClick() {
     // Clear all user data from localStorage
     localStorage.removeItem("userId");
     localStorage.removeItem("username");
-    localStorage.removeItem("coins");
-    localStorage.removeItem("score");
+    localStorage.removeItem("password"); // Clear password on logout
+    // localStorage.removeItem("coins"); // Removed
+    // localStorage.removeItem("score"); // Removed
 
     // Redirect to the login page
     window.location.href = "../login";

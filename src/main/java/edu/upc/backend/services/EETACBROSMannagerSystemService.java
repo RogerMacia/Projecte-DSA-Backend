@@ -107,7 +107,7 @@ public class EETACBROSMannagerSystemService {
     public Response logIn(User user) {
         try {
             User userlogged = this.sistema.logIn(user);
-            logger.info("User logged in: " + userlogged.getUsername());
+            logger.info("User "+userlogged.getUsername()+" logged in");
             return Response.status(Response.Status.OK).entity(userlogged).build();
         }
         catch (UserOrPasswordInvalidException e) {
@@ -150,6 +150,7 @@ public class EETACBROSMannagerSystemService {
     public Response updateUserData(User user) {
         try {
             User updatedUser = this.sistema.updateUserData(user);
+            logger.info("User "+user.getUsername()+" updated");
             return Response.status(Response.Status.OK).entity(updatedUser).build();
         } catch (UserNotFoundException e) {
             logger.error("Error updating in: " + e.getMessage());
@@ -220,7 +221,7 @@ public class EETACBROSMannagerSystemService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response shopBuyItems(BuyRequest buyrequest) {
         try {
-            logger.info("User " + buyrequest.getUserId() + " bought items.");
+            logger.info("User " +buyrequest.getUserId() + " has bought " +buyrequest.getTotalItems()+" items.");
             sistema.registerPurchase(buyrequest);
             return Response.status(Response.Status.CREATED).entity(buyrequest).build();
         }
