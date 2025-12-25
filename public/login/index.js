@@ -46,10 +46,7 @@ function onLoginBtnClick() {
                 //Store user data (Note: In production, consider security implications)
                 localStorage.setItem("userId", data.id);
                 localStorage.setItem("username", data.username);
-                localStorage.setItem("password", data.password); // Store password in localStorage
-                // localStorage.setItem("coins", data.coins); // Removed: coins should be fetched from API
-                // localStorage.setItem("email",data.email); // Removed: email should be fetched from API
-
+                localStorage.setItem("password", data.password);
 
                 setTimeout(() => {
                     window.location.href = "../profile";

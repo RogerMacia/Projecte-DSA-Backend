@@ -41,7 +41,7 @@ CREATE TABLE `User` (
     score INT NOT NULL
 );
 
-INSERT INTO user( username, name, email, password, coins, score) VALUES
+INSERT INTO User( username, name, email, password, coins, score) VALUES
 ('agente007', 'Manel Colominas', 'manel@gmail.com', '1234567Ab',10000000, 10000),
 ('agente008', 'Manel Colominas', 'manel@gmail.com', '1234567Ab',10000000, 9000),
 ('agente009', 'Manel Colominas', 'manel@gmail.com', '1234567Ab',10000000, 8000),

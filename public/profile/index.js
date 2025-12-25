@@ -1,9 +1,7 @@
 // Define BASE_URL if not already defined (adjust to your API URL)
 const userId = localStorage.getItem("userId");
 const username = localStorage.getItem("username");
-const password = localStorage.getItem("password"); // Retrieve password from localStorage
-// const coins = localStorage.getItem("coins"); // Removed: coins should be fetched from API
-// const score = localStorage.getItem("score"); // Removed: score should be fetched from API
+const password = localStorage.getItem("password");
 const SHOP_GET_USER_ITEMS_URL = `${BASE_URL}/user/items`;
 const RANKING_URL = `${BASE_URL}/ranking`;
 const LOGIN_URL = `${BASE_URL}/user/login`; // Added LOGIN_URL to fetch user data
@@ -201,10 +199,19 @@ function loadUserProfile() {
             document.getElementById('totalCoins').textContent = data.coins;
             document.getElementById('totalScore').textContent = data.score; // Score is updated in loadRanking
 
+            localStorage.setItem("userId", data.id);
+            localStorage.setItem("username", data.username);
+            localStorage.setItem("password", data.password);
+            localStorage.setItem("email", data.email);
+            localStorage.setItem("coins", data.coins);
+            localStorage.setItem("score", data.score);
+
             // Update userData object
+            userData.username = data.username;
+            userData.userId = data.id;
             userData.coins = data.coins;
             userData.score = data.score;
-            // userData.email = data.email; // If needed
+            userData.email = data.email;
         },
         function(err) {
             console.error("Error fetching user data:", err);
@@ -309,9 +316,11 @@ function onLogoutClick() {
     // Clear all user data from localStorage
     localStorage.removeItem("userId");
     localStorage.removeItem("username");
+    localStorage.removeItem("email");
+    localStorage.removeItem("name");
     localStorage.removeItem("password"); // Clear password on logout
-    // localStorage.removeItem("coins"); // Removed
-    // localStorage.removeItem("score"); // Removed
+    localStorage.removeItem("coins");
+    localStorage.removeItem("score");
 
     // Redirect to the login page
     window.location.href = "../login";
