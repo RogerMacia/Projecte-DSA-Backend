@@ -98,7 +98,7 @@ public class DAOTest {
     }
     @Test
     public void TopPlayersTest() throws Exception {
-        List<User> top = _users.getTopUsers();
+        List<User> top = _users.getTopUsers(10);
         for(User p : top) log.info(p.toString());
     }
 

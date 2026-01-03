@@ -179,11 +179,11 @@ public class UserDAO implements IUserDAO{
     }
 
     @Override
-    public List<User> getTopUsers() throws Exception
+    public List<User> getTopUsers(int limit) throws Exception
     {
         List<User> res = null;
         Session session = null;
-        String customQuery = "SELECT * FROM User ORDER BY score DESC LIMIT 10";
+        String customQuery = String.format("SELECT * FROM User ORDER BY score DESC LIMIT %d",limit);
 
         try{
             session = new SessionBuilder().build();

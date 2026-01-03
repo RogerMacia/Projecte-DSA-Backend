@@ -12,5 +12,5 @@ public User getUserById(int userID) throws Exception;
 public void updateUser(User user) throws Exception;
 public void deleteUser(int id) throws Exception;
 public List<User> getUsers() throws Exception;
-    public List<User> getTopUsers() throws Exception;
+    public List<User> getTopUsers(int limit) throws Exception;
 }
