@@ -18,6 +18,7 @@ public interface EETACBROSMannagerSystem {
     void registerPurchase(BuyRequest buyrequest) throws UserNotFoundException, InsufficientMoneyException, Exception;
     List<Item> getUserItems(int userId);
     User updateUserData(User user) throws Exception;
+    User updateUserScore(User user) throws Exception;
 
     void deleteUserData(int id) throws Exception;
 

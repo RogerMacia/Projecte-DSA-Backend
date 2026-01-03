@@ -163,6 +163,32 @@ public class EETACBROSMannagerSystemService {
         }
     }
 
+    @PUT
+    @Path("user/updateScore")
+    @ApiOperation(value = "Update user score", notes = "Updates the score and the coins of an existing user.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "User updated successfully", response = User.class),
+            @ApiResponse(code = 404, message = "User not found"),
+            @ApiResponse(code = 500, message = "Internal Server Error")
+    })
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateUserScore(User user) {
+        try {
+            User updatedUser = this.sistema.updateUserScore(user);
+            logger.info("User "+user.getUsername()+" updated");
+            return Response.status(Response.Status.OK).entity(updatedUser).build();
+        } catch (UserNotFoundException e) {
+            logger.error("Error updating in: " + e.getMessage());
+            ErrorResponse errorResponse = new ErrorResponse("USER_NOT_FOUND", e.getMessage());
+            return Response.status(Response.Status.NOT_FOUND).entity(errorResponse).build();
+        } catch (Exception e) {
+            logger.error("Error updating in: " + e.getMessage());
+            ErrorResponse errorResponse = new ErrorResponse("GENERIC_UPDATING_ERROR", "An unexpected error occurred during updating.");
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(errorResponse).build();
+        }
+    }
+
     // DELET USER
     @DELETE
     @Path("user/delete/{id}")
