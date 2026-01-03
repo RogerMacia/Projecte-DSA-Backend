@@ -50,7 +50,7 @@ public class GameDAO implements IGameDAO{
     }
 
     @Override
-    public Game getbyUserId(int userId) throws SQLException {
+    public Game getByUserId(int userId) throws SQLException {
         Session session = null;
         Game res = null;
         String customQuery = "SELECT gameId FROM Core WHERE userId=?";

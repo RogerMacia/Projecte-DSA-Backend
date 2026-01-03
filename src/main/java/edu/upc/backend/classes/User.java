@@ -94,6 +94,7 @@ public class User {
                 "id=" + id +
                 ", nom='" + name + '\'' +
                 ", password='" + password +'\'' +
+                ", score=" + score +
                 '}';
     }
 }

@@ -20,7 +20,8 @@ public class DBUtils {
     */
 
     // Enviroment Production 2
-    public static final String DB_USER = "userDSA";
+    //public static final String DB_USER = "userDSA";
+    public static final String DB_USER = "root";
     public static final String DB_PASS = "mariadb";
 
     public static final String DB_PORT = "3306";

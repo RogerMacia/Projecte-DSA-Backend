@@ -74,8 +74,6 @@ INSERT INTO `Item` (ID, name, durability, price, emoji, description, quantity) V
 (9, 'USB Drive', 100, 100,'USB Drive', 'Store and transport your important files easily.',0),
 (10, 'Coffee', 100, 100,'Coffee','Recharge your energy and stay productive.',0);
 
-DROP TABLE item;
-
 SELECT * FROM `User`;
 SELECT * FROM `Item`;
 
@@ -102,7 +100,7 @@ CREATE TABLE Player(
 
 CREATE TABLE Game(
 	ID INT AUTO_INCREMENT PRIMARY KEY,
-	LEVEL INT NOT NULL);
+	Level INT NOT NULL);
 
 CREATE TABLE Core(
 	userId INT NOT NULL,
@@ -116,6 +114,11 @@ CREATE TABLE Core(
 	FOREIGN KEY (playerId) REFERENCES Player(ID) ON DELETE CASCADE,
 	FOREIGN KEY (gameId) REFERENCES Game(ID) ON DELETE CASCADE
 );
+
+INSERT INTO Player ( hp, speed, score, X, Y) VALUES ( 1, 1, 0, 0, 0);
+INSERT INTO Game ( Level ) VALUES (1);
+
+INSERT INTO Core ( userId, playerId, gameId) VALUES ( 1, 1, 1);
 
 CREATE TABLE Faq(
 	ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,

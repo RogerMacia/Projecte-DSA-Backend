@@ -96,6 +96,11 @@ public class DAOTest {
         User res = _users.getUserByUsername(username);
         log.info(res.toString());
     }
+    @Test
+    public void TopPlayersTest() throws Exception {
+        List<User> top = _users.getTopUsers();
+        for(User p : top) log.info(p.toString());
+    }
 
     @Test
     public void getItemList() throws Exception {
@@ -148,6 +153,8 @@ public class DAOTest {
 
         for(Object o : res) log.info(o.toString());
     }
+
+
 
     @Test
     public void getItemByIdTest() throws Exception
@@ -208,7 +215,8 @@ public class DAOTest {
     @Test
     public void testGame() throws Exception
     {
-        int playerId = ((Game)_games.getbyUserId(6)).getId();
+        int playerId = ((Game)_games.getByUserId(6)).getId();
         log.info(playerId);
     }
+
 }

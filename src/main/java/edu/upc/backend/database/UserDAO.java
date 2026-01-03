@@ -1,7 +1,9 @@
 package edu.upc.backend.database;
 
 import edu.upc.backend.classes.Game;
+import edu.upc.backend.classes.Player;
 import edu.upc.backend.classes.User;
+import edu.upc.backend.database.util.Utils;
 import org.apache.log4j.Logger;
 
 import java.sql.SQLException;
@@ -172,6 +174,26 @@ public class UserDAO implements IUserDAO{
             if (session != null) {
                 session.close();
             }
+        }
+        return res;
+    }
+
+    @Override
+    public List<User> getTopUsers() throws Exception
+    {
+        List<User> res = null;
+        Session session = null;
+        String customQuery = "SELECT * FROM User ORDER BY score DESC LIMIT 10";
+
+        try{
+            session = new SessionBuilder().build();
+            res = Utils.<User>castList(session.query(customQuery, User.class, null));
+        }catch (Exception e)
+        {
+            log.error(e.getMessage());
+        }
+        finally {
+            session.close();
         }
         return res;
     }

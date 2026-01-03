@@ -330,16 +330,21 @@ public class SessionImpl implements Session {
         {
 
             pstm = conn.prepareStatement(query);
-            Set<String> keys = params.keySet();
-            String[] ordered = Utils.computeOrder(query,keys);
-
-            String[] fields = theClass == null ? null : ObjectHelper.getFields(theClass);
-
-
-            for(int i = 0; i < ordered.length; i++)
+            if(params != null)
             {
-                pstm.setObject(i+1, params.get(ordered[i])); // <---
+                Set<String> keys = params.keySet();
+                String[] ordered = Utils.computeOrder(query,keys);
+                for(int i = 0; i < ordered.length; i++)
+                {
+                    pstm.setObject(i+1, params.get(ordered[i]));
+                }
             }
+
+
+            String[] fields = theClass == null ? null : ObjectHelper.getFields(theClass); // ejecuta directamente la query sin esperar respuesta.
+
+
+
 
             ResultSet rs = pstm.executeQuery();
 

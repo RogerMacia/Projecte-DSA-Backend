@@ -310,7 +310,7 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
     @Override
     public Game getGameByUserId(int userId) throws SQLException {
         GameDAO games = GameDAO.getInstance();
-        return games.getbyUserId(userId);
+        return games.getByUserId(userId);
     }
 
     @Override
@@ -318,4 +318,6 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
         FaqDAO faqs = FaqDAO.getInstance();
         return faqs.getAll();
     }
+
+
 }
