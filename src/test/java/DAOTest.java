@@ -21,6 +21,7 @@ public class DAOTest {
     UserItemDAO _inventory;
     FaqDAO _faqs;
     GameDAO _games;
+    HistoryDao _scores;
 
     @Before
     public void Init()
@@ -31,6 +32,7 @@ public class DAOTest {
         _inventory = UserItemDAO.getInstance();
         _faqs = FaqDAO.getInstance();
         _games = GameDAO.getInstance();
+        _scores = HistoryDao.getInstance();
     }
     @After
     public void Finalize()
@@ -217,6 +219,17 @@ public class DAOTest {
     {
         int playerId = ((Game)_games.getByUserId(6)).getId();
         log.info(playerId);
+    }
+
+    @Test
+    public void testHistory() throws Exception
+    {
+        User first = _users.getUserById(1);
+        _scores.save(first);
+        _scores.save(first);
+        _scores.save(first);
+        List<Integer> scores = _scores.getAllPointsByUser(1);
+        for(Integer score : scores) log.info(score.toString());
     }
 
 }

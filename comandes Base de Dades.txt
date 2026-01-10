@@ -106,9 +106,6 @@ CREATE TABLE Core(
 	userId INT NOT NULL,
 	playerId INT NOT NULL,
 	gameId INT NOT NULL,
-	FOREIGN KEY (userId) REFERENCES User(ID),
-	FOREIGN KEY (playerId) REFERENCES Player(ID),
-	FOREIGN KEY (gameId) REFERENCES Game(ID),
 	
 	FOREIGN KEY (userId) REFERENCES User(ID) ON DELETE CASCADE,
 	FOREIGN KEY (playerId) REFERENCES Player(ID) ON DELETE CASCADE,
@@ -140,6 +137,9 @@ INSERT INTO Faq (question, answer) VALUES
 ('What happens after I buy an item?','The item is added to your inventory, and the corresponding number of coins is automatically deducted from your balance.'),
 ('What happens if I don’t have enough coins?','You won’t be able to make the purchase until you earn more coins through gameplay.'),
 ('Is my data safe?','Yes. All user data is securely stored and managed by the backend service.');
+
+CREATE TABLE History (userId INT NOT NULL, score INT NOT NULL,
+	FOREIGN KEY (userId) REFERENCES User(ID) ON DELETE CASCADE);
 
 
 Per eliminar la base de dades:
