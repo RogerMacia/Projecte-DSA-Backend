@@ -93,7 +93,6 @@ CREATE TABLE Player(
 	ID INT AUTO_INCREMENT PRIMARY KEY,
 	hp INT,
 	speed INT,
-	score INT,
 	X FLOAT(24),
 	Y FLOAT(24)
 );

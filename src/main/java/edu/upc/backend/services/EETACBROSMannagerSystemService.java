@@ -7,6 +7,7 @@ import edu.upc.backend.exceptions.*;
 import io.swagger.annotations.*;
 import org.apache.log4j.Logger;
 
+import javax.naming.NameNotFoundException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
@@ -315,6 +316,86 @@ public class EETACBROSMannagerSystemService {
     }
 
     @GET
+    @ApiOperation(value = "Get the points history from an User", notes = "Hola k ase")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Successful", responseContainer = "List"),
+            @ApiResponse(code = 500, message = "Something went wrong")
+    })
+    @Path("/points/{userId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getPointsHistory(@PathParam("userId") String id) {
+        try {
+            Integer[] res = sistema.getPointsHistory(Integer.parseInt(id)).toArray(new Integer[0]);
+            GenericEntity<Integer[]> entity = new GenericEntity<Integer[]>(res) {
+            };
+            return Response.status(201).entity(entity).build();
+        }
+        catch (Exception e)
+        {
+            return Response.status(500).build();
+        }
+    }
+
+    // region Los Updates.
+    @PUT
+    @ApiOperation(value = "set a game", notes = "Hola k ase")
+    @ApiResponses( value = {
+            @ApiResponse(code = 201, message = "Successfully modified", response= Game.class),
+            @ApiResponse(code = 500, message = "Validation Error")
+    })
+    @Path("/game/{userId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response setGame(@PathParam("userId") String id,Game newData)
+    {
+        try
+        {
+            sistema.updateGame(Integer.parseInt(id), newData);
+            return Response.status(201).entity(newData).build();
+        }
+        catch (Exception e) {return Response.status(500).entity(e.getMessage()).build();}
+    }
+
+    @PUT
+    @ApiOperation(value = "set the player", notes = "Hola k ase")
+    @ApiResponses( value = {
+            @ApiResponse(code = 201, message = "Successfully modified", response = Player.class),
+            @ApiResponse(code = 500, message = "Validation Error")
+    })
+    @Path("/player/{userId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response setPlayer(@PathParam("userId") String id, Player newData)
+    {
+        try
+        {
+            sistema.updatePlayer(Integer.parseInt(id),newData);
+            return Response.status(201).entity(newData).build();
+        }
+        catch (Exception e) {return Response.status(500).entity(e.getMessage()).build();}
+    }
+
+    @PUT
+    @ApiOperation(value = "set the user", notes = "")
+    @ApiResponses( value = {
+            @ApiResponse(code = 201, message = "Successfully modified", response= User.class),
+            @ApiResponse(code = 500, message = "Validation Error")
+    })
+    @Path("/user")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response setUser(User newData)
+    {
+        try
+        {
+
+            return Response.status(201).entity(newData).build();
+        }
+        catch (Exception e) {return Response.status(500).entity(e.getMessage()).build();}
+    }
+    // endregion Los Updates
+
+    @GET
     @ApiOperation(value = "Get all available faqs", notes = "Hola k ase")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Successful", response = Faq.class, responseContainer = "List"),
@@ -327,5 +408,7 @@ public class EETACBROSMannagerSystemService {
         GenericEntity<Faq[]> entity = new GenericEntity<Faq[]>(res) {};
         return Response.status(201).entity(entity).build();
     }
+
+
 
 }

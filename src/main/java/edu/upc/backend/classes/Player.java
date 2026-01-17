@@ -4,25 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Player {
-    public int getScore() {
-        return score;
-    }
 
-    public void setScore(Integer score) {
-        this.score = score;
-    }
 
-    int score;
 
     public Player() {}
-    public Player(int playerId, int hp, Integer speed, float X, float Y, int score)
+    public Player(int playerId, int hp, Integer speed, float X, float Y)
     {
         setId(playerId);
         setHp(hp);
         setSpeed(speed);
         setX(X);
         setY(Y);
-        setScore(score);
     }
 
 

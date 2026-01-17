@@ -35,5 +35,12 @@ public interface EETACBROSMannagerSystem {
     public List<Faq> getAllFaqs() throws SQLException;
     public RankingResponse getRanking(int userId) throws UserNotFoundException;
 
+    public List<Integer> getPointsHistory(int userId) throws Exception;
+
+    // region Updates universales
+    public void updateGame(int id,Game game) throws Exception;
+    public void updatePlayer(int id,Player player) throws Exception;
+    public void updateUser(User user) throws Exception;
+    // endregion Updates universales
 
 }

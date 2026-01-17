@@ -27,7 +27,7 @@ public class PlayerDAO implements IPlayerDAO{
     @Override
     public int addPlayer(int userId) throws Exception {
         log.info("\u001B[32mAccessing Database: addPlayer\u001B[0m");
-        Player player = new Player(0,100,10,0,0,0);
+        Player player = new Player(0,100,10,0,0);
         int playerId = -1;
         Session session = null;
         try{

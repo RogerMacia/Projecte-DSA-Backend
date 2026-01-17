@@ -126,6 +126,7 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
 
     public User updateUserScore(User user) throws Exception {
         UserDAO _users = UserDAO.getInstance();
+        HistoryDao _points = HistoryDao.getInstance();
         User userExists = null;
         userExists = _users.getUserById(user.getId());
         if (userExists == null){
@@ -134,6 +135,7 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
         try {
             userExists.setCoins(user.getCoins());
             userExists.setScore(user.getScore());
+            _points.save(user);
             _users.updateUser(userExists);
         }
         catch (SQLException e) {
@@ -317,6 +319,45 @@ public class EBDBManagerSystem implements EETACBROSMannagerSystem {
     public List<Faq> getAllFaqs() throws SQLException {
         FaqDAO faqs = FaqDAO.getInstance();
         return faqs.getAll();
+    }
+
+    @Override
+    public List<Integer> getPointsHistory(int userId) throws Exception
+    {
+        // Actually esto es una funcion de orden superior.
+        HistoryDao _points = HistoryDao.getInstance();
+        return _points.getAllPointsByUser(userId);
+    }
+
+    @Override
+    public void updateGame(int id,Game game) throws Exception
+    {
+        GameDAO games= GameDAO.getInstance();
+        // Extra steps para garantizar que no haya nadie haciendo spoofing de peticiones.
+        Game g = games.getByUserId(id);
+        g.setLevel(game.getLevel());
+        games.update(g);
+    }
+
+    @Override
+    public void updatePlayer(int id,Player player) throws Exception
+    {
+        PlayerDAO players = PlayerDAO.getInstance();
+        Player p = players.getPlayerbyUserId(id);
+        //players.updatePlayer(player);
+        p.setHp(player.getHp());
+        p.setSpeed(player.getSpeed());
+        p.setX(player.getX());
+        p.setY(player.getY());
+        players.updatePlayer(p);
+    }
+
+    @Override
+    public void updateUser(User user) throws Exception
+    {
+        UserDAO users = UserDAO.getInstance();
+        User before = users.getUserById(user.getId());
+        users.updateUser(user);
     }
 
 
